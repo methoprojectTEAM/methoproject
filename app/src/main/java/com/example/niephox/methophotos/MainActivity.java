@@ -24,7 +24,7 @@ public class MainActivity extends AppCompatActivity {
                 Intent i = new Intent(getApplicationContext(), FullImageActivity.class);
                 i.putExtra("id", position);
                 startActivity(i);
-                //testing github
+                //testing githubee
             }
         });
     }
