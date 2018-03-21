@@ -14,7 +14,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        GridView gridView = (GridView) findViewById(R.id.gridView);
+        GridView gridView =  findViewById(R.id.gridView);
 
         gridView.setAdapter(new ImageAdapter(this));
 
@@ -24,6 +24,7 @@ public class MainActivity extends AppCompatActivity {
                 Intent i = new Intent(getApplicationContext(), FullImageActivity.class);
                 i.putExtra("id", position);
                 startActivity(i);
+                //testing github
             }
         });
     }
