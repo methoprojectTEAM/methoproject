@@ -3,6 +3,7 @@
     package="com.example.niephox.methophotos">
 
     <application
+
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -17,7 +18,16 @@
             </intent-filter>
         </activity>
         <activity android:name=".FullImageActivity" />
-        <activity android:name=".PhotoViewActivity"></activity>
+        <activity android:name=".PhotoViewActivity" />
+        <activity android:name=".extractor.MetadataActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <receiver android:name=".extractor.MetadataActivity" />
     </application>
 
 

@@ -11,7 +11,6 @@
         android:layout_width="170dp"
         android:layout_height="165dp"
         android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
         android:layout_marginTop="175dp"
         android:background="@android:color/transparent"
         android:clickable="true"
@@ -23,8 +22,9 @@
         android:id="@+id/button"
         android:layout_width="55dp"
         android:layout_height="51dp"
+        android:layout_marginBottom="72dp"
         android:layout_marginLeft="104dp"
-        android:layout_marginStart="164dp"
+        android:layout_marginStart="348dp"
         android:background="@android:drawable/ic_menu_camera"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -34,7 +34,7 @@
         android:id="@+id/buttonDelete"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="288dp"
+        android:layout_marginLeft="256dp"
         android:text="Delete"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent" />
@@ -43,7 +43,7 @@
         android:id="@+id/addButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="8dp"
+        android:layout_marginLeft="16dp"
         android:text="Add"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent" />
@@ -88,8 +88,6 @@
         android:layout_width="170dp"
         android:layout_height="165dp"
         android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-
         android:layout_marginTop="8dp"
         android:background="@android:color/transparent"
         android:clickable="true"
@@ -102,13 +100,19 @@
         android:layout_width="170dp"
         android:layout_height="165dp"
         android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-
         android:layout_marginTop="342dp"
         android:background="@android:color/transparent"
         android:clickable="true"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@android:color/transparent" />
+
+    <Button
+        android:id="@+id/btMetadata"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Metadata"
+        tools:layout_editor_absoluteX="134dp"
+        tools:layout_editor_absoluteY="595dp" />
 
 </android.support.constraint.ConstraintLayout>
