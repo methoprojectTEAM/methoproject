@@ -5,13 +5,11 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.net.Uri;
-import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.drew.imaging.ImageMetadataReader;
 import com.drew.imaging.ImageProcessingException;
@@ -24,12 +22,11 @@ import java.io.BufferedInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.sql.SQLOutput;
 
 
 public class MainActivity extends AppCompatActivity {
     ImageView[] targetImage=new ImageView[6];
-    Uri path;
+    Uri[] path=new Uri[6];
     int numberPhotos=0;
 
 
@@ -60,12 +57,64 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        targetImage[0].setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                Intent i = new Intent(getApplicationContext(),PhotoViewActivity.class);
+                i.setData(path[0]);
+                startActivity(i);
+            }
+        });
         targetImage[1].setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View v)
             {
-
+                Intent i = new Intent(getApplicationContext(),PhotoViewActivity.class);
+                i.setData(path[1]);
+                startActivity(i);
+            }
+        });
+        targetImage[2].setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                Intent i = new Intent(getApplicationContext(),PhotoViewActivity.class);
+                i.setData(path[2]);
+                startActivity(i);
+            }
+        });
+        targetImage[3].setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                Intent i = new Intent(getApplicationContext(),PhotoViewActivity.class);
+                i.setData(path[3]);
+                startActivity(i);
+            }
+        });
+        targetImage[4].setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                Intent i = new Intent(getApplicationContext(),PhotoViewActivity.class);
+                i.setData(path[4]);
+                startActivity(i);
+            }
+        });
+        targetImage[5].setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                Intent i = new Intent(getApplicationContext(),PhotoViewActivity.class);
+                i.setData(path[5]);
+                startActivity(i);
             }
         });
 
@@ -75,7 +124,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v)
             {
                 try {
-                    InputStream is = getContentResolver().openInputStream(path);
+                    InputStream is = getContentResolver().openInputStream(path[0]);
                     BufferedInputStream bis = new BufferedInputStream(is);
                     Metadata metadata = ImageMetadataReader.readMetadata(bis,true);
 
@@ -98,7 +147,7 @@ public class MainActivity extends AppCompatActivity {
         if (resultCode == RESULT_OK){
             Uri targetUri = data.getData();
 
-            path =targetUri;
+            path[numberPhotos] =targetUri;
             Bitmap bitmap;
 
             try {
