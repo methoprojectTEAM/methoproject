@@ -16,6 +16,8 @@ import com.drew.imaging.ImageProcessingException;
 import com.drew.metadata.Directory;
 import com.drew.metadata.Metadata;
 import com.drew.metadata.Tag;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.io.BufferedInputStream;
 
@@ -47,7 +49,11 @@ public class MainActivity extends AppCompatActivity {
         targetImage[4] = findViewById(R.id.photoView5);
         targetImage[5] = findViewById(R.id.photoView6);
 
+        // Write a message to the database
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = database.getReference("message");
 
+        myRef.setValue("Hello, World!");
 
         addPhotoButton.setOnClickListener(new View.OnClickListener()
         {
