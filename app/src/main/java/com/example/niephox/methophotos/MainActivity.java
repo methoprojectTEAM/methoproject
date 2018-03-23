@@ -3,6 +3,7 @@ package com.example.niephox.methophotos;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
@@ -23,16 +24,14 @@ import java.io.BufferedInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
+import java.sql.SQLOutput;
 
-import java.net.URI;
-import java.util.Date;
 
 public class MainActivity extends AppCompatActivity {
-    ImageView targetImage;
-    ImageView targetImage2;
-    TextView textTest;
+    ImageView[] targetImage=new ImageView[6];
     Uri path;
+    int numberPhotos=0;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,9 +41,14 @@ public class MainActivity extends AppCompatActivity {
         Button addPhotoButton = (Button) findViewById(R.id.addButton);
         Button deleteButton = (Button) findViewById(R.id.buttonDelete);
 
-        targetImage = (ImageView)findViewById(R.id.photoView);
-        targetImage2=findViewById(R.id.photoView2);
-        textTest=findViewById(R.id.textView);
+        targetImage[0] = findViewById(R.id.photoView1);
+        targetImage[1] = findViewById(R.id.photoView2);
+        targetImage[2] = findViewById(R.id.photoView3);
+        targetImage[3] = findViewById(R.id.photoView4);
+        targetImage[4] = findViewById(R.id.photoView5);
+        targetImage[5] = findViewById(R.id.photoView6);
+
+
 
         addPhotoButton.setOnClickListener(new View.OnClickListener()
         {
@@ -56,13 +60,12 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        targetImage2.setOnClickListener(new View.OnClickListener()
+        targetImage[1].setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View v)
             {
-                Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                startActivityForResult(intent, 1);
+
             }
         });
 
@@ -75,20 +78,15 @@ public class MainActivity extends AppCompatActivity {
                     InputStream is = getContentResolver().openInputStream(path);
                     BufferedInputStream bis = new BufferedInputStream(is);
                     Metadata metadata = ImageMetadataReader.readMetadata(bis,true);
-//                    Metadata metadata = ImageMetadataReader.readMetadata(new BufferedInputStream(new ByteArrayInputStream(path)), path.length);
-
-
 
                     for (Directory directory : metadata.getDirectories()) {
                         for (Tag tag : directory.getTags()) {
                             System.out.println(tag);
-                            textTest.setText(tag.toString());
                         }
                     }
-
                 }
-                catch (ImageProcessingException e){textTest.setText("ERROR 1");}
-                catch (IOException e) {textTest.setText("ERROR 2");}
+                catch (ImageProcessingException e){System.out.println("ERROR");}
+                catch (IOException e) {System.out.println("error");}
             }
         });
 
@@ -99,18 +97,23 @@ public class MainActivity extends AppCompatActivity {
 
         if (resultCode == RESULT_OK){
             Uri targetUri = data.getData();
+
             path =targetUri;
             Bitmap bitmap;
+
             try {
                 bitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(targetUri));
-                if(requestCode==0)
-                    targetImage.setImageBitmap(bitmap);
-                else
-                    targetImage2.setImageBitmap(bitmap);
+                targetImage[numberPhotos].setImageBitmap(bitmap);
+                setBackgroundColor();
+                numberPhotos++;
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             }
         }
+    }
+    public void setBackgroundColor()
+    {
+        targetImage[numberPhotos].setBackgroundColor(Color.WHITE);
     }
 }
 
