@@ -1,5 +1,6 @@
 package com.example.niephox.methophotos;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -10,6 +11,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.drew.imaging.ImageMetadataReader;
 import com.drew.imaging.ImageProcessingException;
@@ -50,7 +52,6 @@ public class MainActivity extends AppCompatActivity {
         targetImage[4] = findViewById(R.id.photoView5);
         targetImage[5] = findViewById(R.id.photoView6);
 
-        MetadataExtractor.metadataToFile();
         // Write a message to the database
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference("message");
@@ -173,6 +174,16 @@ public class MainActivity extends AppCompatActivity {
     public void setBackgroundColor()
     {
         targetImage[numberPhotos].setBackgroundColor(Color.WHITE);
+    }
+
+
+    public void toast(String message){
+        Context context = getApplicationContext();
+
+        int duration = Toast.LENGTH_SHORT;
+
+        Toast toast = Toast.makeText(context, message, duration);
+        toast.show();
     }
 }
 
