@@ -20,4 +20,5 @@
         <activity android:name=".FullImageActivity"></activity>
     </application>
 
+
 </manifest>
