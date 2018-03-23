@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -18,12 +19,14 @@ import com.drew.metadata.Metadata;
 import com.drew.metadata.Tag;
 
 import java.io.BufferedInputStream;
+
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 
 import java.net.URI;
+import java.util.Date;
 
 public class MainActivity extends AppCompatActivity {
     ImageView targetImage;
@@ -69,16 +72,17 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v)
             {
                 try {
-                    InputStream is = new URL("/document/raw:/storage/emulated/0/Download/ScreenShot2018-03-22at02.49.37.png").openStream();
+                    InputStream is = getContentResolver().openInputStream(path);
                     BufferedInputStream bis = new BufferedInputStream(is);
                     Metadata metadata = ImageMetadataReader.readMetadata(bis,true);
+//                    Metadata metadata = ImageMetadataReader.readMetadata(new BufferedInputStream(new ByteArrayInputStream(path)), path.length);
 
 
 
                     for (Directory directory : metadata.getDirectories()) {
                         for (Tag tag : directory.getTags()) {
                             System.out.println(tag);
-                            textTest.setText(tag.getTagName());
+                            textTest.setText(tag.toString());
                         }
                     }
 
@@ -91,12 +95,11 @@ public class MainActivity extends AppCompatActivity {
 
     }
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        // TODO Auto-generated method stub
         super.onActivityResult(requestCode, resultCode, data);
 
         if (resultCode == RESULT_OK){
             Uri targetUri = data.getData();
-//            path=targetUri.toURL();
+            path =targetUri;
             Bitmap bitmap;
             try {
                 bitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(targetUri));
