@@ -18,7 +18,7 @@ import com.drew.imaging.ImageProcessingException;
 import com.drew.metadata.Directory;
 import com.drew.metadata.Metadata;
 import com.drew.metadata.Tag;
-import com.example.niephox.methophotos.extractor.MetadataExtractor;
+import com.example.niephox.methophotos.extractor.MetadataActivity;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -30,9 +30,9 @@ import java.io.InputStream;
 
 
 public class MainActivity extends AppCompatActivity {
-    ImageView[] targetImage=new ImageView[6];
-    Uri[] path=new Uri[6];
-    int numberPhotos=0;
+    ImageView[] targetImage = new ImageView[6];
+    Uri[] path = new Uri[6];
+    int numberPhotos = 0;
 
 
 //Dimitris Branch
@@ -45,6 +45,7 @@ public class MainActivity extends AppCompatActivity {
         Button addPhotoButton = (Button) findViewById(R.id.addButton);
         Button deleteButton = (Button) findViewById(R.id.buttonDelete);
 
+        Button btmetadata = findViewById(R.id.btMetadata);
         targetImage[0] = findViewById(R.id.photoView1);
         targetImage[1] = findViewById(R.id.photoView2);
         targetImage[2] = findViewById(R.id.photoView3);
@@ -58,82 +59,66 @@ public class MainActivity extends AppCompatActivity {
 
         myRef.setValue("Hello, World!");
 
-        addPhotoButton.setOnClickListener(new View.OnClickListener()
-        {
+        addPhotoButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v)
-            {
+            public void onClick(View v) {
                 Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                 startActivityForResult(intent, 0);
             }
         });
 
-        targetImage[0].setOnClickListener(new View.OnClickListener()
-        {
+        targetImage[0].setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v)
-            {
-                Intent i = new Intent(getApplicationContext(),PhotoViewActivity.class);
+            public void onClick(View v) {
+                Intent i = new Intent(getApplicationContext(), PhotoViewActivity.class);
                 i.setData(path[0]);
                 startActivity(i);
             }
         });
-        targetImage[1].setOnClickListener(new View.OnClickListener()
-        {
+        targetImage[1].setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v)
-            {
-                Intent i = new Intent(getApplicationContext(),PhotoViewActivity.class);
+            public void onClick(View v) {
+                Intent i = new Intent(getApplicationContext(), PhotoViewActivity.class);
                 i.setData(path[1]);
                 startActivity(i);
             }
         });
-        targetImage[2].setOnClickListener(new View.OnClickListener()
-        {
+        targetImage[2].setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v)
-            {
-                Intent i = new Intent(getApplicationContext(),PhotoViewActivity.class);
+            public void onClick(View v) {
+                Intent i = new Intent(getApplicationContext(), PhotoViewActivity.class);
                 i.setData(path[2]);
                 startActivity(i);
             }
         });
-        targetImage[3].setOnClickListener(new View.OnClickListener()
-        {
+        targetImage[3].setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v)
-            {
-                Intent i = new Intent(getApplicationContext(),PhotoViewActivity.class);
+            public void onClick(View v) {
+                Intent i = new Intent(getApplicationContext(), PhotoViewActivity.class);
                 i.setData(path[3]);
                 startActivity(i);
             }
         });
-        targetImage[4].setOnClickListener(new View.OnClickListener()
-        {
+        targetImage[4].setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v)
-            {
-                Intent i = new Intent(getApplicationContext(),PhotoViewActivity.class);
+            public void onClick(View v) {
+                Intent i = new Intent(getApplicationContext(), PhotoViewActivity.class);
                 i.setData(path[4]);
                 startActivity(i);
             }
         });
-        targetImage[5].setOnClickListener(new View.OnClickListener()
-        {
+        targetImage[5].setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v)
-            {
-                Intent i = new Intent(getApplicationContext(),PhotoViewActivity.class);
+            public void onClick(View v) {
+                Intent i = new Intent(getApplicationContext(), PhotoViewActivity.class);
                 i.setData(path[5]);
                 startActivity(i);
             }
         });
 
-        deleteButton.setOnClickListener(new View.OnClickListener()
-        {
+        deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v)
-            {
+            public void onClick(View v) {
                 try {
                     InputStream is = getContentResolver().openInputStream(path[0]);
                     BufferedInputStream bis = new BufferedInputStream(is);
@@ -144,21 +129,32 @@ public class MainActivity extends AppCompatActivity {
                             System.out.println(tag);
                         }
                     }
+                } catch (ImageProcessingException e) {
+                    System.out.println("ERROR");
+                } catch (IOException e) {
+                    System.out.println("error");
                 }
-                catch (ImageProcessingException e){System.out.println("ERROR");}
-                catch (IOException e) {System.out.println("error");}
             }
         });
 
+        btmetadata.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent  = new Intent(getApplicationContext(),MetadataActivity.class);
+                startActivity(intent);
+
+            }
+        });
 
     }
+
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (resultCode == RESULT_OK){
+        if (resultCode == RESULT_OK) {
             Uri targetUri = data.getData();
 
-            path[numberPhotos] =targetUri;
+            path[numberPhotos] = targetUri;
             Bitmap bitmap;
 
             try {
@@ -171,13 +167,13 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
-    public void setBackgroundColor()
-    {
+
+    public void setBackgroundColor() {
         targetImage[numberPhotos].setBackgroundColor(Color.WHITE);
     }
 
 
-    public void toast(String message){
+    public void toast(String message) {
         Context context = getApplicationContext();
 
         int duration = Toast.LENGTH_SHORT;
