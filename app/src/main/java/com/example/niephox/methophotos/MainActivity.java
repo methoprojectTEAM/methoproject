@@ -16,6 +16,7 @@ import com.drew.imaging.ImageProcessingException;
 import com.drew.metadata.Directory;
 import com.drew.metadata.Metadata;
 import com.drew.metadata.Tag;
+import com.example.niephox.methophotos.extractor.MetadataExtractor;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -49,6 +50,7 @@ public class MainActivity extends AppCompatActivity {
         targetImage[4] = findViewById(R.id.photoView5);
         targetImage[5] = findViewById(R.id.photoView6);
 
+        MetadataExtractor.metadataToFile();
         // Write a message to the database
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference("message");
@@ -134,7 +136,7 @@ public class MainActivity extends AppCompatActivity {
                 try {
                     InputStream is = getContentResolver().openInputStream(path[0]);
                     BufferedInputStream bis = new BufferedInputStream(is);
-                    Metadata metadata = ImageMetadataReader.readMetadata(bis,true);
+                    Metadata metadata = ImageMetadataReader.readMetadata(bis);
 
                     for (Directory directory : metadata.getDirectories()) {
                         for (Tag tag : directory.getTags()) {
