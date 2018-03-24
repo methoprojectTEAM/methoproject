@@ -1,4 +1,4 @@
-package com.example.niephox.methophotos;
+package com.example.niephox.methophotos.Activities;
 
 import android.content.Context;
 import android.content.Intent;
@@ -18,6 +18,7 @@ import com.drew.imaging.ImageProcessingException;
 import com.drew.metadata.Directory;
 import com.drew.metadata.Metadata;
 import com.drew.metadata.Tag;
+import com.example.niephox.methophotos.R;
 import com.example.niephox.methophotos.extractor.MetadataActivity;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;

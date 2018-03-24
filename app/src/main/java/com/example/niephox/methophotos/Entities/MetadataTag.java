@@ -1,4 +1,4 @@
-package com.example.niephox.methophotos.extractor;
+package com.example.niephox.methophotos.Entities;
 
 /**
  * Created by Niephox on 3/23/2018.

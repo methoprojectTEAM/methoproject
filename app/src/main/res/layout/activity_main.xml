@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.niephox.methophotos.MainActivity">
+    tools:context="com.example.niephox.methophotos.Activities.MainActivity">
 
     <ImageView
         android:id="@+id/photoView3"
@@ -111,8 +111,9 @@
         android:id="@+id/btMetadata"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="128dp"
         android:text="Metadata"
-        tools:layout_editor_absoluteX="134dp"
-        tools:layout_editor_absoluteY="595dp" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </android.support.constraint.ConstraintLayout>
