@@ -1,0 +1,63 @@
+{
+  "project_info": {
+    "project_number": "270222407312",
+    "firebase_url": "https://methopro.firebaseio.com",
+    "project_id": "methopro",
+    "storage_bucket": "methopro.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:270222407312:android:1db15d4092f181f2",
+        "android_client_info": {
+          "package_name": "com.example.niephox.methophotos"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "270222407312-7vjq8bobmlitj75q80rlj7lklikt9sbo.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.niephox.methophotos",
+            "certificate_hash": "91aacb107a50c3e3e552d0621965e3e8d5fcbff6"
+          }
+        },
+        {
+          "client_id": "270222407312-tcau062t67o2eu70pmb0hhsh1ftu5vp5.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.niephox.methophotos",
+            "certificate_hash": "d5e2d28cfee8c87a9b9dfe5354fb0cc3704e28a9"
+          }
+        },
+        {
+          "client_id": "270222407312-e5rqcphr7knfobf5jnluse9ul9gf3703.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCxOM9kM3zRWMxjbiR-XQOEId_u1PRavZ0"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "270222407312-e5rqcphr7knfobf5jnluse9ul9gf3703.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
