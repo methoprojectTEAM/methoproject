@@ -7,26 +7,41 @@ import com.drew.metadata.Metadata;
  */
 
 public class Image {
-    public String storageURL;
+    public String storageLocationURL;
+    public String downloadUrl;
     public String name;
     public Album album;
     public Metadata metadata;
     public String description;
 
-    public Image(String storageURL, String name, Album album, Metadata metadata, String description) {
-        this.storageURL = storageURL;
+    public Image(String storageLocationURL, String downloadUrl, String name, Album album, Metadata metadata, String description) {
+        this.storageLocationURL = storageLocationURL;
+        this.downloadUrl = downloadUrl;
         this.name = name;
         this.album = album;
         this.metadata = metadata;
         this.description = description;
     }
 
-    public String getStorageURL() {
-        return storageURL;
+    public Image(String storageLocationURL, String downloadUrl, String description) {
+        this.storageLocationURL = storageLocationURL;
+        this.downloadUrl = downloadUrl;
+        this.description = description;
     }
 
-    public void setStorageURL(String storageURL) {
-        this.storageURL = storageURL;
+    public String getDownloadUrl() {
+        return downloadUrl;
+    }
+
+    public void setDownloadUrl(String downloadUrl) {
+        this.downloadUrl = downloadUrl;
+    }
+    public String getStorageLocationURL() {
+        return storageLocationURL;
+    }
+
+    public void setStorageLocationURL(String storageLocationURL) {
+        this.storageLocationURL = storageLocationURL;
     }
 
     public String getName() {

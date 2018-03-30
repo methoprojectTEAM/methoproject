@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import com.drew.imaging.ImageMetadataReader;
@@ -18,6 +19,8 @@ import com.drew.imaging.ImageProcessingException;
 import com.drew.metadata.Directory;
 import com.drew.metadata.Metadata;
 import com.drew.metadata.Tag;
+import com.example.niephox.methophotos.Controllers.CustomListViewAdapter;
+import com.example.niephox.methophotos.Entities.Image;
 import com.example.niephox.methophotos.R;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -27,6 +30,7 @@ import java.io.BufferedInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -46,12 +50,13 @@ public class MainActivity extends AppCompatActivity {
         Button deleteButton = (Button) findViewById(R.id.buttonDelete);
 
         Button btmetadata = findViewById(R.id.btMetadata);
-        targetImage[0] = findViewById(R.id.photoView1);
-        targetImage[1] = findViewById(R.id.photoView2);
-        targetImage[2] = findViewById(R.id.photoView3);
-        targetImage[3] = findViewById(R.id.photoView4);
-        targetImage[4] = findViewById(R.id.photoView5);
-        targetImage[5] = findViewById(R.id.photoView6);
+        ListView listView = findViewById(R.id.lvImages);
+
+        ArrayList<Image> imageSet = new ArrayList<>();
+        imageSet.add(new Image("https://firebasestorage.googleapis.com/v0/b/methopro.appspot.com/o/rainforest.jpg?alt=media&token=abf56b08-099a-473a-b8d9-f6da69b50c30","https://firebasestorage.googleapis.com/v0/b/methopro.appspot.com/o/rainforest.jpg?alt=media&token=abf56b08-099a-473a-b8d9-f6da69b50c30","Description "));
+        CustomListViewAdapter adapter = new CustomListViewAdapter(imageSet,getApplicationContext());
+        listView.setAdapter(adapter);
+
 
         // Write a message to the database
         FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -59,62 +64,6 @@ public class MainActivity extends AppCompatActivity {
 
         myRef.setValue("Hello, World!");
 
-        addPhotoButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                startActivityForResult(intent, 0);
-            }
-        });
-
-        targetImage[0].setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(getApplicationContext(), PhotoViewActivity.class);
-                i.setData(path[0]);
-                startActivity(i);
-            }
-        });
-        targetImage[1].setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(getApplicationContext(), PhotoViewActivity.class);
-                i.setData(path[1]);
-                startActivity(i);
-            }
-        });
-        targetImage[2].setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(getApplicationContext(), PhotoViewActivity.class);
-                i.setData(path[2]);
-                startActivity(i);
-            }
-        });
-        targetImage[3].setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(getApplicationContext(), PhotoViewActivity.class);
-                i.setData(path[3]);
-                startActivity(i);
-            }
-        });
-        targetImage[4].setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(getApplicationContext(), PhotoViewActivity.class);
-                i.setData(path[4]);
-                startActivity(i);
-            }
-        });
-        targetImage[5].setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(getApplicationContext(), PhotoViewActivity.class);
-                i.setData(path[5]);
-                startActivity(i);
-            }
-        });
 
         deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
