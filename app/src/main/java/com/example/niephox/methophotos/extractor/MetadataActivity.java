@@ -55,9 +55,6 @@ public class MetadataActivity extends AppCompatActivity {
         Iterable<JpegSegmentMetadataReader> readers = null;
 
         metadataList.add("will soon be filled");
-
-
-
         arrayAdapter = new ArrayAdapter<String>(
                 this,
                 android.R.layout.simple_list_item_1,
