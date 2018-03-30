@@ -18,7 +18,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".Activities.PhotoViewActivity" />
-        <activity android:name=".extractor.MetadataActivity">
+        <activity android:name=".Activities.MetadataActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -26,7 +26,7 @@
             </intent-filter>
         </activity>
 
-        <receiver android:name=".extractor.MetadataActivity" />
+        <receiver android:name=".Activities.MetadataActivity" />
     </application>
 
 </manifest>
