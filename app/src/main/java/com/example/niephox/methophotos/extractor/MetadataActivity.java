@@ -39,6 +39,12 @@ public class MetadataActivity extends AppCompatActivity {
 
     ImageView image;
     Button btExit;
+    TextView textVuew;
+
+    public Button getBtExit() {
+       return btExit;
+    }
+
     TextView textView;
     ListView lvMetadata;
     public static ArrayAdapter<String> arrayAdapter;
