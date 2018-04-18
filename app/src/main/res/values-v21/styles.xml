@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="PictureItTheme" parent="AppTheme">
+        <item name="android:colorBackground">@color/colorSecondary</item>
+        <item name="android:colorForeground">@color/colorSmooth</item>
+        <item name="android:textColorPrimary">@color/colorPrimary</item>
+        <item name="android:navigationBarColor">@color/colorPrimaryDark</item>
+        <item name="android:statusBarColor">@color/colorPrimaryDark</item>
+    </style>
+</resources>

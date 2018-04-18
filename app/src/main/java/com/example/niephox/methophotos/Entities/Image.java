@@ -1,6 +1,11 @@
 package com.example.niephox.methophotos.Entities;
 
+import android.net.Uri;
+
 import com.drew.metadata.Metadata;
+
+import java.net.URI;
+
 
 /**
  * Created by Niephox on 3/30/2018.
@@ -9,6 +14,7 @@ import com.drew.metadata.Metadata;
 public class Image {
     public String storageLocationURL;
     public String downloadUrl;
+    public Uri path;
     public String name;
     public Album album;
     public Metadata metadata;
@@ -22,11 +28,24 @@ public class Image {
         this.metadata = metadata;
         this.description = description;
     }
+    public Image(Uri path){
+        this.path = path;
+    }
+
+    public Image (){}
 
     public Image(String storageLocationURL, String downloadUrl, String description) {
         this.storageLocationURL = storageLocationURL;
         this.downloadUrl = downloadUrl;
         this.description = description;
+    }
+
+    public Uri getPath() {
+        return path;
+    }
+
+    public void setPath(Uri path) {
+        this.path = path;
     }
 
     public String getDownloadUrl() {

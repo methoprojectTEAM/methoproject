@@ -1,51 +1,70 @@
 package com.example.niephox.methophotos.Entities;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
+import java.util.ArrayList;
+
 /**
  * Created by Niephox on 3/30/2018.
  */
 
 public class User {
-    public String UID;
-    public String Username;
-    public String Password;
-    public String GalleryLink;
 
-    public User(String UID, String username, String password, String galleryLink) {
-        this.UID = UID;
-        Username = username;
-        Password = password;
-        GalleryLink = galleryLink;
+
+    public String userUID;
+    public String username;
+    public String password;
+    public ArrayList<Album> albums;
+
+
+    public ArrayList<Album> getAlbums() {
+        return albums;
     }
 
-    public String getUID() {
-        return UID;
+    public void setAlbums(ArrayList<Album> albums) {
+        this.albums = albums;
     }
 
-    public void setUID(String UID) {
-        this.UID = UID;
+
+    public String getUserUID() {
+        return userUID;
+    }
+
+    public void setUserUID(String userUID) {
+        this.userUID = userUID;
     }
 
     public String getUsername() {
-        return Username;
+        return username;
     }
 
     public void setUsername(String username) {
-        Username = username;
+        this.username = username;
     }
 
     public String getPassword() {
-        return Password;
+        return password;
     }
 
     public void setPassword(String password) {
-        Password = password;
+        this.password = password;
     }
 
-    public String getGalleryLink() {
-        return GalleryLink;
+
+
+    public User(){}
+
+    public User(String userUID, String username, String password,ArrayList<Album> albums) {
+        this.userUID = userUID;
+        this.username = username;
+        this.password = password;
+        this.albums = albums;
     }
 
-    public void setGalleryLink(String galleryLink) {
-        GalleryLink = galleryLink;
+    public void userCreationOnDB(DatabaseReference DBRef , User user) {
+       DBRef.child("users").child(user.getUserUID()).setValue(user);
     }
 }
