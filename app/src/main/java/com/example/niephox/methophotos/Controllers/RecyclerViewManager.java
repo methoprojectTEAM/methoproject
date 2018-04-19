@@ -71,6 +71,7 @@ public class RecyclerViewManager  extends RecyclerView.Adapter<RecyclerViewManag
             case R.id.DeleteItem:
                 //TODO
                 Log.w("MenuItemclicked", "CLICKED  Delete" );
+
                 break;
             default:
                 break;

@@ -19,19 +19,21 @@ import java.util.ArrayList;
  */
 
 public class DatabaseController {
-    private DatabaseReference firebaseRef = FirebaseDatabase.getInstance().getReference("/users");
+    private DatabaseReference firebaseRef = FirebaseDatabase.getInstance().getReference();
+    private DatabaseReference firebaseUserRef = FirebaseDatabase.getInstance().getReference("/users");
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
     private ArrayList<Image> userImageDataset = new ArrayList<>();
     private ArrayList<Album> userAlbums = new ArrayList<>();
     private User currentUser;
 
     public DatabaseController() {
-        getCurrentUser();
+
+        //getCurrentUser();
     }
 
     public void getCurrentUser() {
         String currentUserUID = mAuth.getCurrentUser().getUid();
-        firebaseRef.child(currentUserUID).addListenerForSingleValueEvent(new ValueEventListener() {
+        firebaseUserRef.child(currentUserUID).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
@@ -54,20 +56,20 @@ public class DatabaseController {
         userImageDataset.clear();
         userAlbums.clear();
 
-        firebaseRef.child(userUID).child("albums").
+        firebaseUserRef.child(userUID).child("albums").
                 addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
-                        if (dataSnapshot.exists()){
-                        for (DataSnapshot child : dataSnapshot.getChildren()) {
-                            Album album = child.getValue(Album.class);
-                            userAlbums.add(album);
-                        }
-                        for (Album child : userAlbums) {
-                            userImageDataset.addAll(child.getImages());
-                        }}
-                        else {
-                            Log.w("DB","SnapShot Does not exist");
+                        if (dataSnapshot.exists()) {
+                            for (DataSnapshot child : dataSnapshot.getChildren()) {
+                                Album album = child.getValue(Album.class);
+                                userAlbums.add(album);
+                            }
+                            for (Album child : userAlbums) {
+                                userImageDataset.addAll(child.getImages());
+                            }
+                        } else {
+                            Log.w("DB", "SnapShot Does not exist");
                         }
                     }
 
@@ -78,4 +80,36 @@ public class DatabaseController {
                 });
 
     }
+
+    public void createUser(User user) {
+        firebaseUserRef.child(user.getUserUID()).setValue(user);
+    }
+
+    public void setUserDisplayNameDatabase() {
+        //TODO:: IMPLEMENT
+    }
+
+    public void changeUserEmailDatabase(String userUID, String newEmail) {
+        firebaseUserRef.child(userUID).child("email").setValue(newEmail);
+        //TODO:: IMPLEMENT Call
+    }
+
+    public void deleteUserDatabase(String UserUID) {
+        firebaseUserRef.child(UserUID).removeValue(new DatabaseReference.CompletionListener() {
+            @Override
+            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+            }
+        });
+        //TODO:: IMPLEMENT Call
+    }
+
+    public void deleteAlbumDatabase() {
+        //TODO:: IMPLEMENT
+    }
+
+    public void addAlbumDatabase() {
+        //TODO:: IMPLEMENT
+    }
+
+
 }
