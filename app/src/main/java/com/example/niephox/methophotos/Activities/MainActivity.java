@@ -128,7 +128,16 @@ public class MainActivity extends AppCompatActivity {
         // startActivity(intent);
 */
 
-       //THIS CLASS GETS THE IMAGES FROM DEVICE STORAGE, IT RETURNS A LIST OF IMAGE ENTITY OBJECTS
+
+
+
+
+
+        //ATTENTION
+
+
+
+    //THIS CLASS GETS THE IMAGES FROM DEVICE STORAGE, IT RETURNS A LIST OF IMAGE ENTITY OBJECTS
         public ArrayList<Image> fn_imagespath() {
             al_images.clear();
 
