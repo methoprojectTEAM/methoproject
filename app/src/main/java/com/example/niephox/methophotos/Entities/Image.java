@@ -5,6 +5,7 @@ import android.net.Uri;
 import com.drew.metadata.Metadata;
 
 import java.net.URI;
+import java.util.ArrayList;
 
 
 /**
@@ -19,7 +20,24 @@ public class Image {
     public Album album;
     public Metadata metadata;
     public String description;
+    //String str_folder;
+    ArrayList<String> al_imagepath;
 
+    /*public String getStr_folder() {
+        return str_folder;
+    }
+
+    public void setStr_folder(String str_folder) {
+        this.str_folder = str_folder;
+    }*/
+
+    public ArrayList<String> getAl_imagepath() {
+        return al_imagepath;
+    }
+
+    public void setAl_imagepath(ArrayList<String> al_imagepath) {
+        this.al_imagepath = al_imagepath;
+    }
     public Image(String storageLocationURL, String downloadUrl, String name, Album album, Metadata metadata, String description) {
         this.storageLocationURL = storageLocationURL;
         this.downloadUrl = downloadUrl;
