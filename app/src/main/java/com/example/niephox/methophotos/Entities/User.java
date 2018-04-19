@@ -16,9 +16,18 @@ public class User {
 
     public String userUID;
     public String username;
-    public String password;
     public ArrayList<Album> albums;
 
+
+    public User() {
+    }
+
+    public User(String userUID, String username, ArrayList<Album> albums) {
+        this.userUID = userUID;
+        this.username = username;
+
+        this.albums = albums;
+    }
 
     public ArrayList<Album> getAlbums() {
         return albums;
@@ -45,26 +54,5 @@ public class User {
         this.username = username;
     }
 
-    public String getPassword() {
-        return password;
-    }
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-
-
-    public User(){}
-
-    public User(String userUID, String username, String password,ArrayList<Album> albums) {
-        this.userUID = userUID;
-        this.username = username;
-        this.password = password;
-        this.albums = albums;
-    }
-
-    public void userCreationOnDB(DatabaseReference DBRef , User user) {
-       DBRef.child("users").child(user.getUserUID()).setValue(user);
-    }
 }

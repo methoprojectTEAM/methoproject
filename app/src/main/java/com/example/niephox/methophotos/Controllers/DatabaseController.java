@@ -60,16 +60,16 @@ public class DatabaseController {
                 addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
-                        if (dataSnapshot.exists()){
-                        for (DataSnapshot child : dataSnapshot.getChildren()) {
-                            Album album = child.getValue(Album.class);
-                            userAlbums.add(album);
-                        }
-                        for (Album child : userAlbums) {
-                            userImageDataset.addAll(child.getImages());
-                        }}
-                        else {
-                            Log.w("DB","SnapShot Does not exist");
+                        if (dataSnapshot.exists()) {
+                            for (DataSnapshot child : dataSnapshot.getChildren()) {
+                                Album album = child.getValue(Album.class);
+                                userAlbums.add(album);
+                            }
+                            for (Album child : userAlbums) {
+                                userImageDataset.addAll(child.getImages());
+                            }
+                        } else {
+                            Log.w("DB", "SnapShot Does not exist");
                         }
                     }
 
@@ -81,20 +81,20 @@ public class DatabaseController {
 
     }
 
-    public void createUser( User user) {
+    public void createUser(User user) {
         firebaseUserRef.child(user.getUserUID()).setValue(user);
     }
 
-    public void setUserDisplayNameDatabase(){
+    public void setUserDisplayNameDatabase() {
         //TODO:: IMPLEMENT
     }
 
-    public void  changeUserEmailDatabase(String userUID , String newEmail){
+    public void changeUserEmailDatabase(String userUID, String newEmail) {
         firebaseUserRef.child(userUID).child("email").setValue(newEmail);
         //TODO:: IMPLEMENT Call
     }
 
-    public void deleteUserDatabase(String UserUID){
+    public void deleteUserDatabase(String UserUID) {
         firebaseUserRef.child(UserUID).removeValue(new DatabaseReference.CompletionListener() {
             @Override
             public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
@@ -103,11 +103,11 @@ public class DatabaseController {
         //TODO:: IMPLEMENT Call
     }
 
-    public void deleteAlbumDatabase(){
+    public void deleteAlbumDatabase() {
         //TODO:: IMPLEMENT
     }
 
-    public void addAlbumDatabase(){
+    public void addAlbumDatabase() {
         //TODO:: IMPLEMENT
     }
 

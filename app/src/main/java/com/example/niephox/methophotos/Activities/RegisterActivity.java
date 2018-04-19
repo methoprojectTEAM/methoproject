@@ -140,7 +140,7 @@ public class RegisterActivity extends AppCompatActivity {
         Album album = new Album("Null",initDate,"NullDescr",phUserImages);
         ArrayList<Album> userAlbums = new ArrayList<Album>();
         userAlbums.add(album);
-        User DBuser = new User(user.getUid(),user.getEmail(),mPasswordView.getText().toString(),userAlbums);
+        User DBuser = new User(user.getUid(),user.getEmail(),userAlbums);
         DatabaseReference mDB = FirebaseDatabase.getInstance().getReference();
         DatabaseController mDBController = new DatabaseController();
         mDBController.createUser(DBuser);
