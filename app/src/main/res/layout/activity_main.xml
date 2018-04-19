@@ -4,116 +4,56 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/colorPrimary"
     tools:context="com.example.niephox.methophotos.Activities.MainActivity">
 
-    <ImageView
-        android:id="@+id/photoView3"
-        android:layout_width="170dp"
-        android:layout_height="165dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="175dp"
-        android:background="@android:color/transparent"
-        android:clickable="true"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@android:color/transparent" />
-
-    <Button
-        android:id="@+id/button"
-        android:layout_width="55dp"
-        android:layout_height="51dp"
-        android:layout_marginBottom="72dp"
-        android:layout_marginLeft="104dp"
-        android:layout_marginStart="348dp"
-        android:background="@android:drawable/ic_menu_camera"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <Button
-        android:id="@+id/buttonDelete"
+    <TextView
+        android:id="@+id/LocalTV"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="256dp"
-        android:text="Delete"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent" />
-
-    <Button
-        android:id="@+id/addButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="16dp"
-        android:text="Add"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent" />
-
-    <ImageView
-        android:id="@+id/photoView6"
-        android:layout_width="170dp"
-        android:layout_height="165dp"
+        android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginTop="342dp"
-        android:background="@android:color/transparent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <ImageView
-        android:id="@+id/photoView4"
-        android:layout_width="170dp"
-        android:layout_height="165dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginTop="175dp"
-        android:background="@android:color/transparent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <ImageView
-        android:id="@+id/photoView2"
-        android:layout_width="170dp"
-        android:layout_height="165dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginTop="8dp"
-        android:background="@android:color/transparent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <ImageView
-        android:id="@+id/photoView1"
-        android:layout_width="170dp"
-        android:layout_height="165dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:background="@android:color/transparent"
-        android:clickable="true"
+        android:fontFamily="@font/shadowsintolight"
+        android:text="Local Photos"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toTopOf="@+id/LocalRec"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.027"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@android:color/transparent" />
+        app:layout_constraintTop_toBottomOf="@+id/OnlineRec"
+        app:layout_constraintVertical_bias="0.111" />
 
-    <ImageView
-        android:id="@+id/photoView5"
-        android:layout_width="170dp"
-        android:layout_height="165dp"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/OnlineRec"
+        android:layout_width="395dp"
+        android:layout_height="301dp"
+        android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="342dp"
-        android:background="@android:color/transparent"
-        android:clickable="true"
+        android:layout_marginTop="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@android:color/transparent" />
+        app:layout_constraintTop_toTopOf="parent">
 
-    <Button
-        android:id="@+id/btMetadata"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="128dp"
-        android:text="Metadata"
+    </android.support.v7.widget.RecyclerView>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/LocalRec"
+        android:layout_width="395dp"
+        android:layout_height="289dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="24dp"
+        android:foregroundGravity="center"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/OnlineRec"
+        app:layout_constraintVertical_bias="1.0">
+
+    </android.support.v7.widget.RecyclerView>
 
 </android.support.constraint.ConstraintLayout>

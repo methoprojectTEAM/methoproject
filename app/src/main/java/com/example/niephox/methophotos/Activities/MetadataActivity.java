@@ -1,4 +1,4 @@
-package com.example.niephox.methophotos.extractor;
+package com.example.niephox.methophotos.Activities;
 
 import android.app.Activity;
 import android.content.Context;
@@ -61,17 +61,12 @@ public class MetadataActivity extends AppCompatActivity {
         Iterable<JpegSegmentMetadataReader> readers = null;
 
         metadataList.add("will soon be filled");
-
-
-
         arrayAdapter = new ArrayAdapter<String>(
                 this,
                 android.R.layout.simple_list_item_1,
                 metadataList);
         lvMetadata.setAdapter(arrayAdapter);
         DownloadFileAndExtractMetadata("rainforest.jpg", readers, this);
-
-
     }
 
 

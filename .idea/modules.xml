@@ -2,10 +2,10 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/PictureItApp.iml" filepath="$PROJECT_DIR$/PictureItApp.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://C:/Users/Niephox/AndroidStudioProjects/methoproject2/methoproject.iml" filepath="C:/Users/Niephox/AndroidStudioProjects/methoproject2/methoproject.iml" />
-      <module fileurl="file://$PROJECT_DIR$/methoproject2.iml" filepath="$PROJECT_DIR$/methoproject2.iml" />
+      <module fileurl="file://C:\Users\Niephox\AndroidStudioProjects\methoproject2\methoproject.iml" filepath="C:\Users\Niephox\AndroidStudioProjects\methoproject2\methoproject.iml" />
+      <module fileurl="file://C:\Users\Niephox\AndroidStudioProjects\methoprojectREP\methoproject2.iml" filepath="C:\Users\Niephox\AndroidStudioProjects\methoprojectREP\methoproject2.iml" />
+      <module fileurl="file://$PROJECT_DIR$/methoprojectREP.iml" filepath="$PROJECT_DIR$/methoprojectREP.iml" />
     </modules>
   </component>
 </project>
