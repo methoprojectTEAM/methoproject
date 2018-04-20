@@ -6,56 +6,41 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.net.Uri;
-import android.provider.ContactsContract;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.GridView;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.drew.imaging.ImageMetadataReader;
-import com.drew.imaging.ImageProcessingException;
-import com.drew.metadata.Directory;
-import com.drew.metadata.Metadata;
-import com.drew.metadata.Tag;
+import com.drew.imaging.jpeg.JpegSegmentMetadataReader;
 import com.example.niephox.methophotos.Controllers.CustomListViewAdapter;
 import com.example.niephox.methophotos.Controllers.DatabaseController;
+import com.example.niephox.methophotos.Controllers.MetadataController;
 import com.example.niephox.methophotos.Controllers.PhotosFolderAdapter;
-import com.example.niephox.methophotos.Controllers.RecyclerViewManager;
+import com.example.niephox.methophotos.Controllers.StorageController;
 import com.example.niephox.methophotos.Entities.Image;
 import com.example.niephox.methophotos.Firebase.FirebaseAsync;
 
+import com.example.niephox.methophotos.Interfaces.RefreshView;
 import com.example.niephox.methophotos.R;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-import java.io.BufferedInputStream;
-
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.File;
 import java.util.ArrayList;
-import java.util.zip.Inflater;
 
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements RefreshView {
 
     ArrayList<Image> imageSet = new ArrayList<>();
     ArrayList<Image> imageSetLocal = new ArrayList<>();
@@ -70,6 +55,10 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        Iterable<JpegSegmentMetadataReader> readers = null;
+        StorageController.DownloadFileAndExtractMetadata("https://firebasestorage.googleapis.com/v0/b/methopro.appspot.com/o/luca-bravo-500474-unsplash.jpg?alt=media&token=ebbcfb4f-0a95-4dcd-80b4-2b11f0259414",readers);
+
 
 
         DatabaseReference mdbref = FirebaseDatabase.getInstance().getReference("/users");
@@ -290,6 +279,11 @@ public class MainActivity extends AppCompatActivity {
 
         Toast toast = Toast.makeText(context, message, duration);
         toast.show();
+    }
+
+    @Override
+    public void UpdateUI() {
+
     }
 }
 
