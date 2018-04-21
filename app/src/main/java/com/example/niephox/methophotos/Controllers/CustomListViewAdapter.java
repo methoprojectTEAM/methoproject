@@ -6,8 +6,10 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -20,9 +22,10 @@ import java.util.ArrayList;
  * Created by Niephox on 3/30/2018.
  */
 
-public class CustomListViewAdapter extends ArrayAdapter<Image> implements View.OnClickListener {
+public class CustomListViewAdapter extends ArrayAdapter<Image>  {
     private ArrayList<Image> imagesSet;
     Context mContext;
+
 
 
 
@@ -40,10 +43,7 @@ public class CustomListViewAdapter extends ArrayAdapter<Image> implements View.O
    }
 
 
-    @Override
-    public void onClick(View v) {
 
-    }
 
     @NonNull
     @Override
@@ -67,7 +67,12 @@ public class CustomListViewAdapter extends ArrayAdapter<Image> implements View.O
            result = convertView;
        }
         viewHolder.tvDescription.setText(image.getDescription());
-        Glide.with(mContext).load(image.getDownloadUrl()).into(viewHolder.imageView);
+       if (image.getPath()== null){
+        Glide.with(mContext).load(image.getDownloadUrl()).into(viewHolder.imageView);}
+        else{
+        Glide.with(mContext).load(image.getPath()).into(viewHolder.imageView);}
+
         return convertView;
     }
+
 }

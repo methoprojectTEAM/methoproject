@@ -9,14 +9,17 @@ import java.util.Date;
 
 public class Album {
     public String name;
-    public Date  date;
-    public String Description;
+    public Date date;
+    public String description;
     public ArrayList<Image> images;
+
+    public Album() {
+    }
 
     public Album(String name, Date date, String description, ArrayList<Image> images) {
         this.name = name;
         this.date = date;
-        Description = description;
+        this.description = description;
         this.images = images;
     }
 
@@ -38,11 +41,11 @@ public class Album {
     }
 
     public String getDescription() {
-        return Description;
+        return description;
     }
 
     public void setDescription(String description) {
-        Description = description;
+        this.description = description;
     }
 
     public ArrayList<Image> getImages() {
@@ -53,3 +56,5 @@ public class Album {
         this.images = images;
     }
 }
+
+

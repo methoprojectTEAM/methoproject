@@ -1,3 +1,6 @@
+[![Waffle.io - Columns and their card count](https://badge.waffle.io/methoprojectTEAM/methoproject.svg?columns=all)](https://waffle.io/methoprojectTEAM/methoproject)
+
+
 This is a project assignment within the course Programming Methodology in Java.
 
 We are a team of four undergraduate students in the field of informatics engineering and computer science. Our team is developing an android application that provides photo album management tools and picture Metadata extraction capabalities.

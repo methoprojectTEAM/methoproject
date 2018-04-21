@@ -1,6 +1,12 @@
 package com.example.niephox.methophotos.Entities;
 
+import android.net.Uri;
+
 import com.drew.metadata.Metadata;
+
+import java.net.URI;
+import java.util.ArrayList;
+
 
 /**
  * Created by Niephox on 3/30/2018.
@@ -9,24 +15,57 @@ import com.drew.metadata.Metadata;
 public class Image {
     public String storageLocationURL;
     public String downloadUrl;
+    public Uri path;
     public String name;
-    public Album album;
+    //A picture can be part of many albums so we need to have a list of Album entities??
+    public ArrayList<Album> album;
+    //public Album album;
     public Metadata metadata;
     public String description;
+    //String str_folder;
+    ArrayList<String> al_imagepath;
 
+    /*public String getStr_folder() {
+        return str_folder;
+    }
+
+    public void setStr_folder(String str_folder) {
+        this.str_folder = str_folder;
+    }*/
+
+    public ArrayList<String> getAl_imagepath() {
+        return al_imagepath;
+    }
+
+    public void setAl_imagepath(ArrayList<String> al_imagepath) {
+        this.al_imagepath = al_imagepath;
+    }
     public Image(String storageLocationURL, String downloadUrl, String name, Album album, Metadata metadata, String description) {
         this.storageLocationURL = storageLocationURL;
         this.downloadUrl = downloadUrl;
         this.name = name;
-        this.album = album;
+        this.album.add(album);
         this.metadata = metadata;
         this.description = description;
     }
+    public Image(Uri path){
+        this.path = path;
+    }
+
+    public Image (){}
 
     public Image(String storageLocationURL, String downloadUrl, String description) {
         this.storageLocationURL = storageLocationURL;
         this.downloadUrl = downloadUrl;
         this.description = description;
+    }
+
+    public Uri getPath() {
+        return path;
+    }
+
+    public void setPath(Uri path) {
+        this.path = path;
     }
 
     public String getDownloadUrl() {
