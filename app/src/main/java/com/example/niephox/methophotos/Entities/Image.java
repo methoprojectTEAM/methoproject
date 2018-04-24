@@ -91,12 +91,12 @@ public class Image {
         this.name = name;
     }
 
-    public Album getAlbum() {
-        return album;
+    public Album getAlbum(int index) {
+        return album.get(index);
     }
 
     public void setAlbum(Album album) {
-        this.album = album;
+        this.album.add(album);
     }
 
     public Metadata getMetadata() {
