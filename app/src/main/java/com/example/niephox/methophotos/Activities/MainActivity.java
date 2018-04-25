@@ -37,6 +37,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.io.File;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 
@@ -64,6 +65,8 @@ public class MainActivity extends AppCompatActivity implements RefreshView {
         DatabaseReference mdbref = FirebaseDatabase.getInstance().getReference("/users");
         //mdbref.child()
         DatabaseController mDBController = new DatabaseController();
+        StorageController controller = new StorageController();
+        controller.registerCallback(this);
 
         gv_folder = (GridView)findViewById(R.id.gv_folder);
 
@@ -283,7 +286,7 @@ public class MainActivity extends AppCompatActivity implements RefreshView {
 
     @Override
     public void UpdateUI() {
-
+        ArrayList<String> stuff = MetadataController.metadataList;
     }
 }
 
