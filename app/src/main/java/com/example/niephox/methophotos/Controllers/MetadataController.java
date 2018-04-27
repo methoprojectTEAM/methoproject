@@ -120,7 +120,7 @@ public class MetadataController implements iAsyncCallback {
             }
         }
         filteredList.addAll(metadataList);
-        iAsyncCallback.RefreshView();
+        iAsyncCallback.RefreshView(3);
     }
 
     public void print(Exception exception) {
@@ -133,14 +133,16 @@ public class MetadataController implements iAsyncCallback {
     }
 
     @Override
-    public void RefreshView() {
+    public void RefreshView(int RequestCode) {
 
     }
 
     @Override
-    public void RetrieveData() {
+    public void RetrieveData(int RequestCode) {
+        if (RequestCode == 1){
         File = StorageController.StorageFile;
         DataExtractionFromFile();
+        }
     }
 
     public void ReaderAlertDialog(Context context) {
@@ -212,7 +214,7 @@ public class MetadataController implements iAsyncCallback {
         filteredList.addAll(metadataList);
 
         if (tagsFiltered.contains("All")) {
-            iAsyncCallback.RefreshView();
+            iAsyncCallback.RefreshView(3);
         } else {
             boolean removalFlag = false;
             for (int i = filteredList.size() - 1; i >= 0; i--) {
@@ -228,7 +230,7 @@ public class MetadataController implements iAsyncCallback {
                     filteredList.remove(i);
                 }
             }
-            iAsyncCallback.RefreshView();
+            iAsyncCallback.RefreshView(3);
         }
     }
 }

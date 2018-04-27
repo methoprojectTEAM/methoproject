@@ -2,7 +2,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/ViewItem"
-        android:title="View"></item>
+        android:title="UploadToCloud"></item>
     <item
         android:id="@+id/ShowMDItem"
         android:title="Show Metadata"></item>

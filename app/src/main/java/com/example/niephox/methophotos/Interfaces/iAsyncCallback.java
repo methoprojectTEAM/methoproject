@@ -5,6 +5,9 @@ package com.example.niephox.methophotos.Interfaces;
  */
 
 public interface iAsyncCallback {
-    void RefreshView();
-    void RetrieveData();
+    // REQUEST CODE STORAGE = 1
+    // REQUEST CODE DATABASE = 2
+    // METADATA = 3
+    void RefreshView(int RequestCode);
+    void RetrieveData(int RequestCode);
 }

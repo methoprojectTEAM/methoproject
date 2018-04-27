@@ -20,7 +20,7 @@ import com.drew.imaging.jpeg.JpegSegmentMetadataReader;
 import com.drew.metadata.exif.ExifReader;
 import com.drew.metadata.iptc.IptcReader;
 import com.example.niephox.methophotos.Controllers.MetadataController;
-import com.example.niephox.methophotos.Controllers.StorageController;
+
 import com.example.niephox.methophotos.Entities.Image;
 import com.example.niephox.methophotos.Interfaces.iAsyncCallback;
 import com.example.niephox.methophotos.R;
@@ -28,10 +28,10 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 
-import org.w3c.dom.Text;
+
 
 import java.util.ArrayList;
-import java.util.Arrays;
+
 
 
 public class MetadataActivity extends AppCompatActivity implements iAsyncCallback, View.OnClickListener {
@@ -116,15 +116,16 @@ public class MetadataActivity extends AppCompatActivity implements iAsyncCallbac
     }
 
     @Override
-    public void RefreshView() {
+    public void RefreshView(int RequestCode) {
+        if(RequestCode == 3 ){
         metadataList.clear();
         metadataList.addAll(MetadataController.filteredList);
         toast(" " + metadataList.size());
-        arrayAdapter.notifyDataSetChanged();
+        arrayAdapter.notifyDataSetChanged();}
     }
 
     @Override
-    public void RetrieveData() {
+    public void RetrieveData(int RequestCode) {
 
     }
 

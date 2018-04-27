@@ -5,6 +5,7 @@ import android.util.Log;
 import com.example.niephox.methophotos.Entities.Album;
 import com.example.niephox.methophotos.Entities.Image;
 import com.example.niephox.methophotos.Entities.User;
+import com.example.niephox.methophotos.Interfaces.iAsyncCallback;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -23,8 +24,9 @@ public class DatabaseController {
     private DatabaseReference firebaseUserRef = FirebaseDatabase.getInstance().getReference("/users");
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
     private ArrayList<Image> userImageDataset = new ArrayList<>();
-    private ArrayList<Album> userAlbums = new ArrayList<>();
-    private User currentUser;
+    public ArrayList<Album> userAlbums = new ArrayList<>();
+    public  User currentUser;
+    public static iAsyncCallback iAsyncCallback;
 
     public DatabaseController() {
 
@@ -38,47 +40,16 @@ public class DatabaseController {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
                     currentUser = dataSnapshot.getValue(User.class);
-                    getUserImages(currentUser.getUserUID());
+                    iAsyncCallback.RetrieveData(2);
                 } else {
                     Log.w("User", "User Doesnt exist in Database");
                 }
             }
-
             @Override
             public void onCancelled(DatabaseError databaseError) {
 
             }
         });
-
-    }
-
-    public void getUserImages(String userUID) {
-        userImageDataset.clear();
-        userAlbums.clear();
-
-        firebaseUserRef.child(userUID).child("albums").
-                addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        if (dataSnapshot.exists()) {
-                            for (DataSnapshot child : dataSnapshot.getChildren()) {
-                                Album album = child.getValue(Album.class);
-                                userAlbums.add(album);
-                            }
-                            for (Album child : userAlbums) {
-                                userImageDataset.addAll(child.getImages());
-                            }
-                        } else {
-                            Log.w("DB", "SnapShot Does not exist");
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-                        Log.w("DBCANCEL", "didnt Get ALbums");
-                    }
-                });
-
     }
 
     public void createUser(User user) {
@@ -111,5 +82,37 @@ public class DatabaseController {
         //TODO:: IMPLEMENT
     }
 
+    public void addAlbumDatabase(User user, Album album) {
+        firebaseUserRef.child(user.getUserUID()).child("albums").child(album.name).setValue(album.name);
+        firebaseUserRef.child(user.getUserUID()).child("albums").child(album.name).setValue(album);
+    }
+
+    public void getUserAlbums(String userUID) {
+        userImageDataset.clear();
+        userAlbums.clear();
+        firebaseUserRef.child(userUID).child("albums").
+                addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        if (dataSnapshot.exists()) {
+                            for (DataSnapshot child : dataSnapshot.getChildren()) {
+                                Album album = child.getValue(Album.class);
+                                userAlbums.add(album);
+                            }
+                            iAsyncCallback.RefreshView(2);
+
+                        } else {
+                            Log.w("DB", "SnapShot Does not exist");
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        Log.w("DBCANCEL", "didnt Get ALbums");
+                    }
+                });
+    }
+
+    public void RegisterCallback(iAsyncCallback iAsyncCallback){this.iAsyncCallback = iAsyncCallback;}
 
 }
