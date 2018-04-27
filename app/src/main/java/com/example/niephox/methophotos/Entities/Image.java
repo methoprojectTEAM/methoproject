@@ -4,7 +4,6 @@ import android.net.Uri;
 
 import com.drew.metadata.Metadata;
 
-import java.net.URI;
 import java.util.ArrayList;
 
 
@@ -15,7 +14,7 @@ import java.util.ArrayList;
 public class Image {
     public String storageLocationURL;
     public String downloadUrl;
-    public Uri path;
+    public String imageURI;
     public String name;
     public Album album;
     public Metadata metadata;
@@ -46,8 +45,8 @@ public class Image {
         this.metadata = metadata;
         this.description = description;
     }
-    public Image(Uri path){
-        this.path = path;
+    public Image(String imageURI){
+        this.imageURI = imageURI;
     }
 
     public Image (){}
@@ -58,12 +57,12 @@ public class Image {
         this.description = description;
     }
 
-    public Uri getPath() {
-        return path;
+    public String  getImageURI() {
+        return imageURI;
     }
 
-    public void setPath(Uri path) {
-        this.path = path;
+    public void setImageURI(String imageURI) {
+        this.imageURI = imageURI;
     }
 
     public String getDownloadUrl() {

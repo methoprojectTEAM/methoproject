@@ -10,10 +10,9 @@ import com.drew.imaging.jpeg.JpegSegmentMetadataReader;
 import com.drew.metadata.Directory;
 import com.drew.metadata.Metadata;
 import com.drew.metadata.Tag;
+import com.example.niephox.methophotos.Entities.Image;
 import com.example.niephox.methophotos.Entities.MetadataTag;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.storage.FileDownloadTask;
-import com.google.firebase.storage.FirebaseStorage;
+import com.example.niephox.methophotos.Interfaces.iAsyncCallback;
 
 import java.io.File;
 import java.io.IOException;
@@ -23,20 +22,40 @@ import java.util.ArrayList;
  * Created by Niephox on 4/20/2018.
  */
 
-public class MetadataController   {
+public class MetadataController implements iAsyncCallback {
     public static ArrayList<String> metadataList = new ArrayList<>();
-    private static  OnSuccessListener<FileDownloadTask.TaskSnapshot> StorageListener;
+    private File File;
+    Iterable<JpegSegmentMetadataReader> readers;
+    StorageController storageController = new StorageController();
+    public static iAsyncCallback iAsyncCallback;
 
-    public static void ExtractMetadata(File file ,Iterable<JpegSegmentMetadataReader> readers){
-        if (readers == null){
-            ExtractMetadataFromUnknownFileType(file);
+    public void MetadataController() {
+        storageController.registerCallback(this);
+    }
+
+
+    public void ExtractMetadata(Image image, Iterable<JpegSegmentMetadataReader> readers) {
+       this.readers = readers;
+        if (image.getImageURI() == null) {
+            String DownloadURL = image.getDownloadUrl();
+            StorageController.DownloadFile(DownloadURL, readers);
+        } else {
+            File = new File(image.getImageURI());
+            DataExtractionFromFile();
         }
-        else{
-            ExtractSpecificMetadataType(file,readers);
+
+    }
+
+    private void DataExtractionFromFile() {
+        if (readers == null) {
+            ExtractMetadataFromUnknownFileType(File);
+        } else {
+            ExtractSpecificMetadataType(File, readers);
         }
     }
 
-    private static void ExtractMetadataFromUnknownFileType(File file) {
+
+    private void ExtractMetadataFromUnknownFileType(File file) {
 
         Metadata metadata = null;
         metadataList.clear();
@@ -48,11 +67,11 @@ public class MetadataController   {
         } catch (IOException e) {
             print(e);
         }
-        printMetadata(metadata);
+        //printMetadata(metadata);
     }
 
 
-    private static void ExtractSpecificMetadataType(File file, Iterable<JpegSegmentMetadataReader> readers) {
+    private void ExtractSpecificMetadataType(File file, Iterable<JpegSegmentMetadataReader> readers) {
         Metadata metadata = null;
         try {
             // SET READERS Iterable<JpegSegmentMetadataReader> readers = Arrays.asList(new ExifReader(), new IptcReader());
@@ -63,12 +82,12 @@ public class MetadataController   {
         } catch (IOException e) {
             print(e);
         }
-        printMetadata(metadata);
+
     }
 
 
-    private static void printMetadata(Metadata metadata) {
-
+    private void printMetadata(Metadata metadata) {
+        metadataList.clear();
         for (Directory directory : metadata.getDirectories()) {
             //
             // Each Directory stores values in Tag objects
@@ -86,20 +105,27 @@ public class MetadataController   {
                 metadataList.add(error);
             }
         }
-        for (int i = 0; i <  MetadataController.metadataList.size(); i++){
-            Log.e("METADATA",MetadataController.metadataList.get(i));
-        }
 
+        iAsyncCallback.RefreshView();
     }
 
-    public static void print(Exception exception) {
+    public void print(Exception exception) {
         System.err.println("EXCEPTION: " + exception);
     }
 
-    public ArrayList<String> getMetadataList() {
-        return metadataList;
+
+    public void RegisterCallback(iAsyncCallback iAsyncCallback) {
+        this.iAsyncCallback = iAsyncCallback;
     }
 
+    @Override
+    public void RefreshView() {
 
+    }
 
+    @Override
+    public void RetrieveData() {
+        File = StorageController.StorageFile;
+        DataExtractionFromFile();
+    }
 }
