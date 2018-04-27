@@ -1,8 +1,13 @@
 package com.example.niephox.methophotos.Controllers;
 
+import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.drew.imaging.jpeg.JpegSegmentMetadataReader;
+import com.example.niephox.methophotos.Activities.MainActivity;
+import com.example.niephox.methophotos.Activities.MetadataActivity;
+import com.example.niephox.methophotos.Interfaces.RefreshView;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.FileDownloadTask;
@@ -16,12 +21,15 @@ import java.io.IOException;
  * Created by Niephox on 4/18/2018.
  */
 
-public class StorageController {
+public class StorageController   {
     private static String STORAGE_TAG = "FIREBASE STORAGE";
     private static StorageReference storageReference = FirebaseStorage.getInstance().getReference();
+    private static FirebaseStorage storage = FirebaseStorage.getInstance();
+    public static File StorageFile;
+    public static RefreshView refreshView;
 
-    public static  void DownloadFile (String FileURL){
-        StorageReference FileReference = storageReference.child(FileURL);
+    public static void DownloadFileAndExtractMetadata(String FileURL , final Iterable<JpegSegmentMetadataReader> readers) {
+        StorageReference FileReference = storage.getReferenceFromUrl(FileURL);
 
         File tempFile = null;
 
@@ -31,17 +39,25 @@ public class StorageController {
             e.printStackTrace();
         }
 
+        final File finalTempFile = tempFile;
+
         FileReference.getFile(tempFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
-                Log.w(STORAGE_TAG,"File Successfully downloaded");
+                MetadataController.ExtractMetadata(finalTempFile,readers);
+                refreshView.UpdateUI();
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Log.w(STORAGE_TAG,"File download failure");
+
             }
         });
 
     }
+
+    public  void registerCallback(RefreshView refreshView){
+        this.refreshView = refreshView;
+    }
+
 }

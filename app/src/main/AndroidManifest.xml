@@ -30,7 +30,15 @@
         </activity>
         <activity android:name=".Activities.PhotosActivity"/>
         <activity android:name=".Activities.PhotoViewActivity" />
-        <activity android:name=".Activities.MetadataActivity" />
+        <activity
+            android:name=".Activities.MetadataActivity"
+            android:label="@string/title_activity_login">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".Activities.LoginActivity"
             android:label="@string/title_activity_login">
