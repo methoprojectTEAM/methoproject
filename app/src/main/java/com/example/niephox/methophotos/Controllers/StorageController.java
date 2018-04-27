@@ -1,13 +1,9 @@
 package com.example.niephox.methophotos.Controllers;
 
-import android.os.AsyncTask;
 import android.support.annotation.NonNull;
-import android.util.Log;
 
 import com.drew.imaging.jpeg.JpegSegmentMetadataReader;
-import com.example.niephox.methophotos.Activities.MainActivity;
-import com.example.niephox.methophotos.Activities.MetadataActivity;
-import com.example.niephox.methophotos.Interfaces.RefreshView;
+import com.example.niephox.methophotos.Interfaces.iAsyncCallback;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.FileDownloadTask;
@@ -26,9 +22,9 @@ public class StorageController   {
     private static StorageReference storageReference = FirebaseStorage.getInstance().getReference();
     private static FirebaseStorage storage = FirebaseStorage.getInstance();
     public static File StorageFile;
-    public static RefreshView refreshView;
+    public  static iAsyncCallback iAsyncCallback;
 
-    public static void DownloadFileAndExtractMetadata(String FileURL , final Iterable<JpegSegmentMetadataReader> readers) {
+    public static void DownloadFile(String FileURL , final Iterable<JpegSegmentMetadataReader> readers) {
         StorageReference FileReference = storage.getReferenceFromUrl(FileURL);
 
         File tempFile = null;
@@ -44,8 +40,9 @@ public class StorageController   {
         FileReference.getFile(tempFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
-                MetadataController.ExtractMetadata(finalTempFile,readers);
-                refreshView.UpdateUI();
+               // MetadataController.ExtractMetadata(finalTempFile,readers);
+                StorageFile = finalTempFile;
+                iAsyncCallback.RetrieveData();
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
@@ -56,8 +53,8 @@ public class StorageController   {
 
     }
 
-    public  void registerCallback(RefreshView refreshView){
-        this.refreshView = refreshView;
+    public void registerCallback(iAsyncCallback iAsyncCallback){
+        this.iAsyncCallback = iAsyncCallback;
     }
 
 }

@@ -6,11 +6,9 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
@@ -121,10 +119,10 @@ public class RecyclerViewManager  extends RecyclerView.Adapter<RecyclerViewManag
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
         holder.mTextView.setText(imageDataset.get(position).getDescription());
-        if (imageDataset.get(position).getPath()== null) {
+        if (imageDataset.get(position).getImageURI()== null) {
             Glide.with(context).load(imageDataset.get(position).getDownloadUrl()).into(holder.imageView);
         }else{
-            Glide.with(context).load(imageDataset.get(position).getPath()).into(holder.imageView);
+            Glide.with(context).load(imageDataset.get(position).getImageURI()).into(holder.imageView);
         }
     }
 

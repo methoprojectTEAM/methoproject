@@ -14,4 +14,21 @@
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
+    <string-array name="readers_list">
+        <item>All</item>
+        <item>Exif and Iptc (JPEG)</item>
+
+    </string-array>
+    <string-array name="tags_list">
+        <item>All</item>
+        <item>[File]</item>
+        <item>[JPEG]</item>
+        <item>[JFIF]</item>
+        <item>[Exif IFD0]</item>
+        <item>[Exif SubIFD]</item>
+        <item>[Exif Thumbnail]</item>
+        <item>[Huffman]</item>
+        <item>[File Type]</item>
+        <item>[GPS]</item>
+    </string-array>
 </resources>
