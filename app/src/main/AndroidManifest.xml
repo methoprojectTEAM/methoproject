@@ -26,7 +26,11 @@
         android:theme="@style/Theme.PictureItTheme.Light.NoActionBar">
         <activity android:name=".Activities.MainActivity"
             android:theme="@style/Theme.PictureItTheme.Light.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
         <activity android:name=".Activities.PhotosActivity"/>
         <activity android:name=".Activities.PhotoViewActivity" />

@@ -6,6 +6,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -27,18 +28,26 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 
 
-public class MetadataActivity extends AppCompatActivity implements iAsyncCallback {
+public class MetadataActivity extends AppCompatActivity implements iAsyncCallback, View.OnClickListener {
 
     ImageView ivImage;
     ListView lvMetadata;
+    TextView tvName;
+    TextView tvAlbumName;
+    TextView tvDate;
+    Button btTags;
+
+
     public static ArrayAdapter<String> arrayAdapter;
     private StorageReference storageRef = FirebaseStorage.getInstance().getReference();
     private ArrayList<String> metadataList = new ArrayList<String>();
-    private MetadataController metadataController = new MetadataController();
+    public MetadataController metadataController;
     private Image image;
     private String[] listitems;
 
@@ -46,20 +55,51 @@ public class MetadataActivity extends AppCompatActivity implements iAsyncCallbac
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_metadata);
+
+        InitialiseViews();
+        GetImage();
+        metadataController = new MetadataController(image);
+        metadataController.RegisterCallback(this);
+        SetViews();
+        metadataController.ReaderAlertDialog(this);
+
+    }
+
+    private void InitialiseViews() {
         lvMetadata = findViewById(R.id.lvMetadata);
         ivImage = findViewById(R.id.imgMetadata);
         listitems = getResources().getStringArray(R.array.readers_list);
-
-
-        AlertDialogOnStart();
-
+        tvAlbumName = findViewById(R.id.tvAlbumName);
+        tvName = findViewById(R.id.tvName);
+        tvDate = findViewById(R.id.tvDate);
+        btTags = findViewById(R.id.btTags);
         metadataList.add("will soon be filled");
         arrayAdapter = new ArrayAdapter<String>(
                 this,
                 android.R.layout.simple_list_item_1,
                 metadataList);
         lvMetadata.setAdapter(arrayAdapter);
-        metadataController.RegisterCallback(this);
+        btTags.setOnClickListener(this);
+    }
+
+    private void SetViews() {
+        ShowImage();
+        if (image.getName()!=null && image.getAlbum().getName() !=null)
+        {
+        tvName.setText(image.getName());
+        tvAlbumName.setText(image.getAlbum().getName());
+        }
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.btTags:
+                metadataController.TagAlertDialog(this);
+                break;
+            default:
+                break;
+        }
     }
 
     private void ShowImage() {
@@ -78,7 +118,7 @@ public class MetadataActivity extends AppCompatActivity implements iAsyncCallbac
     @Override
     public void RefreshView() {
         metadataList.clear();
-        metadataList.addAll(MetadataController.metadataList);
+        metadataList.addAll(MetadataController.filteredList);
         toast(" " + metadataList.size());
         arrayAdapter.notifyDataSetChanged();
     }
@@ -88,47 +128,15 @@ public class MetadataActivity extends AppCompatActivity implements iAsyncCallbac
 
     }
 
-    private void AlertDialogOnStart() {
 
-        AlertDialog.Builder mBuilder = new AlertDialog.Builder(this);
-        mBuilder.setTitle("Select Reader");
-        mBuilder.setSingleChoiceItems(listitems, -1, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                Iterable<JpegSegmentMetadataReader> readers;
-                toast(""+which);
-                switch (which) {
-                    case 0:
-                        readers = null;
-                        break;
-                    case 1:
-                        readers = Arrays.asList(new ExifReader(), new IptcReader());
-                        break;
-                    default:
-                        readers = null;
-                        break;
-                }
-
-                GetImage();
-                ShowImage();
-                metadataController.ExtractMetadata(image, readers);
-
-                dialog.dismiss();
-
-            }
-        });
-
-        AlertDialog mDialog = mBuilder.create();
-        mDialog.show();
-    }
     public void toast(String message) {
         Context context = getApplicationContext();
-
         int duration = Toast.LENGTH_SHORT;
-
         Toast toast = Toast.makeText(context, message, duration);
         toast.show();
     }
+
+
 }
 
 
