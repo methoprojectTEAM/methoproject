@@ -25,7 +25,6 @@ public class User {
     public User(String userUID, String username, ArrayList<Album> albums) {
         this.userUID = userUID;
         this.username = username;
-
         this.albums = albums;
     }
 

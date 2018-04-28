@@ -6,10 +6,8 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
-import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -67,10 +65,10 @@ public class CustomListViewAdapter extends ArrayAdapter<Image>  {
            result = convertView;
        }
         viewHolder.tvDescription.setText(image.getDescription());
-       if (image.getPath()== null){
+       if (image.getImageURI()== null){
         Glide.with(mContext).load(image.getDownloadUrl()).into(viewHolder.imageView);}
         else{
-        Glide.with(mContext).load(image.getPath()).into(viewHolder.imageView);}
+        Glide.with(mContext).load(image.getImageURI()).into(viewHolder.imageView);}
 
         return convertView;
     }

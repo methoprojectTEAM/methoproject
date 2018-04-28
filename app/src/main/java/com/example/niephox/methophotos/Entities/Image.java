@@ -4,7 +4,6 @@ import android.net.Uri;
 
 import com.drew.metadata.Metadata;
 
-import java.net.URI;
 import java.util.ArrayList;
 
 
@@ -15,11 +14,9 @@ import java.util.ArrayList;
 public class Image {
     public String storageLocationURL;
     public String downloadUrl;
-    public Uri path;
+    public String imageURI;
     public String name;
-    //A picture can be part of many albums so we need to have a list of Album entities??
-    public ArrayList<Album> album;
-    //public Album album;
+    public Album album;
     public Metadata metadata;
     public String description;
     //String str_folder;
@@ -44,12 +41,12 @@ public class Image {
         this.storageLocationURL = storageLocationURL;
         this.downloadUrl = downloadUrl;
         this.name = name;
-        this.album.add(album);
+        this.album = album;
         this.metadata = metadata;
         this.description = description;
     }
-    public Image(Uri path){
-        this.path = path;
+    public Image(String imageURI){
+        this.imageURI = imageURI;
     }
 
     public Image (){}
@@ -60,12 +57,12 @@ public class Image {
         this.description = description;
     }
 
-    public Uri getPath() {
-        return path;
+    public String  getImageURI() {
+        return imageURI;
     }
 
-    public void setPath(Uri path) {
-        this.path = path;
+    public void setImageURI(String imageURI) {
+        this.imageURI = imageURI;
     }
 
     public String getDownloadUrl() {
@@ -91,12 +88,12 @@ public class Image {
         this.name = name;
     }
 
-    public Album getAlbum(int index) {
-        return album.get(index);
+    public Album getAlbum() {
+        return album;
     }
 
     public void setAlbum(Album album) {
-        this.album.add(album);
+        this.album = album;
     }
 
     public Metadata getMetadata() {
