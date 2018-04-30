@@ -48,7 +48,7 @@ public class DatabaseController {
 
     public void getCurrentUser() {
         userAlbums.clear();
-        currentUser.albums.clear();
+        currentUser.albumsClear();
         mAuth = FirebaseAuth.getInstance();
         final String currentUserUID = mAuth.getCurrentUser().getUid();
         firebaseUserRef.child(currentUserUID).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -58,13 +58,13 @@ public class DatabaseController {
                   String userUID =dataSnapshot.child("userUID").getValue(String.class);
                   String username = dataSnapshot.child("username").getValue(String.class);
 //                  currentUser.albums.clear();
-                  currentUser.userUID=userUID;
-                  currentUser.username=username;
+                  currentUser.setUserUID(userUID);
+                  currentUser.setUsername(username);
                     for (DataSnapshot child : dataSnapshot.getChildren()) {
                         Album album = child.child("albums").getValue(Album.class);
                         userAlbums.add(album);
                     }
-                    currentUser.albums.addAll(userAlbums);
+                    currentUser.addAlbums(userAlbums);
                     iAsyncCallback.RetrieveData(2);
                 } else {
                     Log.w("User", "User Doesnt exist in Database");
@@ -108,8 +108,8 @@ public class DatabaseController {
     }
 
     public void addAlbumDatabase(User user, Album album) {
-        firebaseUserRef.child(user.getUserUID()).child("albums").child(album.name).setValue(album.name);
-        firebaseUserRef.child(user.getUserUID()).child("albums").child(album.name).setValue(album);
+        firebaseUserRef.child(user.getUserUID()).child("albums").child(album.getName()).setValue(album.getName());
+        firebaseUserRef.child(user.getUserUID()).child("albums").child(album.getName()).setValue(album);
     }
     public void addImagesToAlbum(User user, String album, Image image) {
         firebaseUserRef.child(user.getUserUID()).child("albums").child(album).child("images").setValue(image);
@@ -118,8 +118,8 @@ public class DatabaseController {
     public void getUserAlbums() {
         userImageDataset.clear();
         userAlbums.clear();
-        currentUser.albums.clear();
-        firebaseUserRef.child(currentUser.userUID).child("albums").
+        currentUser.albumsClear();
+        firebaseUserRef.child(currentUser.getUserUID()).child("albums").
                 addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
@@ -133,7 +133,7 @@ public class DatabaseController {
                                 Album album = new Album(name,date,desc,userImageDataset);
                                 userAlbums.add(album);
                             }
-                            currentUser.albums.addAll(userAlbums);
+                            currentUser.addAlbums(userAlbums);
                             iAsyncCallback.RefreshView(1);
                             Log.e("size", userAlbums.size()+"");
 

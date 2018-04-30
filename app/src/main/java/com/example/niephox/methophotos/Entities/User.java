@@ -14,9 +14,9 @@ import java.util.ArrayList;
 public class User {
 
 
-    public String userUID;
-    public String username;
-    public ArrayList<Album> albums;
+    private String userUID;
+    private String username;
+    private ArrayList<Album> albums;
 
 
     public User() {
@@ -52,6 +52,14 @@ public class User {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+    public void albumsClear()
+    {
+        this.albums.clear();
+    }
+    public void addAlbums(ArrayList<Album> albums)
+    {
+        this.albums.addAll(albums);
     }
 
 

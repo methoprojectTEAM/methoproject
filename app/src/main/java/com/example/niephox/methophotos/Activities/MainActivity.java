@@ -68,19 +68,14 @@ public class MainActivity extends AppCompatActivity implements iAsyncCallback {
         setContentView(R.layout.activity_main);
         gvAlbums = (GridView)findViewById(R.id.gv_folder);
         dbController = new DatabaseController();
-//        dbController.getCurrentUser();
 
         userUid= AuthenticationController.GetCurrentlySignedUser().getUid();
         registerForContextMenu(gvAlbums);
-
 
         albumsAdapter = new AlbumsGridViewAdapter(this,alAlbums);
         gvAlbums.setAdapter(albumsAdapter);
         dbController.RegisterCallback(this);
         GetLocalPhotos(this);
-//        dbController.getUserAlbums(userUid);
-        //storageController.GetLocalPhotos(this);
-
     }
 
     @Override
@@ -230,7 +225,7 @@ public class MainActivity extends AppCompatActivity implements iAsyncCallback {
                 break;
             case 2:
                 alAlbums.clear();
-                alAlbums.addAll(dbController.returnCurentUser().albums);
+                alAlbums.addAll(dbController.returnCurentUser().getAlbums());
                 albumsAdapter.notifyDataSetChanged();
                 break;
         }

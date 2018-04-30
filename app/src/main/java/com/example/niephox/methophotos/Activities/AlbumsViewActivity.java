@@ -63,9 +63,9 @@ public class AlbumsViewActivity extends AppCompatActivity implements iAsyncCallb
         gvAlbums.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(AlbumsViewActivity.this,"Album clicked:"+alAlbums.get(position).name,Toast.LENGTH_LONG).show();
+                Toast.makeText(AlbumsViewActivity.this,"Album clicked:"+alAlbums.get(position).getName(),Toast.LENGTH_LONG).show();
                 alImages.clear();
-                alImages.addAll(alAlbums.get(position).images);
+                alImages.addAll(alAlbums.get(position).getImages());
 
                 Intent intent =new Intent(AlbumsViewActivity.this,PhotosViewActivity.class);
                 intent.putExtra("alImages",alImages);
@@ -78,7 +78,7 @@ public class AlbumsViewActivity extends AppCompatActivity implements iAsyncCallb
     public void RefreshView(int RequestCode) {
         switch (RequestCode) {
             case 1:
-                alAlbums.addAll(curentUser.albums);
+                alAlbums.addAll(curentUser.getAlbums());
                 albumsAdapter.notifyDataSetChanged();
                 break;
             case 2:
