@@ -1,7 +1,6 @@
 package com.example.niephox.methophotos.Activities;
 
 import android.Manifest;
-import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -10,10 +9,8 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
-import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -22,17 +19,13 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.GridView;
-import android.widget.ListView;
 import android.widget.Toast;
-import android.widget.Toolbar;
 
-import com.drew.imaging.jpeg.JpegSegmentMetadataReader;
-import com.drew.metadata.Metadata;
+import com.example.niephox.methophotos.Controllers.AlbumController;
 import com.example.niephox.methophotos.Controllers.AlbumsGridViewAdapter;
-import com.example.niephox.methophotos.Controllers.CustomListViewAdapter;
 import com.example.niephox.methophotos.Controllers.DatabaseController;
-import com.example.niephox.methophotos.Controllers.MetadataController;
 import com.example.niephox.methophotos.Controllers.PhotosFolderAdapter;
 import com.example.niephox.methophotos.Controllers.StorageController;
 import com.example.niephox.methophotos.Entities.Album;
@@ -40,8 +33,6 @@ import com.example.niephox.methophotos.Entities.Image;
 import com.example.niephox.methophotos.Entities.User;
 import com.example.niephox.methophotos.Interfaces.iAsyncCallback;
 import com.example.niephox.methophotos.R;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -59,6 +50,16 @@ public class MainActivity extends AppCompatActivity implements iAsyncCallback {
     DatabaseController dbController;
     private User curentUser ;
     boolean boolean_folder;
+    //test code starts here
+    private ArrayList<Image> selectedImages = null;
+    private Image currentImage = new Image();
+    private ArrayList<Uri> selectedImageUri = new ArrayList<>();
+    private final static int REQUEST_PERMISSION_READ_EXTERNAL = 2;
+    private final static int REQUEST_PICTURES = 1; //final
+    private final static String TAG_BROWSE_PICTURE = "BROWSE_PICTURE";
+    private int currentDisplayedUserSelectImageIndex = 0;
+    private AlbumController albumCreateController; //CREATED BY ALEXANDER
+
     Album album;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,7 +68,7 @@ public class MainActivity extends AppCompatActivity implements iAsyncCallback {
         gvAlbums = (GridView)findViewById(R.id.gv_folder);
         dbController = new DatabaseController();
         dbController.getCurrentUser();
-
+        Button button2 = (Button) findViewById(R.id.button2); //CREATED BY ALEXANDER HAIL RUSSIA
         registerForContextMenu(gvAlbums);
 
         albumsAdapter = new AlbumsGridViewAdapter(this,alAlbums);
@@ -77,6 +78,23 @@ public class MainActivity extends AppCompatActivity implements iAsyncCallback {
         //storageController.GetLocalPhotos(this);
 
     }
+
+    /*
+    CREATED BY ALEXANDER
+     */
+    public void testAlbumCreate(View v) {
+
+        albumCreateController = new AlbumController("FAMILY",MainActivity.this);
+    }
+
+    //we cannot run onActivityResult to our AlbumController.class because its simply not an activity.
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        albumCreateController.onActivityResult(requestCode, resultCode, data);
+    }
+    /*
+    ENDS BY ALEXANDER
+     */
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], @NonNull int[] grantResults) {
@@ -97,6 +115,7 @@ public class MainActivity extends AppCompatActivity implements iAsyncCallback {
         }
 
     }
+
     public void GetLocalPhotos(Context context) {
         final int REQUEST_PERMISSIONS = 100;
         Activity activity = (Activity) context;
@@ -114,10 +133,12 @@ public class MainActivity extends AppCompatActivity implements iAsyncCallback {
             }
         } else {
             Log.e("Else", "Else");
-            fn_imagespath(context);
+            findImagesPath(context);
         }
     }
-    public void fn_imagespath(Context context) {
+    //CREATED BY ALEXANDER FOR IGOR
+    public void findImagesPath(Context context) {
+
 
 
         PhotosFolderAdapter obj_adapter;

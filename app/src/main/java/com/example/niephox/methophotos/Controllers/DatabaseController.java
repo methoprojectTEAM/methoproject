@@ -39,7 +39,7 @@ public class DatabaseController {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
-                    currentUser = dataSnapshot.getValue(User.class);
+                    //currentUser = dataSnapshot.getValue(User.class);
                     iAsyncCallback.RetrieveData(2);
                 } else {
                     Log.w("User", "User Doesnt exist in Database");
