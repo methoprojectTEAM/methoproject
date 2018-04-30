@@ -18,6 +18,10 @@ import com.example.niephox.methophotos.R;
 
 import java.util.ArrayList;
 import java.util.Date;
+/**
+ * Created by IgorSpiridonov
+ */
+
 
 public class PhotosGridViewAdapter extends ArrayAdapter<Image> {
 
