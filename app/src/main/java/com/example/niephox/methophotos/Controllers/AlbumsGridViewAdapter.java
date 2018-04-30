@@ -26,9 +26,9 @@ import java.util.Date;
 public class AlbumsGridViewAdapter extends ArrayAdapter<Album> {
 
 
-    Context context;
-    ViewHolder viewHolder;
-    ArrayList<Album> alAlbums = new ArrayList<>();
+    private Context context;
+    private ViewHolder viewHolder;
+    private ArrayList<Album> alAlbums = new ArrayList<>();
 
     public AlbumsGridViewAdapter(Context context, ArrayList<Album> alAlbums) {
         super(context, R.layout.gridview_relative_layout, alAlbums);
@@ -91,8 +91,8 @@ public class AlbumsGridViewAdapter extends ArrayAdapter<Album> {
         return convertView;
     }
     private static class ViewHolder {
-        ImageView ivImage;
-        TextView nameTextView;
-        TextView creationDateTextView;
+        private ImageView ivImage;
+        private TextView nameTextView;
+        private TextView creationDateTextView;
     }
 }
