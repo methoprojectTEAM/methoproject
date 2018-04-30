@@ -1,20 +1,18 @@
 package com.example.niephox.methophotos.Entities;
 
-import android.os.Build;
-import android.support.annotation.RequiresApi;
+import android.net.Uri;
 
 import com.drew.metadata.Metadata;
 
+import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Objects;
 
 
 /**
  * Created by Niephox on 3/30/2018.
  */
 
-public class Image {
-
+public class Image implements Serializable {
     public String storageLocationURL;
     public String downloadUrl;
     public String imageURI;
@@ -22,18 +20,25 @@ public class Image {
     public Album album;
     public Metadata metadata;
     public String description;
-    ArrayList<String> imagesPath;
 
+    //String str_folder;
+    ArrayList<String> al_imagepath;
 
-
-    public ArrayList<String> getImagesPath() {
-        return imagesPath;
+    /*public String getStr_folder() {
+        return str_folder;
     }
 
-    public void setImagesPath(ArrayList<String> imagesPath) {
-        this.imagesPath = imagesPath;
+    public void setStr_folder(String str_folder) {
+        this.str_folder = str_folder;
+    }*/
+
+    public ArrayList<String> getAl_imagepath() {
+        return al_imagepath;
     }
 
+    public void setAl_imagepath(ArrayList<String> al_imagepath) {
+        this.al_imagepath = al_imagepath;
+    }
     public Image(String storageLocationURL, String downloadUrl, String name, Album album, Metadata metadata, String description) {
         this.storageLocationURL = storageLocationURL;
         this.downloadUrl = downloadUrl;
@@ -41,12 +46,6 @@ public class Image {
         this.album = album;
         this.metadata = metadata;
         this.description = description;
-    }
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-    @Override
-    public int hashCode(){
-        //this.name = Objects.hashCode(this.imageURI);
-        return 0;
     }
     public Image(String imageURI){
         this.imageURI = imageURI;

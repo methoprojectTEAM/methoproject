@@ -111,8 +111,13 @@ public class MetadataActivity extends AppCompatActivity implements iAsyncCallbac
     }
 
     private void GetImage() {
-        int ImageIndex = getIntent().getIntExtra("ImageIndex", 0);
-        image = MainActivity.al_images.get(ImageIndex);
+        int ImageIndex = getIntent().getIntExtra("Ima geIndex", 0);
+        if (ImageIndex == 0) {
+            image = MainActivity.al_images.get(ImageIndex);
+        }else{
+            image = MainActivity.alAlbums.get(ImageIndex).getImages().get(0);
+        }
+
     }
 
     @Override

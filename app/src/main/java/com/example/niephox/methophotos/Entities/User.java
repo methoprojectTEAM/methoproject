@@ -31,6 +31,7 @@ public class User {
         this.albums = albums;
     }
 
+
     public ArrayList<Album> getAlbums() {
         return albums;
     }
