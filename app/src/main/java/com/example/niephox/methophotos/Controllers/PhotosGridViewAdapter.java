@@ -25,9 +25,9 @@ import java.util.Date;
 
 public class PhotosGridViewAdapter extends ArrayAdapter<Image> {
 
-    Context context;
-    ViewHolder viewHolder = new ViewHolder();
-    ArrayList<Image> alImages = new ArrayList<>();
+    private Context context;
+    private ViewHolder viewHolder = new ViewHolder();
+    private ArrayList<Image> alImages = new ArrayList<>();
 
     public PhotosGridViewAdapter(Context context, ArrayList<Image> alImages) {
         super(context, R.layout.gridview_relative_layout, alImages);
