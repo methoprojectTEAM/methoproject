@@ -8,8 +8,8 @@
 
     <ImageView
         android:id="@+id/imgMetadata"
-        android:layout_width="162dp"
-        android:layout_height="151dp"
+        android:layout_width="171dp"
+        android:layout_height="166dp"
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
@@ -23,22 +23,19 @@
 
     <Button
         android:id="@+id/btTags"
-        android:layout_width="160dp"
+        android:layout_width="83dp"
         android:layout_height="51dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
         android:text="Tags"
-        app:layout_constraintBottom_toTopOf="@+id/scrollView2"
+        app:layout_constraintBottom_toBottomOf="@+id/imgMetadata"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.973"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.994" />
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <ScrollView
         android:id="@+id/scrollView2"
-        android:layout_width="424dp"
+        android:layout_width="match_parent"
         android:layout_height="401dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"

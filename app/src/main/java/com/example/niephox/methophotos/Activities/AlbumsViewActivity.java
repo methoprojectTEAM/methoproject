@@ -24,6 +24,10 @@ import com.example.niephox.methophotos.R;
 import java.util.ArrayList;
 import java.util.Date;
 
+/**
+ * Created by IgorSpiridonov
+ */
+
 public class AlbumsViewActivity extends AppCompatActivity implements iAsyncCallback
 {
     //ArrayLists:
@@ -64,9 +68,7 @@ public class AlbumsViewActivity extends AppCompatActivity implements iAsyncCallb
                 alImages.addAll(alAlbums.get(position).images);
 
                 Intent intent =new Intent(AlbumsViewActivity.this,PhotosViewActivity.class);
-                Bundle bundle = new Bundle();
-                bundle.putSerializable("alImages",alImages);
-                intent.putExtras(bundle);
+                intent.putExtra("alImages",alImages);
                 startActivity(intent);
             }
         });

@@ -1,6 +1,8 @@
 package com.example.niephox.methophotos.Entities;
 
 import android.net.Uri;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 import com.drew.metadata.Metadata;
 
@@ -10,9 +12,13 @@ import java.util.ArrayList;
 
 /**
  * Created by Niephox on 3/30/2018.
+ * Modified by IgorSpiridonov
+ * {
+ *     Implemented Parcelable
+ * }
  */
 
-public class Image implements Serializable {
+public class Image implements Parcelable {
     public String storageLocationURL;
     public String downloadUrl;
     public String imageURI;
@@ -118,4 +124,30 @@ public class Image implements Serializable {
     }
 
 
+    public static final Parcelable.Creator<Image> CREATOR = new Parcelable.Creator<Image>() {
+        public Image createFromParcel(Parcel in) {
+            return new Image(in);
+        }
+
+        public Image[] newArray(int size) {
+            return new Image[size];
+        }
+    };
+    private Image(Parcel in) {
+        this.storageLocationURL=in.readString();
+        this.downloadUrl=in.readString();
+        this.description=in.readString();
+    }
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.storageLocationURL);
+        dest.writeString(this.downloadUrl);
+        dest.writeString(this.description);
+
+    }
 }
