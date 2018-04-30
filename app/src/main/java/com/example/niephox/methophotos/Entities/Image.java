@@ -4,6 +4,7 @@ import android.net.Uri;
 
 import com.drew.metadata.Metadata;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 
@@ -11,7 +12,7 @@ import java.util.ArrayList;
  * Created by Niephox on 3/30/2018.
  */
 
-public class Image {
+public class Image implements Serializable {
     public String storageLocationURL;
     public String downloadUrl;
     public String imageURI;
@@ -19,6 +20,7 @@ public class Image {
     public Album album;
     public Metadata metadata;
     public String description;
+
     //String str_folder;
     ArrayList<String> al_imagepath;
 

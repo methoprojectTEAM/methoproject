@@ -1,8 +1,15 @@
 package com.example.niephox.methophotos.Activities;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.Toast;
 
 import com.example.niephox.methophotos.Controllers.AlbumsGridViewAdapter;
 import com.example.niephox.methophotos.Controllers.AuthenticationController;
@@ -20,8 +27,8 @@ import java.util.Date;
 public class AlbumsViewActivity extends AppCompatActivity implements iAsyncCallback
 {
     //ArrayLists:
-
     public  ArrayList<Album> alAlbums = new ArrayList<>();
+    public  ArrayList<Image> alImages = new ArrayList<>();
 
     //Layout Items:
     GridView gvAlbums;
@@ -31,9 +38,6 @@ public class AlbumsViewActivity extends AppCompatActivity implements iAsyncCallb
 
     //Adapters:
     AlbumsGridViewAdapter albumsAdapter;
-
-    //Strings:
-
 
     //Intents:
     private User curentUser ;
@@ -46,24 +50,33 @@ public class AlbumsViewActivity extends AppCompatActivity implements iAsyncCallb
 
         gvAlbums = (GridView)findViewById(R.id.gv_folder);
         dbController = new DatabaseController();
-
         dbController.getCurrentUser();
 
         albumsAdapter = new AlbumsGridViewAdapter(this,alAlbums);
         gvAlbums.setAdapter(albumsAdapter);
 
         dbController.RegisterCallback(this);
+        gvAlbums.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Toast.makeText(AlbumsViewActivity.this,"Album clicked:"+alAlbums.get(position).name,Toast.LENGTH_LONG).show();
+                alImages.clear();
+                alImages.addAll(alAlbums.get(position).images);
 
+                Intent intent =new Intent(AlbumsViewActivity.this,PhotosViewActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("alImages",alImages);
+                intent.putExtras(bundle);
+                startActivity(intent);
+            }
+        });
     }
-
-
 
     @Override
     public void RefreshView(int RequestCode) {
         switch (RequestCode) {
             case 1:
-                alAlbums.clear();
-                alAlbums.addAll(dbController.userAlbums);
+                alAlbums.addAll(curentUser.albums);
                 albumsAdapter.notifyDataSetChanged();
                 break;
             case 2:
@@ -73,8 +86,9 @@ public class AlbumsViewActivity extends AppCompatActivity implements iAsyncCallb
 
     @Override
     public void RetrieveData(int RequestCode) {
-
-        curentUser = dbController.currentUser;
-        dbController.getUserAlbums(curentUser.getUserUID());
+        curentUser = dbController.returnCurentUser();
+        dbController.getUserAlbums();
+        Log.e("alAlbums",alAlbums.size()+"");
+        albumsAdapter.notifyDataSetChanged();
     }
 }

@@ -23,6 +23,10 @@ public class Album {
         this.images = images;
     }
 
+    public Album(String name) {
+        this.name = name;
+    }
+
     public String getName() {
 
         return name;

@@ -30,6 +30,7 @@ import android.widget.Toolbar;
 import com.drew.imaging.jpeg.JpegSegmentMetadataReader;
 import com.drew.metadata.Metadata;
 import com.example.niephox.methophotos.Controllers.AlbumsGridViewAdapter;
+import com.example.niephox.methophotos.Controllers.AuthenticationController;
 import com.example.niephox.methophotos.Controllers.CustomListViewAdapter;
 import com.example.niephox.methophotos.Controllers.DatabaseController;
 import com.example.niephox.methophotos.Controllers.MetadataController;
@@ -55,10 +56,11 @@ public class MainActivity extends AppCompatActivity implements iAsyncCallback {
     private final int REQUEST_PERMISSIONS = 100;
     public StorageController storageController = new StorageController();
     public static ArrayList<Image> al_images = new ArrayList<>();
-    public  ArrayList<Album> alAlbums = new ArrayList<>();
+    public  static ArrayList<Album> alAlbums = new ArrayList<>();
     DatabaseController dbController;
     private User curentUser ;
     boolean boolean_folder;
+    private String userUid;
     Album album;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,14 +68,17 @@ public class MainActivity extends AppCompatActivity implements iAsyncCallback {
         setContentView(R.layout.activity_main);
         gvAlbums = (GridView)findViewById(R.id.gv_folder);
         dbController = new DatabaseController();
-        dbController.getCurrentUser();
+//        dbController.getCurrentUser();
 
+        userUid= AuthenticationController.GetCurrentlySignedUser().getUid();
         registerForContextMenu(gvAlbums);
+
 
         albumsAdapter = new AlbumsGridViewAdapter(this,alAlbums);
         gvAlbums.setAdapter(albumsAdapter);
         dbController.RegisterCallback(this);
         GetLocalPhotos(this);
+//        dbController.getUserAlbums(userUid);
         //storageController.GetLocalPhotos(this);
 
     }
@@ -225,7 +230,7 @@ public class MainActivity extends AppCompatActivity implements iAsyncCallback {
                 break;
             case 2:
                 alAlbums.clear();
-                alAlbums.addAll(dbController.userAlbums);
+                alAlbums.addAll(dbController.returnCurentUser().albums);
                 albumsAdapter.notifyDataSetChanged();
                 break;
         }
@@ -240,7 +245,7 @@ public class MainActivity extends AppCompatActivity implements iAsyncCallback {
                 CreateLocalAlbum(al_images);
                 break;
             case 2:
-                curentUser = dbController.currentUser;
+                curentUser = dbController.returnCurentUser();
                 break;
             default:
                 break;
