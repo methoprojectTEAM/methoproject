@@ -75,13 +75,13 @@ public class AlbumsGridViewAdapter extends ArrayAdapter<Album> {
         viewHolder.nameTextView =(TextView) convertView.findViewById(R.id.textView2);
         viewHolder.creationDateTextView = (TextView) convertView.findViewById((R.id.textView));
 
-        viewHolder.nameTextView.setText(alAlbums.get(position).name);
+        viewHolder.nameTextView.setText(alAlbums.get(position).getName());
         Date date = new Date();
-        date = alAlbums.get(position).date;
+        date = alAlbums.get(position).getDate();
         viewHolder.creationDateTextView.setText(date.getDate() + "/" +date.getMonth()+"/" +date.getYear());
 
         Glide.with(context)
-                .load(alAlbums.get(position).images.get(0).downloadUrl)
+                .load(alAlbums.get(position).getImages().get(0).getDownloadUrl())
                 .thumbnail(0.01f)
                 .centerCrop()
                 .diskCacheStrategy(DiskCacheStrategy.ALL)

@@ -71,7 +71,7 @@ public class PhotosGridViewAdapter extends ArrayAdapter<Image> {
         viewHolder.ivImage =(ImageView)convertView.findViewById(R.id.photoViewRelative);
 
         Glide.with(context)
-                .load(alImages.get(position).downloadUrl)
+                .load(alImages.get(position).getDownloadUrl())
                 .thumbnail(0.01f)
                 .centerCrop()
                 .diskCacheStrategy(DiskCacheStrategy.ALL)

@@ -19,13 +19,13 @@ import java.util.ArrayList;
  */
 
 public class Image implements Parcelable {
-    public String storageLocationURL;
-    public String downloadUrl;
-    public String imageURI;
-    public String name;
-    public Album album;
-    public Metadata metadata;
-    public String description;
+    private String storageLocationURL;
+    private String downloadUrl;
+    private String imageURI;
+    private String name;
+    private Album album;
+    private Metadata metadata;
+    private String description;
 
     //String str_folder;
     ArrayList<String> al_imagepath;
@@ -37,6 +37,7 @@ public class Image implements Parcelable {
     public void setStr_folder(String str_folder) {
         this.str_folder = str_folder;
     }*/
+
 
     public ArrayList<String> getAl_imagepath() {
         return al_imagepath;
