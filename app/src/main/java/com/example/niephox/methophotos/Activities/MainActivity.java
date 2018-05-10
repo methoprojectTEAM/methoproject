@@ -33,17 +33,25 @@ import com.example.niephox.methophotos.Entities.Image;
 import com.example.niephox.methophotos.Entities.User;
 import com.example.niephox.methophotos.Interfaces.iAsyncCallback;
 import com.example.niephox.methophotos.R;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.UUID;
 
 
-public class MainActivity extends AppCompatActivity implements iAsyncCallback {
+public class MainActivity extends AppCompatActivity implements  iAsyncCallback {
 
     GridView gvAlbums;
     AlbumsGridViewAdapter albumsAdapter;
-    private final int REQUEST_PERMISSIONS = 100;
+
     public StorageController storageController = new StorageController();
     public static ArrayList<Image> al_images = new ArrayList<>();
     public  ArrayList<Album> alAlbums = new ArrayList<>();
@@ -51,6 +59,9 @@ public class MainActivity extends AppCompatActivity implements iAsyncCallback {
     private User curentUser ;
     boolean boolean_folder;
     //test code starts here
+    User currentUser;
+    private final int REQUEST_PERMISSIONS = 100;
+    Album album;
     private ArrayList<Image> selectedImages = null;
     private Image currentImage = new Image();
     private ArrayList<Uri> selectedImageUri = new ArrayList<>();
@@ -58,9 +69,8 @@ public class MainActivity extends AppCompatActivity implements iAsyncCallback {
     private final static int REQUEST_PICTURES = 1; //final
     private final static String TAG_BROWSE_PICTURE = "BROWSE_PICTURE";
     private int currentDisplayedUserSelectImageIndex = 0;
-    private AlbumController albumCreateController; //CREATED BY ALEXANDER
+    AlbumController ctrler;
 
-    Album album;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,27 +80,45 @@ public class MainActivity extends AppCompatActivity implements iAsyncCallback {
         dbController.getCurrentUser();
         Button button2 = (Button) findViewById(R.id.button2); //CREATED BY ALEXANDER HAIL RUSSIA
         registerForContextMenu(gvAlbums);
-
+        FirebaseStorage storage;
+        /*TODO: This chunk is to test uploading an image to
+        TODO: firebase storage... delete it when not useful for testing.n
+        StorageReference storageReference;
+        Uri file = Uri.fromFile(new File("/storage/emulated/0/Download/alextest.jpeg"));
+        storage = FirebaseStorage.getInstance();
+        storageReference = storage.getReference();
+        //alexRef.putFile(file);
+        StorageReference ref = storageReference.child("rainforest.jpg");
+        ref.putFile(file);
+        //StorageReference ref = storageReference.child();
+        storageReference.putFile(file);
+*/
+// Regi
         albumsAdapter = new AlbumsGridViewAdapter(this,alAlbums);
         gvAlbums.setAdapter(albumsAdapter);
-        dbController.RegisterCallback(this);
-        GetLocalPhotos(this);
+       // dbController.RegisterCallback(this);
+        //GetLocalPhotos(this);
         //storageController.GetLocalPhotos(this);
+        ctrler = new AlbumController();
+       //album = ctrler.getLocalAlbum(this);
+        checkPermissions(this);
+       for(Image img : album.getImages())
+           Log.w("FINAL IMAGES OF DEVICE", img.getImageURI());
+           //ctrler.getLocalAlbum(this);
 
     }
 
+
+    public void testAlbumCreate(View view) {
+        ctrler.createAlbum("Album1", this);
+    }
     /*
     CREATED BY ALEXANDER
      */
-    public void testAlbumCreate(View v) {
-
-        albumCreateController = new AlbumController("FAMILY",MainActivity.this);
-    }
-
     //we cannot run onActivityResult to our AlbumController.class because its simply not an activity.
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        albumCreateController.onActivityResult(requestCode, resultCode, data);
+       ctrler.onActivityResult(requestCode, resultCode, data);
     }
     /*
     ENDS BY ALEXANDER
@@ -106,7 +134,7 @@ public class MainActivity extends AppCompatActivity implements iAsyncCallback {
                 for (int i = 0; i < grantResults.length; i++) {
                     if (grantResults.length > 0 && grantResults[i] == PackageManager.PERMISSION_GRANTED) {
                         //fn_imagespath();
-                        storageController.fn_imagespath(this);
+                      album =   ctrler.getLocalAlbum(this);
                     } else {
                         Toast.makeText(MainActivity.this, "The app was not allowed to read or write to your storage. Hence, it cannot function properly. Please consider granting it this permission", Toast.LENGTH_LONG).show();
                     }
@@ -116,7 +144,7 @@ public class MainActivity extends AppCompatActivity implements iAsyncCallback {
 
     }
 
-    public void GetLocalPhotos(Context context) {
+    public void checkPermissions(Context context) {
         final int REQUEST_PERMISSIONS = 100;
         Activity activity = (Activity) context;
         if ((ContextCompat.checkSelfPermission(context,
@@ -133,7 +161,7 @@ public class MainActivity extends AppCompatActivity implements iAsyncCallback {
             }
         } else {
             Log.e("Else", "Else");
-            findImagesPath(context);
+          album  = ctrler.getLocalAlbum(context);
         }
     }
     //CREATED BY ALEXANDER FOR IGOR
@@ -167,9 +195,9 @@ public class MainActivity extends AppCompatActivity implements iAsyncCallback {
             if (boolean_folder) {
 
                 ArrayList<String> al_path = new ArrayList<>();
-                al_path.addAll(al_images.get(int_position).getAl_imagepath());
+                al_path.addAll(al_images.get(int_position).getImagesPath());
                 al_path.add(absolutePathOfImage);
-                al_images.get(int_position).setAl_imagepath(al_path);
+                al_images.get(int_position).setImagesPath(al_path);
 
             } else {
                 ArrayList<String> al_path = new ArrayList<>();
@@ -179,7 +207,7 @@ public class MainActivity extends AppCompatActivity implements iAsyncCallback {
 
                 obj_model.setImageURI(absolutePathOfImage);
                 //obj_model.setStr_folder(cursor.getString(column_index_folder_name));
-                obj_model.setAl_imagepath(al_path);
+                obj_model.setImagesPath(al_path);
                 al_images.add(obj_model);
 
             }
@@ -188,11 +216,11 @@ public class MainActivity extends AppCompatActivity implements iAsyncCallback {
         }
         for (int i = 0; i < al_images.size(); i++) {
             //Log.e("FOLDER", al_images.get(i).getStr_folder());
-            for (int j = 0; j < al_images.get(i).getAl_imagepath().size(); j++) {
-                Log.e("FILE", al_images.get(i).getAl_imagepath().get(j));
+            for (int j = 0; j < al_images.get(i).getImagesPath().size(); j++) {
+                Log.e("FILE", al_images.get(i).getImagesPath().get(j));
             }
         }
-        CreateLocalAlbum(al_images);
+      //  CreateLocalAlbum(al_images);
        // iAsyncCallback.RetrieveData(1);
     }
 
@@ -239,26 +267,30 @@ public class MainActivity extends AppCompatActivity implements iAsyncCallback {
         Inflaterl.inflate(R.menu.image_menu, menu);
     }
 
+    //TODO: Figure out getLocalAlbum functionallity and delete these funcs that are part
+    //TODO: of Asyncallback
+
     @Override
     public void RefreshView(int RequestCode) {
         switch (RequestCode){
             case 1:
                 break;
             case 2:
-                alAlbums.clear();
-                alAlbums.addAll(dbController.userAlbums);
-                albumsAdapter.notifyDataSetChanged();
+//                alAlbums.clear();
+//                alAlbums.addAll(dbController.userAlbums);
+//                albumsAdapter.notifyDataSetChanged();
                 break;
         }
     }
-
+//TODO: Figure out getLocalAlbum functionallity and delete these funcs that are part
+    //TODO: of Asyncallback
     @Override
     public void RetrieveData(int RequestCode) {
         switch (RequestCode){
             case 1:
-                al_images.clear();
-                al_images.addAll(storageController.al_images);
-                CreateLocalAlbum(al_images);
+//                al_images.clear();
+//                al_images.addAll(storageController.al_images);
+                //CreateLocalAlbum(al_images);
                 break;
             case 2:
                 curentUser = dbController.currentUser;
@@ -267,11 +299,11 @@ public class MainActivity extends AppCompatActivity implements iAsyncCallback {
                 break;
         }
     }
-    private void CreateLocalAlbum(ArrayList<Image> images){
-        Date currentDate = Calendar.getInstance().getTime();
-        Album localAlbum = new Album("LocalImages",currentDate,"local Photos",images);
-        alAlbums.add(localAlbum);
-        albumsAdapter.notifyDataSetChanged();
-    }
+//    private void CreateLocalAlbum(ArrayList<Image> images){
+//        Date currentDate = Calendar.getInstance().getTime();
+//        Album localAlbum = new Album("LocalImages",currentDate,"local Photos",images);
+//        alAlbums.add(localAlbum);
+//        albumsAdapter.notifyDataSetChanged();
+//    }
 }
 

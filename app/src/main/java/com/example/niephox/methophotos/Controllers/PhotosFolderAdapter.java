@@ -77,11 +77,11 @@ public class PhotosFolderAdapter extends ArrayAdapter<Image> {
         }
 
        // viewHolder.tv_foldern.setText(al_menu.get(position).getStr_folder());
-        viewHolder.tv_foldersize.setText(al_menu.get(position).getAl_imagepath().size()+"");
+        viewHolder.tv_foldersize.setText(al_menu.get(position).getImagesPath().size()+"");
 
 
 
-        Glide.with(context).load("file://" + al_menu.get(position).getAl_imagepath().get(0))
+        Glide.with(context).load("file://" + al_menu.get(position).getImagesPath().get(0))
                 .diskCacheStrategy(DiskCacheStrategy.NONE)
                 .skipMemoryCache(true)
                 .into(viewHolder.iv_image);
