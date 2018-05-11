@@ -245,7 +245,6 @@ public class AlbumController {
 //        return albumTarget;
 //    }
 
-        //checks if images have the same URI
     public boolean isUriEqual (Image imageSrc, Image imageTar) {
         if (imageSrc.getImageURI().equals(imageTar.getImageURI()))
             return true;
