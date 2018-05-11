@@ -1,9 +1,15 @@
 package com.example.niephox.methophotos.Activities;
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -11,21 +17,24 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.Toast;
 
+import com.example.niephox.methophotos.Controllers.AlbumController;
 import com.example.niephox.methophotos.Controllers.AlbumsGridViewAdapter;
 import com.example.niephox.methophotos.Controllers.AuthenticationController;
 import com.example.niephox.methophotos.Controllers.DatabaseController;
+import com.example.niephox.methophotos.Controllers.LocalPhotosController;
 import com.example.niephox.methophotos.Controllers.StorageController;
 import com.example.niephox.methophotos.Entities.Album;
 import com.example.niephox.methophotos.Entities.Image;
 import com.example.niephox.methophotos.Entities.User;
 import com.example.niephox.methophotos.Interfaces.iAsyncCallback;
+import com.example.niephox.methophotos.Manifest;
 import com.example.niephox.methophotos.R;
 
 import java.util.ArrayList;
 import java.util.Date;
 
 /**
- * Created by IgorSpiridonov
+ * Created by Igor Spiridonov
  */
 
 public class AlbumsViewActivity extends AppCompatActivity implements iAsyncCallback
@@ -35,16 +44,21 @@ public class AlbumsViewActivity extends AppCompatActivity implements iAsyncCallb
     public  ArrayList<Image> alImages = new ArrayList<>();
 
     //Layout Items:
-    GridView gvAlbums;
+    private GridView gvAlbums;
 
     //Controllers:
-    DatabaseController dbController;
+    private DatabaseController dbController;
+    private LocalPhotosController localPhotosController;
 
     //Adapters:
-    AlbumsGridViewAdapter albumsAdapter;
+    private AlbumsGridViewAdapter albumsAdapter;
 
     //Intents:
     private User curentUser ;
+    private Album localAlbum ;
+    private AlbumController albumController;
+
+    private final int REQUEST_PERMISSIONS = 100;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -56,6 +70,13 @@ public class AlbumsViewActivity extends AppCompatActivity implements iAsyncCallb
         dbController = new DatabaseController();
         dbController.getCurrentUser();
 
+        albumController = new AlbumController();
+
+        localAlbum= new Album("Local Photos",null,null,null);
+
+        checkPermissions(AlbumsViewActivity.this);
+        alAlbums.add(localAlbum);
+
         albumsAdapter = new AlbumsGridViewAdapter(this,alAlbums);
         gvAlbums.setAdapter(albumsAdapter);
 
@@ -64,12 +85,21 @@ public class AlbumsViewActivity extends AppCompatActivity implements iAsyncCallb
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Toast.makeText(AlbumsViewActivity.this,"Album clicked:"+alAlbums.get(position).getName(),Toast.LENGTH_LONG).show();
-                alImages.clear();
-                alImages.addAll(alAlbums.get(position).getImages());
+//                if(position!=0) {
+                    alImages.clear();
+                    alImages.addAll(alAlbums.get(position).getImages());
 
-                Intent intent =new Intent(AlbumsViewActivity.this,PhotosViewActivity.class);
-                intent.putExtra("alImages",alImages);
-                startActivity(intent);
+
+                    Intent intent = new Intent(AlbumsViewActivity.this, PhotosViewActivity.class);
+                    intent.putExtra("alImages", alImages);
+                    startActivity(intent);
+
+//                }
+//                else
+//                {
+//                    Intent intent = new Intent(AlbumsViewActivity.this, LocalPhotosActivity.class);
+//                    startActivity(intent);
+//                }
             }
         });
     }
@@ -92,5 +122,52 @@ public class AlbumsViewActivity extends AppCompatActivity implements iAsyncCallb
         dbController.getUserAlbums();
         Log.e("alAlbums",alAlbums.size()+"");
         albumsAdapter.notifyDataSetChanged();
+    }
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        localPhotosController.onActivityResult(requestCode, resultCode, data);
+    }
+    public void testAlbumCreate(View v)
+    {
+        localPhotosController= new LocalPhotosController("FAMILY",AlbumsViewActivity.this);
+    }
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], @NonNull int[] grantResults) {
+
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        switch (requestCode) {
+            case REQUEST_PERMISSIONS: {
+                for (int i = 0; i < grantResults.length; i++) {
+                    if (grantResults.length > 0 && grantResults[i] == PackageManager.PERMISSION_GRANTED) {
+                        //fn_imagespath();
+                        localAlbum =   albumController.getLocalAlbum(this);
+                    } else {
+                        Toast.makeText(AlbumsViewActivity.this, "The app was not allowed to read or write to your storage. Hence, it cannot function properly. Please consider granting it this permission", Toast.LENGTH_LONG).show();
+                    }
+                }
+            }
+        }
+
+    }
+    public void checkPermissions(Context context) {
+        final int REQUEST_PERMISSIONS = 100;
+        Activity activity = (Activity) context;
+        if ((ContextCompat.checkSelfPermission(context,
+                android.Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) && (ContextCompat.checkSelfPermission(context,
+                android.Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)) {
+            if ((ActivityCompat.shouldShowRequestPermissionRationale(activity,
+                    android.Manifest.permission.WRITE_EXTERNAL_STORAGE)) && (ActivityCompat.shouldShowRequestPermissionRationale(activity,
+                    android.Manifest.permission.READ_EXTERNAL_STORAGE))) {
+
+            } else {
+                ActivityCompat.requestPermissions(activity,
+                        new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE, android.Manifest.permission.READ_EXTERNAL_STORAGE},
+                        REQUEST_PERMISSIONS);
+            }
+        } else {
+            Log.e("Else", "Else");
+            localAlbum  = albumController.getLocalAlbum(context);
+        }
     }
 }

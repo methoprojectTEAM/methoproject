@@ -26,6 +26,8 @@ public class Image implements Parcelable {
     private Album album;
     private Metadata metadata;
     private String description;
+    public int belongsToAlbumsCount;
+    private ArrayList<String> imagesPath;
 
     //String str_folder;
     ArrayList<String> al_imagepath;
@@ -38,9 +40,21 @@ public class Image implements Parcelable {
         this.str_folder = str_folder;
     }*/
 
+    public void belongsToAlbumInc() {
+        belongsToAlbumsCount++;
+    }
+
+    public ArrayList<String> getImagesPath() {
+        return imagesPath;
+    }
+
 
     public ArrayList<String> getAl_imagepath() {
         return al_imagepath;
+    }
+
+    public void setImagesPath(ArrayList<String> imagesPath) {
+        this.imagesPath = imagesPath;
     }
 
     public void setAl_imagepath(ArrayList<String> al_imagepath) {
@@ -138,6 +152,7 @@ public class Image implements Parcelable {
         this.storageLocationURL=in.readString();
         this.downloadUrl=in.readString();
         this.description=in.readString();
+        this.imageURI=in.readString();
     }
     @Override
     public int describeContents() {
@@ -149,6 +164,7 @@ public class Image implements Parcelable {
         dest.writeString(this.storageLocationURL);
         dest.writeString(this.downloadUrl);
         dest.writeString(this.description);
+        dest.writeString(this.imageURI);
 
     }
 }

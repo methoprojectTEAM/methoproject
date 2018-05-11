@@ -76,17 +76,33 @@ public class AlbumsGridViewAdapter extends ArrayAdapter<Album> {
         viewHolder.creationDateTextView = (TextView) convertView.findViewById((R.id.textView));
 
         viewHolder.nameTextView.setText(alAlbums.get(position).getName());
+
         Date date = new Date();
         date = alAlbums.get(position).getDate();
-        viewHolder.creationDateTextView.setText(date.getDate() + "/" +date.getMonth()+"/" +date.getYear());
+        if(date!=null) {
+            viewHolder.creationDateTextView.setText(date.getDate() + "/" + date.getMonth() + "/" + date.getYear());
+        }
 
-        Glide.with(context)
-                .load(alAlbums.get(position).getImages().get(0).getDownloadUrl())
-                .thumbnail(0.01f)
-                .centerCrop()
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .skipMemoryCache(false)
-                .into(viewHolder.ivImage);
+        if(alAlbums.get(position).getImages()!=null) {
+            if(alAlbums.get(position).getImages().get(0).getImageURI()==null) {
+                Glide.with(context)
+                        .load(alAlbums.get(position).getImages().get(0).getDownloadUrl())
+                        .thumbnail(0.01f)
+                        .centerCrop()
+                        .diskCacheStrategy(DiskCacheStrategy.ALL)
+                        .skipMemoryCache(false)
+                        .into(viewHolder.ivImage);
+            }
+            else{
+                Glide.with(context)
+                        .load(alAlbums.get(position).getImages().get(0).getImageURI())
+                        .thumbnail(0.01f)
+                        .centerCrop()
+                        .diskCacheStrategy(DiskCacheStrategy.ALL)
+                        .skipMemoryCache(false)
+                        .into(viewHolder.ivImage);
+            }
+        }
 
         return convertView;
     }
