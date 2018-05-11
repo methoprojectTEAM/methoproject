@@ -12,12 +12,7 @@ import java.util.ArrayList;
 
 /**
  * Created by Niephox on 3/30/2018.
- * Modified by IgorSpiridonov
- * {
- *     Implemented Parcelable
- * }
  */
-
 public class Image implements Parcelable {
     private String storageLocationURL;
     private String downloadUrl;
@@ -35,7 +30,6 @@ public class Image implements Parcelable {
     /*public String getStr_folder() {
         return str_folder;
     }
-
     public void setStr_folder(String str_folder) {
         this.str_folder = str_folder;
     }*/

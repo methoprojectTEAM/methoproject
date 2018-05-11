@@ -27,7 +27,7 @@ import com.example.niephox.methophotos.Entities.Album;
 import com.example.niephox.methophotos.Entities.Image;
 import com.example.niephox.methophotos.Entities.User;
 import com.example.niephox.methophotos.Interfaces.iAsyncCallback;
-import com.example.niephox.methophotos.Manifest;
+
 import com.example.niephox.methophotos.R;
 
 import java.util.ArrayList;
