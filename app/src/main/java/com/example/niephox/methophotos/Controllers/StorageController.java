@@ -13,7 +13,6 @@ import android.support.v4.content.ContextCompat;
 import android.util.Log;
 
 import com.drew.imaging.jpeg.JpegSegmentMetadataReader;
-import com.example.niephox.methophotos.Activities.MainActivity;
 import com.example.niephox.methophotos.Entities.Image;
 import com.example.niephox.methophotos.Interfaces.iAsyncCallback;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -67,7 +66,7 @@ public class StorageController   {
 
     }
 
-    public void UploadFile(){}
+    public void UploadPhotos(ArrayList<Image> imagesToUpload){}
 
 
     public void registerCallback(iAsyncCallback iAsyncCallback){
@@ -96,7 +95,7 @@ public class StorageController   {
 
 
     }
-
+    //TODO: den tha eprepe na exoume ena FirebaseController kai ena LocalStorageController?
     public void fn_imagespath(Context context) {
 
         boolean boolean_folder = true;
@@ -126,9 +125,9 @@ public class StorageController   {
             if (boolean_folder) {
 
                 ArrayList<String> al_path = new ArrayList<>();
-                al_path.addAll(al_images.get(int_position).getAl_imagepath());
+                al_path.addAll(al_images.get(int_position).getImagesPath());
                 al_path.add(absolutePathOfImage);
-                al_images.get(int_position).setAl_imagepath(al_path);
+                al_images.get(int_position).setImagesPath(al_path);
 
             } else {
                 ArrayList<String> al_path = new ArrayList<>();
@@ -138,7 +137,7 @@ public class StorageController   {
 
                 obj_model.setImageURI(absolutePathOfImage);
                 //obj_model.setStr_folder(cursor.getString(column_index_folder_name));
-                obj_model.setAl_imagepath(al_path);
+                obj_model.setImagesPath(al_path);
                 al_images.add(obj_model);
 
             }
@@ -147,8 +146,8 @@ public class StorageController   {
         }
         for (int i = 0; i < al_images.size(); i++) {
             //Log.e("FOLDER", al_images.get(i).getStr_folder());
-            for (int j = 0; j < al_images.get(i).getAl_imagepath().size(); j++) {
-                Log.e("FILE", al_images.get(i).getAl_imagepath().get(j));
+            for (int j = 0; j < al_images.get(i).getImagesPath().size(); j++) {
+                Log.e("FILE", al_images.get(i).getImagesPath().get(j));
             }
         }
         iAsyncCallback.RetrieveData(1);

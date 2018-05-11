@@ -2,14 +2,12 @@ package com.example.niephox.methophotos.Controllers;
 
 
 
-import android.app.Activity;
 import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -20,7 +18,6 @@ import com.example.niephox.methophotos.R;
 
 
 import java.util.ArrayList;
-import java.util.List;
 
 
 public class GridViewAdapter extends ArrayAdapter<Image> {
@@ -43,8 +40,8 @@ public class GridViewAdapter extends ArrayAdapter<Image> {
     @Override
     public int getCount() {
 
-        Log.e("ADAPTER LIST SIZE", al_menu.get(int_position).getAl_imagepath().size() + "");
-        return al_menu.get(int_position).getAl_imagepath().size();
+        Log.e("ADAPTER LIST SIZE", al_menu.get(int_position).getImagesPath().size() + "");
+        return al_menu.get(int_position).getImagesPath().size();
     }
 
     @Override
@@ -54,8 +51,8 @@ public class GridViewAdapter extends ArrayAdapter<Image> {
 
     @Override
     public int getViewTypeCount() {
-        if (al_menu.get(int_position).getAl_imagepath().size() > 0) {
-            return al_menu.get(int_position).getAl_imagepath().size();
+        if (al_menu.get(int_position).getImagesPath().size() > 0) {
+            return al_menu.get(int_position).getImagesPath().size();
         } else {
             return 1;
         }
@@ -89,7 +86,7 @@ public class GridViewAdapter extends ArrayAdapter<Image> {
 
 
 
-        Glide.with(context).load("file://" + al_menu.get(int_position).getAl_imagepath().get(position))
+        Glide.with(context).load("file://" + al_menu.get(int_position).getImagesPath().get(position))
                 .diskCacheStrategy(DiskCacheStrategy.NONE)
                 .skipMemoryCache(true)
                 .into(viewHolder.iv_image);

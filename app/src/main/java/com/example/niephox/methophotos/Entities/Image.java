@@ -1,7 +1,5 @@
 package com.example.niephox.methophotos.Entities;
 
-import android.net.Uri;
-
 import com.drew.metadata.Metadata;
 
 import java.util.ArrayList;
@@ -12,6 +10,7 @@ import java.util.ArrayList;
  */
 
 public class Image {
+
     public String storageLocationURL;
     public String downloadUrl;
     public String imageURI;
@@ -19,23 +18,17 @@ public class Image {
     public Album album;
     public Metadata metadata;
     public String description;
-    //String str_folder;
-    ArrayList<String> al_imagepath;
+    public int belongsToAlbumsCount;
+    ArrayList<String> imagesPath;
 
-    /*public String getStr_folder() {
-        return str_folder;
+
+
+    public ArrayList<String> getImagesPath() {
+        return imagesPath;
     }
 
-    public void setStr_folder(String str_folder) {
-        this.str_folder = str_folder;
-    }*/
-
-    public ArrayList<String> getAl_imagepath() {
-        return al_imagepath;
-    }
-
-    public void setAl_imagepath(ArrayList<String> al_imagepath) {
-        this.al_imagepath = al_imagepath;
+    public void setImagesPath(ArrayList<String> imagesPath) {
+        this.imagesPath = imagesPath;
     }
     public Image(String storageLocationURL, String downloadUrl, String name, Album album, Metadata metadata, String description) {
         this.storageLocationURL = storageLocationURL;
@@ -44,6 +37,9 @@ public class Image {
         this.album = album;
         this.metadata = metadata;
         this.description = description;
+    }
+    public void belongsToAlbumInc() {
+        belongsToAlbumsCount++;
     }
     public Image(String imageURI){
         this.imageURI = imageURI;
