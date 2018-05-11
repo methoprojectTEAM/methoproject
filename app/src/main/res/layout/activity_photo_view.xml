@@ -23,6 +23,7 @@
         android:layout_height="193dp"
         android:layout_marginBottom="8dp"
         android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
@@ -35,3 +36,4 @@
     </ScrollView>
 
 </android.support.constraint.ConstraintLayout>
+

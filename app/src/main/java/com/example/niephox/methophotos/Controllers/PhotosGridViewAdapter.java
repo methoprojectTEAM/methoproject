@@ -70,13 +70,24 @@ public class PhotosGridViewAdapter extends ArrayAdapter<Image> {
 
         viewHolder.ivImage =(ImageView)convertView.findViewById(R.id.photoViewRelative);
 
-        Glide.with(context)
-                .load(alImages.get(position).getDownloadUrl())
-                .thumbnail(0.01f)
-                .centerCrop()
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .skipMemoryCache(false)
-                .into(viewHolder.ivImage);
+        if(alImages.get(position).getImageURI()==null){
+            Glide.with(context)
+                    .load(alImages.get(position).getDownloadUrl())
+                    .thumbnail(0.01f)
+                    .centerCrop()
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .skipMemoryCache(false)
+                    .into(viewHolder.ivImage);
+        }
+        else{
+            Glide.with(context)
+                    .load(alImages.get(position).getImageURI())
+                    .thumbnail(0.01f)
+                    .centerCrop()
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .skipMemoryCache(false)
+                    .into(viewHolder.ivImage);
+        }
 
         return convertView;
     }
