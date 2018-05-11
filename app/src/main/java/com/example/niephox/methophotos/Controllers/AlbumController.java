@@ -198,24 +198,26 @@ public class AlbumController {
             }
      }
      for (Image img : selectedImages)
-     Log.w(" TAG ALEXANDER IMAGEs " , img.getImageURI());
+         Log.w(" TAG ALEXANDER IMAGEs " , img.getImageURI());
 
     }
 
     public Album deletePictureFromAlbum (Album sourceAlbum, Image imageToDelete) {
-            Album completedDelAlbum = new Album();
+
+        Album completedDelAlbum = new Album();
         return completedDelAlbum;
     }
 
 
-    public void deleteAlbum (final Album albumToDelete) {
-        DatabaseReference ref= FirebaseDatabase.getInstance().getReference();
-        Query query = ref.child("users").child("xGwcgPWbqeV3QNo3xa0OdxsTGcf2").orderByChild("name").equalTo("album1");
+    public void deleteAlbum (Album albumToDelete) {
+     		DatabaseReference ref= FirebaseDatabase.getInstance().getReference();
+     		Query query = ref.child("users").child("").orderByChild("name").equalTo("album1");
         query.addListenerForSingleValueEvent(new ValueEventListener() {
-
+        boolean is = false;
             @Override
             public void onDataChange(DataSnapshot snapshot) {
                 if(snapshot.exists()) {
+
                 }
                 //                exists = snapshot.exists();
 //                iAsyncCallback.RetrieveData(2);
@@ -230,6 +232,7 @@ public class AlbumController {
 
         });
     }
+
 
 //    public Album transferImage(Album albumSource, Album albumTarget, ArrayList<Image> selectedImagesToTransfer) {
 //        ArrayList<Image> tempImages = new ArrayList<>();
