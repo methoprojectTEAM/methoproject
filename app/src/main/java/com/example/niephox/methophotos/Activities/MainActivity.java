@@ -30,7 +30,6 @@ import android.widget.Toolbar;
 import com.drew.imaging.jpeg.JpegSegmentMetadataReader;
 import com.drew.metadata.Metadata;
 import com.example.niephox.methophotos.Controllers.AlbumsGridViewAdapter;
-import com.example.niephox.methophotos.Controllers.AuthenticationController;
 import com.example.niephox.methophotos.Controllers.CustomListViewAdapter;
 import com.example.niephox.methophotos.Controllers.DatabaseController;
 import com.example.niephox.methophotos.Controllers.MetadataController;
@@ -60,7 +59,7 @@ public class MainActivity extends AppCompatActivity implements iAsyncCallback {
     DatabaseController dbController;
     private User curentUser ;
     boolean boolean_folder;
-    private String userUid;
+    //test code starts here
     Album album;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,16 +67,14 @@ public class MainActivity extends AppCompatActivity implements iAsyncCallback {
         setContentView(R.layout.activity_main);
         gvAlbums = (GridView)findViewById(R.id.gv_folder);
         dbController = new DatabaseController();
-
-        userUid= AuthenticationController.GetCurrentlySignedUser().getUid();
+        dbController.getCurrentUser();
+        Button button2 = (Button) findViewById(R.id.button2); //CREATED BY ALEXANDER HAIL RUSSIA
         registerForContextMenu(gvAlbums);
 
         albumsAdapter = new AlbumsGridViewAdapter(this,alAlbums);
         gvAlbums.setAdapter(albumsAdapter);
         dbController.RegisterCallback(this);
         GetLocalPhotos(this);
-    }
-
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], @NonNull int[] grantResults) {
 
@@ -225,7 +222,7 @@ public class MainActivity extends AppCompatActivity implements iAsyncCallback {
                 break;
             case 2:
                 alAlbums.clear();
-                alAlbums.addAll(dbController.returnCurentUser().getAlbums());
+//                alAlbums.addAll(dbController.userAlbums);
                 albumsAdapter.notifyDataSetChanged();
                 break;
         }

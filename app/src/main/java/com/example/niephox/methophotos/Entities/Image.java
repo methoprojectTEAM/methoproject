@@ -1,8 +1,6 @@
 package com.example.niephox.methophotos.Entities;
 
 import android.net.Uri;
-import android.os.Parcel;
-import android.os.Parcelable;
 
 import com.drew.metadata.Metadata;
 
@@ -12,25 +10,18 @@ import java.util.ArrayList;
 
 /**
  * Created by Niephox on 3/30/2018.
- * Modified by IgorSpiridonov
- * {
- *     Implemented Parcelable
- * }
  */
 
-public class Image implements Parcelable {
-    private String storageLocationURL;
-    private String downloadUrl;
-    private String imageURI;
-    private String name;
-    private Album album;
-    private Metadata metadata;
-    private String description;
-    public int belongsToAlbumsCount;
-    private ArrayList<String> imagesPath;
+public class Image {
 
-    //String str_folder;
-    ArrayList<String> al_imagepath;
+    public String storageLocationURL;
+    public String downloadUrl;
+    public String imageURI;
+    public String name;
+    public Album album;
+    public Metadata metadata;
+    public String description;
+    public int belongsToAlbumsCount;
 
     /*public String getStr_folder() {
         return str_folder;
@@ -38,15 +29,6 @@ public class Image implements Parcelable {
 
     public void setStr_folder(String str_folder) {
         this.str_folder = str_folder;
-    }*/
-
-    public void belongsToAlbumInc() {
-        belongsToAlbumsCount++;
-    }
-
-    public ArrayList<String> getImagesPath() {
-        return imagesPath;
-    }
 
 
     public ArrayList<String> getAl_imagepath() {

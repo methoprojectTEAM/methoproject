@@ -10,6 +10,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.constraint.solver.widgets.Snapshot;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -22,14 +23,23 @@ import android.widget.Toast;
 import com.example.niephox.methophotos.Activities.MainActivity;
 import com.example.niephox.methophotos.Entities.Album;
 import com.example.niephox.methophotos.Entities.Image;
+import com.example.niephox.methophotos.Entities.User;
+import com.example.niephox.methophotos.Interfaces.iAsyncCallback;
 import com.example.niephox.methophotos.R;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
-/**
+/*
  * Created by greycr0w on 4/28/2018.
  */
 
@@ -41,6 +51,7 @@ public class AlbumController {
     private Context context; //context is used for selectionImageGallery
     private Activity genActivity; //its important bcs this is controller not an Activity
     private boolean boolean_folder;
+    public  static com.example.niephox.methophotos.Interfaces.iAsyncCallback iAsyncCallback;
 
 
     public AlbumController() { }
@@ -141,14 +152,14 @@ public class AlbumController {
         TODO: gallery activity, although we just get the created albums that are saved in the firebase with their storageLocationUrl references
         TODO: that gets the albums all the thumbnails of those albums
      */
-    public void createAlbum (String albumName, Context context){
+        public void createAlbum (String albumName, Context context){
 
         createdAlbum.setName(albumName);
         this.context = context;
         openSelectionImageGallery();
     }
 
-    private void openSelectionImageGallery() {
+        private void openSelectionImageGallery() {
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
         //allows any image file type. Change * to specific extension to limit it
         intent.setType("image/*");
@@ -164,7 +175,7 @@ public class AlbumController {
         if (requestCode == REQUEST_PICTURES) {
             if (resultCode == Activity.RESULT_OK) {
                 if (data.getClipData() != null) { //data.getClipData is null
-                    //count before loop so you dont reset count everiteme
+                //count before loop so you dont reset count everiteme
                     int count = data.getClipData().getItemCount();
                     for (int i = 0; i < count; i++) {
                         currentImage.setImageURI(data.getClipData().getItemAt(i).getUri().toString());
@@ -185,20 +196,39 @@ public class AlbumController {
                 createdAlbum.setDate(Calendar.getInstance().getTime());
                 //getCreatedAlbum(createdAlbum);
             }
-        }
-        for (Image img : selectedImages)
-            Log.w(" TAG ALEXANDER IMAGEs " , img.getImageURI());
+     }
+     for (Image img : selectedImages)
+     Log.w(" TAG ALEXANDER IMAGEs " , img.getImageURI());
 
     }
 
     public Album deletePictureFromAlbum (Album sourceAlbum, Image imageToDelete) {
-        Album completedDelAlbum = new Album();
+            Album completedDelAlbum = new Album();
         return completedDelAlbum;
     }
 
 
-    public void deleteAlbum (Album albumToDelete) {
-        albumToDelete = new Album(); //Garbage collector will "delete" the unused Album Object.
+    public void deleteAlbum (final Album albumToDelete) {
+        DatabaseReference ref= FirebaseDatabase.getInstance().getReference();
+        Query query = ref.child("users").child("xGwcgPWbqeV3QNo3xa0OdxsTGcf2").orderByChild("name").equalTo("album1");
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                if(snapshot.exists()) {
+                }
+                //                exists = snapshot.exists();
+//                iAsyncCallback.RetrieveData(2);
+            }
+
+
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+
+        });
     }
 
 //    public Album transferImage(Album albumSource, Album albumTarget, ArrayList<Image> selectedImagesToTransfer) {
@@ -215,13 +245,13 @@ public class AlbumController {
 //        return albumTarget;
 //    }
 
-    //checks if images have the same URI
+        //checks if images have the same URI
     public boolean isUriEqual (Image imageSrc, Image imageTar) {
         if (imageSrc.getImageURI().equals(imageTar.getImageURI()))
             return true;
         else
             return false;
     }
-}
+    }
 
 

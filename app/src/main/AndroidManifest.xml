@@ -33,15 +33,14 @@
 
         <activity android:name=".Activities.MainActivity"
             android:theme="@style/Theme.PictureItTheme.Light.NoActionBar">
-        </activity>
-        <activity android:name=".Activities.LocalPhotosActivity"
-            android:theme="@style/Theme.PictureItTheme.Light.NoActionBar">
+
         </activity>
         <activity android:name=".Activities.PhotosActivity"/>
         <activity android:name=".Activities.PhotoViewActivity" />
         <activity
             android:name=".Activities.MetadataActivity"
             android:label="@string/title_activity_login">
+
         </activity>
 
         <activity

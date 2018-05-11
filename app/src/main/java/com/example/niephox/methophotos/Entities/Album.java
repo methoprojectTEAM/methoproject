@@ -54,6 +54,15 @@ public class Album {
         return images;
     }
 
+    public void addImage(Image image) { images.add(image); }
+
+    public void removeImage(Image image) {
+        for (Image img : images) {
+            if (img.getImageURI().equals(image.getImageURI()))
+                images.remove(img);
+        }
+    }
+
     public void setImages(ArrayList<Image> images) {
         this.images = images;
     }
