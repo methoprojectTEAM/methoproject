@@ -1,7 +1,10 @@
 package com.example.niephox.methophotos.Entities;
 
+import android.net.Uri;
+
 import com.drew.metadata.Metadata;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 
@@ -19,16 +22,25 @@ public class Image {
     public Metadata metadata;
     public String description;
     public int belongsToAlbumsCount;
-    ArrayList<String> imagesPath;
+
+    /*public String getStr_folder() {
+        return str_folder;
+    }
+
+    public void setStr_folder(String str_folder) {
+        this.str_folder = str_folder;
 
 
-
-    public ArrayList<String> getImagesPath() {
-        return imagesPath;
+    public ArrayList<String> getAl_imagepath() {
+        return al_imagepath;
     }
 
     public void setImagesPath(ArrayList<String> imagesPath) {
         this.imagesPath = imagesPath;
+    }
+
+    public void setAl_imagepath(ArrayList<String> al_imagepath) {
+        this.al_imagepath = al_imagepath;
     }
     public Image(String storageLocationURL, String downloadUrl, String name, Album album, Metadata metadata, String description) {
         this.storageLocationURL = storageLocationURL;
@@ -37,9 +49,6 @@ public class Image {
         this.album = album;
         this.metadata = metadata;
         this.description = description;
-    }
-    public void belongsToAlbumInc() {
-        belongsToAlbumsCount++;
     }
     public Image(String imageURI){
         this.imageURI = imageURI;
@@ -112,4 +121,32 @@ public class Image {
     }
 
 
+    public static final Parcelable.Creator<Image> CREATOR = new Parcelable.Creator<Image>() {
+        public Image createFromParcel(Parcel in) {
+            return new Image(in);
+        }
+
+        public Image[] newArray(int size) {
+            return new Image[size];
+        }
+    };
+    private Image(Parcel in) {
+        this.storageLocationURL=in.readString();
+        this.downloadUrl=in.readString();
+        this.description=in.readString();
+        this.imageURI=in.readString();
+    }
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.storageLocationURL);
+        dest.writeString(this.downloadUrl);
+        dest.writeString(this.description);
+        dest.writeString(this.imageURI);
+
+    }
 }

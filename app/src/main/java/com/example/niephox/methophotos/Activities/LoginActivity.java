@@ -211,7 +211,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
     private void LoginSuccess(){
 
-        Intent intent = new Intent(this,MainActivity.class);
+        Intent intent = new Intent(this,AlbumsViewActivity.class);
         startActivity(intent);
     }
     private boolean isEmailValid(String email) {

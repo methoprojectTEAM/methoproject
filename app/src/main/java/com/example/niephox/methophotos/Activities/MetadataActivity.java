@@ -16,6 +16,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.drew.imaging.jpeg.JpegSegmentMetadataReader;
 import com.drew.metadata.exif.ExifReader;
 import com.drew.metadata.iptc.IptcReader;
@@ -104,15 +105,26 @@ public class MetadataActivity extends AppCompatActivity implements iAsyncCallbac
 
     private void ShowImage() {
         if (image.getImageURI() == null) {
-            Glide.with(this).load(image.getDownloadUrl()).into(ivImage);
+            Glide
+                    .with(this)
+                    .load(image.getDownloadUrl())
+                    .thumbnail(0.1f)
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .skipMemoryCache(false)
+                    .into(ivImage);
         } else {
-            Glide.with(this).load(image.getImageURI()).into(ivImage);
+            Glide
+                    .with(this)
+                    .load(image.getImageURI())
+                    .thumbnail(0.1f)
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .skipMemoryCache(false)
+                    .into(ivImage);
         }
     }
 
     private void GetImage() {
-        int ImageIndex = getIntent().getIntExtra("ImageIndex", 0);
-        image = MainActivity.al_images.get(ImageIndex);
+        image=getIntent().getParcelableExtra("image");
     }
 
     @Override
@@ -128,7 +140,6 @@ public class MetadataActivity extends AppCompatActivity implements iAsyncCallbac
     public void RetrieveData(int RequestCode) {
 
     }
-
 
     public void toast(String message) {
         Context context = getApplicationContext();

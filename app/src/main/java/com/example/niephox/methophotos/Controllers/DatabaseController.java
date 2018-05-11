@@ -1,5 +1,6 @@
 package com.example.niephox.methophotos.Controllers;
 
+import android.provider.MediaStore;
 import android.util.Log;
 
 import com.example.niephox.methophotos.Entities.Album;
@@ -11,9 +12,13 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by Niephox on 4/18/2018.
@@ -22,10 +27,12 @@ import java.util.ArrayList;
 public class DatabaseController {
     private DatabaseReference firebaseRef = FirebaseDatabase.getInstance().getReference();
     private DatabaseReference firebaseUserRef = FirebaseDatabase.getInstance().getReference("/users");
-    private FirebaseAuth mAuth = FirebaseAuth.getInstance();
+    private FirebaseAuth mAuth ;
     private ArrayList<Image> userImageDataset = new ArrayList<>();
-    public ArrayList<Album> userAlbums = new ArrayList<>();
-    public  User currentUser;
+    private GenericTypeIndicator<ArrayList<Image>> genericTypeIndiactor = new GenericTypeIndicator<ArrayList<Image>>(){};
+    private ArrayList<Album> userAlbums = new ArrayList<>();
+    private  User currentUser=new User(" ","",new ArrayList<Album>());
+
     public static iAsyncCallback iAsyncCallback;
 
     public DatabaseController() {
@@ -33,8 +40,17 @@ public class DatabaseController {
         //getCurrentUser();
     }
 
+
+    public User returnCurentUser()
+    {
+        return currentUser;
+    }
+
     public void getCurrentUser() {
-        String currentUserUID = mAuth.getCurrentUser().getUid();
+        userAlbums.clear();
+        currentUser.albumsClear();
+        mAuth = FirebaseAuth.getInstance();
+        final String currentUserUID = mAuth.getCurrentUser().getUid();
         firebaseUserRef.child(currentUserUID).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -83,23 +99,34 @@ public class DatabaseController {
     }
 
     public void addAlbumDatabase(User user, Album album) {
-        firebaseUserRef.child(user.getUserUID()).child("albums").child(album.name).setValue(album.name);
-        firebaseUserRef.child(user.getUserUID()).child("albums").child(album.name).setValue(album);
+        firebaseUserRef.child(user.getUserUID()).child("albums").child(album.getName()).setValue(album.getName());
+        firebaseUserRef.child(user.getUserUID()).child("albums").child(album.getName()).setValue(album);
+    }
+    public void addImagesToAlbum(User user, String album, Image image) {
+        firebaseUserRef.child(user.getUserUID()).child("albums").child(album).child("images").setValue(image);
     }
 
-    public void getUserAlbums(String userUID) {
+    public void getUserAlbums() {
         userImageDataset.clear();
         userAlbums.clear();
-        firebaseUserRef.child(userUID).child("albums").
+        currentUser.albumsClear();
+        firebaseUserRef.child(currentUser.getUserUID()).child("albums").
                 addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         if (dataSnapshot.exists()) {
                             for (DataSnapshot child : dataSnapshot.getChildren()) {
-                                Album album = child.getValue(Album.class);
+
+                                userImageDataset = child.child("images").getValue(genericTypeIndiactor);
+                                Date date = child.child("date").getValue(Date.class);
+                                String desc = child.child("description").getValue(String.class);
+                                String name = child.child("name").getValue(String.class);
+                                Album album = new Album(name,date,desc,userImageDataset);
                                 userAlbums.add(album);
                             }
-                            iAsyncCallback.RefreshView(2);
+                            currentUser.addAlbums(userAlbums);
+                            iAsyncCallback.RefreshView(1);
+                            Log.e("size", userAlbums.size()+"");
 
                         } else {
                             Log.w("DB", "SnapShot Does not exist");

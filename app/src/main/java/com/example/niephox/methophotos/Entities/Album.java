@@ -8,10 +8,10 @@ import java.util.Date;
  */
 
 public class Album {
-    public String name;
-    public Date date;
-    public String description;
-    public ArrayList<Image> images;
+    private String name;
+    private Date date;
+    private String description;
+    private ArrayList<Image> images;
 
     public Album() {
     }
@@ -23,10 +23,12 @@ public class Album {
         this.images = images;
     }
 
+
     public String getName() {
 
         return name;
     }
+
 
     public void setName(String name) {
         this.name = name;

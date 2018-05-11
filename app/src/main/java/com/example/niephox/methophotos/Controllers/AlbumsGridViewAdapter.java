@@ -18,13 +18,17 @@ import com.example.niephox.methophotos.R;
 
 import java.util.ArrayList;
 import java.util.Date;
+/**
+ * Created by IgorSpiridonov
+ */
+
 
 public class AlbumsGridViewAdapter extends ArrayAdapter<Album> {
 
 
-    Context context;
-    ViewHolder viewHolder;
-    ArrayList<Album> alAlbums = new ArrayList<>();
+    private Context context;
+    private ViewHolder viewHolder;
+    private ArrayList<Album> alAlbums = new ArrayList<>();
 
     public AlbumsGridViewAdapter(Context context, ArrayList<Album> alAlbums) {
         super(context, R.layout.gridview_relative_layout, alAlbums);
@@ -71,22 +75,40 @@ public class AlbumsGridViewAdapter extends ArrayAdapter<Album> {
         viewHolder.nameTextView =(TextView) convertView.findViewById(R.id.textView2);
         viewHolder.creationDateTextView = (TextView) convertView.findViewById((R.id.textView));
 
-        viewHolder.nameTextView.setText(alAlbums.get(position).name);
-        Date date = new Date();
-        date = alAlbums.get(position).date;
-        viewHolder.creationDateTextView.setText(date.getDate() + "/" +date.getMonth()+"/" +date.getYear());
+        viewHolder.nameTextView.setText(alAlbums.get(position).getName());
 
-        Glide.with(context)
-                .load(alAlbums.get(position).images.get(0).downloadUrl)
-                .diskCacheStrategy(DiskCacheStrategy.NONE)
-                .skipMemoryCache(true)
-                .into(viewHolder.ivImage);
+        Date date = new Date();
+        date = alAlbums.get(position).getDate();
+        if(date!=null) {
+            viewHolder.creationDateTextView.setText(date.getDate() + "/" + date.getMonth() + "/" + date.getYear());
+        }
+
+        if(alAlbums.get(position).getImages()!=null) {
+            if(alAlbums.get(position).getImages().get(0).getImageURI()==null) {
+                Glide.with(context)
+                        .load(alAlbums.get(position).getImages().get(0).getDownloadUrl())
+                        .thumbnail(0.01f)
+                        .centerCrop()
+                        .diskCacheStrategy(DiskCacheStrategy.ALL)
+                        .skipMemoryCache(false)
+                        .into(viewHolder.ivImage);
+            }
+            else{
+                Glide.with(context)
+                        .load(alAlbums.get(position).getImages().get(0).getImageURI())
+                        .thumbnail(0.01f)
+                        .centerCrop()
+                        .diskCacheStrategy(DiskCacheStrategy.ALL)
+                        .skipMemoryCache(false)
+                        .into(viewHolder.ivImage);
+            }
+        }
 
         return convertView;
     }
     private static class ViewHolder {
-        ImageView ivImage;
-        TextView nameTextView;
-        TextView creationDateTextView;
+        private ImageView ivImage;
+        private TextView nameTextView;
+        private TextView creationDateTextView;
     }
 }
