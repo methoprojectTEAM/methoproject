@@ -58,8 +58,7 @@ public class AlbumController {
 
     //to get maiActivity context when calling onActivityResult
     public AlbumController(Context context) {
-
-        this.context = context;
+    	this.context = context;
     }
     //you can create an AlbumCreateController by giving the EditText album name, that the user
     //enters and the constructor will throw a pop up screen to the user for selecting pictures saved
@@ -152,14 +151,14 @@ public class AlbumController {
         TODO: gallery activity, although we just get the created albums that are saved in the firebase with their storageLocationUrl references
         TODO: that gets the albums all the thumbnails of those albums
      */
-        public void createAlbum (String albumName, Context context){
+    public void createAlbum (String albumName, Context context){
 
         createdAlbum.setName(albumName);
         this.context = context;
         openSelectionImageGallery();
     }
 
-        private void openSelectionImageGallery() {
+    private void openSelectionImageGallery() {
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
         //allows any image file type. Change * to specific extension to limit it
         intent.setType("image/*");
@@ -198,35 +197,33 @@ public class AlbumController {
             }
      }
      for (Image img : selectedImages)
-         Log.w(" TAG ALEXANDER IMAGEs " , img.getImageURI());
+     	Log.w(" TAG ALEXANDER IMAGEs " , img.getImageURI());
 
     }
 
     public Album deletePictureFromAlbum (Album sourceAlbum, Image imageToDelete) {
-
-        Album completedDelAlbum = new Album();
-        return completedDelAlbum;
+        	Album completedDelAlbum = new Album();
+        	return completedDelAlbum;
     }
 
 
     public void deleteAlbum (Album albumToDelete) {
-     		DatabaseReference ref= FirebaseDatabase.getInstance().getReference();
-     		Query query = ref.child("users").child("").orderByChild("name").equalTo("album1");
+        DatabaseReference ref= FirebaseDatabase.getInstance().getReference();
+     	Query query = ref.child("users").child("xGwcgPWbqeV3QNo3xa0OdxsTGcf2").orderByChild("name").equalTo("album1");
         query.addListenerForSingleValueEvent(new ValueEventListener() {
         boolean is = false;
-            @Override
-            public void onDataChange(DataSnapshot snapshot) {
-                if(snapshot.exists()) {
-
-                }
+        	@Override
+			public void onDataChange(DataSnapshot snapshot) {
+				for (DataSnapshot dummySnapshot: snapshot.getChildren()) {
+					dummySnapshot.getRef().removeValue();
+				}
                 //                exists = snapshot.exists();
 //                iAsyncCallback.RetrieveData(2);
             }
 
-
-
             @Override
             public void onCancelled(DatabaseError databaseError) {
+
 
             }
 
@@ -254,7 +251,7 @@ public class AlbumController {
             return true;
         else
             return false;
-    }
+    	}
     }
 
 

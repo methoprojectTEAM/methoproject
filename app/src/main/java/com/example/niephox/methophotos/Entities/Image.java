@@ -30,6 +30,7 @@ public class Image {
     public void setImagesPath(ArrayList<String> imagesPath) {
         this.imagesPath = imagesPath;
     }
+
     public Image(String storageLocationURL, String downloadUrl, String name, Album album, Metadata metadata, String description) {
         this.storageLocationURL = storageLocationURL;
         this.downloadUrl = downloadUrl;
