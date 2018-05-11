@@ -10,6 +10,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.constraint.solver.widgets.Snapshot;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -22,7 +23,16 @@ import android.widget.Toast;
 import com.example.niephox.methophotos.Activities.MainActivity;
 import com.example.niephox.methophotos.Entities.Album;
 import com.example.niephox.methophotos.Entities.Image;
+import com.example.niephox.methophotos.Entities.User;
+import com.example.niephox.methophotos.Interfaces.iAsyncCallback;
 import com.example.niephox.methophotos.R;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -41,6 +51,7 @@ public class AlbumController {
     private Context context; //context is used for selectionImageGallery
     private Activity genActivity; //its important bcs this is controller not an Activity
     private boolean boolean_folder;
+    public  static com.example.niephox.methophotos.Interfaces.iAsyncCallback iAsyncCallback;
 
 
     public AlbumController() { }
@@ -192,13 +203,32 @@ public class AlbumController {
     }
 
     public Album deletePictureFromAlbum (Album sourceAlbum, Image imageToDelete) {
-        Album completedDelAlbum = new Album();
+            Album completedDelAlbum = new Album();
         return completedDelAlbum;
     }
 
 
-    public void deleteAlbum (Album albumToDelete) {
-        albumToDelete = new Album(); //Garbage collector will "delete" the unused Album Object.
+    public void deleteAlbum (final Album albumToDelete) {
+        DatabaseReference ref= FirebaseDatabase.getInstance().getReference();
+        Query query = ref.child("users").child("xGwcgPWbqeV3QNo3xa0OdxsTGcf2").orderByChild("name").equalTo("album1");
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                if(snapshot.exists()) {
+                }
+                //                exists = snapshot.exists();
+//                iAsyncCallback.RetrieveData(2);
+            }
+
+
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+
+        });
     }
 
 //    public Album transferImage(Album albumSource, Album albumTarget, ArrayList<Image> selectedImagesToTransfer) {
