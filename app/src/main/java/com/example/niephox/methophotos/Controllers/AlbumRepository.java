@@ -43,7 +43,7 @@ import java.util.Date;
  * Created by greycr0w on 4/28/2018.
  */
 
-public class AlbumController {
+public class AlbumRepository {
     private ArrayList<Image> selectedImages;
     private Image currentImage;
     private Album createdAlbum = new Album();
@@ -54,10 +54,10 @@ public class AlbumController {
     public  static com.example.niephox.methophotos.Interfaces.iAsyncCallback iAsyncCallback;
 
 
-    public AlbumController() { }
+    public AlbumRepository() { }
 
     //to get maiActivity context when calling onActivityResult
-    public AlbumController(Context context) {
+    public AlbumRepository(Context context) {
     	this.context = context;
     }
     //you can create an AlbumCreateController by giving the EditText album name, that the user
@@ -69,7 +69,7 @@ public class AlbumController {
 
 
 
-    public AlbumController(String albumName, Context context) {
+    public AlbumRepository(String albumName, Context context) {
 
         createdAlbum.setName(albumName);
         this.context = context;
@@ -178,14 +178,12 @@ public class AlbumController {
                     int count = data.getClipData().getItemCount();
                     for (int i = 0; i < count; i++) {
                         currentImage.setImageURI(data.getClipData().getItemAt(i).getUri().toString());
-                        currentImage.belongsToAlbumInc();
                         selectedImages.add(currentImage);
                         currentImage = new Image();
                     } //else if there is only one image selected, do this:
                 }else if (data.getData() != null) {
                     Uri singleImagePath = data.getData();
                     currentImage.setImageURI(singleImagePath.toString());
-                    currentImage.belongsToAlbumInc();
                     selectedImages.add(currentImage);
                 }
             }

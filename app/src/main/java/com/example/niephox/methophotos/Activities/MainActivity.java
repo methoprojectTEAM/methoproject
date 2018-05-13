@@ -5,9 +5,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.net.Uri;
-import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -23,28 +21,18 @@ import android.widget.Button;
 import android.widget.GridView;
 import android.widget.Toast;
 
-import com.example.niephox.methophotos.Controllers.AlbumController;
+import com.example.niephox.methophotos.Controllers.AlbumRepository;
 import com.example.niephox.methophotos.Controllers.AlbumsGridViewAdapter;
 import com.example.niephox.methophotos.Controllers.DatabaseController;
-import com.example.niephox.methophotos.Controllers.PhotosFolderAdapter;
 import com.example.niephox.methophotos.Controllers.StorageController;
 import com.example.niephox.methophotos.Entities.Album;
 import com.example.niephox.methophotos.Entities.Image;
 import com.example.niephox.methophotos.Entities.User;
 import com.example.niephox.methophotos.Interfaces.iAsyncCallback;
 import com.example.niephox.methophotos.R;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
 
-import java.io.File;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.UUID;
 
 
 public class MainActivity extends AppCompatActivity implements  iAsyncCallback {
@@ -69,7 +57,7 @@ public class MainActivity extends AppCompatActivity implements  iAsyncCallback {
     private final static int REQUEST_PICTURES = 1; //final
     private final static String TAG_BROWSE_PICTURE = "BROWSE_PICTURE";
     private int currentDisplayedUserSelectImageIndex = 0;
-    AlbumController ctrler;
+    AlbumRepository ctrler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,7 +87,7 @@ public class MainActivity extends AppCompatActivity implements  iAsyncCallback {
        // dbController.RegisterCallback(this);
         //GetLocalPhotos(this);
         //storageController.GetLocalPhotos(this);
-        ctrler = new AlbumController();
+        ctrler = new AlbumRepository();
        //album = ctrler.getLocalAlbum(this);
         checkPermissions(this);
        for(Image img : album.getImages())
@@ -115,7 +103,7 @@ public class MainActivity extends AppCompatActivity implements  iAsyncCallback {
     /*
     CREATED BY ALEXANDER
      */
-    //we cannot run onActivityResult to our AlbumController.class because its simply not an activity.
+    //we cannot run onActivityResult to our AlbumRepository.class because its simply not an activity.
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
        ctrler.onActivityResult(requestCode, resultCode, data);
