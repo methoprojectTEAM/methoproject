@@ -33,6 +33,7 @@ import com.example.niephox.methophotos.R;
 import com.google.firebase.storage.FirebaseStorage;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 
 public class MainActivity extends AppCompatActivity implements  iAsyncCallback {
@@ -90,15 +91,23 @@ public class MainActivity extends AppCompatActivity implements  iAsyncCallback {
         ctrler = new AlbumRepository();
        //album = ctrler.getLocalAlbum(this);
         checkPermissions(this);
-       for(Image img : album.getImages())
-           Log.w("FINAL IMAGES OF DEVICE", img.getImageURI());
-           //ctrler.getLocalAlbum(this);
-        ctrler.deleteAlbum(album);
+        //album.setName("album1");
+        Album album2 = new Album();
+        album2.setName("album2");
+        album2.setDate(Calendar.getInstance().getTime());
+        album2.setDescription("Random album");
+        ctrler.createAlbum(album2);
+        ctrler.createAlbum(album);
+        //ctrler.deleteAlbum(album);
+//       for(Image img : album.getImages())
+//           Log.w("FINAL IMAGES OF DEVICE", img.getImageURI());
+//           //ctrler.getLocalAlbum(this);
+
     }
 
 
     public void testAlbumCreate(View view) {
-        ctrler.createAlbum("Album1", this);
+        ctrler.createAlbumFromSelection("Album1", this);
     }
     /*
     CREATED BY ALEXANDER
