@@ -71,7 +71,7 @@ public class MainActivity extends AppCompatActivity implements  iAsyncCallback {
         registerForContextMenu(gvAlbums);
         FirebaseStorage storage;
         /*TODO: This chunk is to test uploading an image to
-        TODO: firebase storage... delete it when not useful for testing.n
+        TODO: firebase storage.. . delete it when not useful for testing.n
         StorageReference storageReference;
         Uri file = Uri.fromFile(new File("/storage/emulated/0/Download/alextest.jpeg"));
         storage = FirebaseStorage.getInstance();
@@ -96,8 +96,14 @@ public class MainActivity extends AppCompatActivity implements  iAsyncCallback {
         album2.setName("album2");
         album2.setDate(Calendar.getInstance().getTime());
         album2.setDescription("Random album");
-        ctrler.createAlbum(album2);
-        ctrler.createAlbum(album);
+        ctrler.createAlbumFromSelection(album2, this);
+        // ctrler.createAlbum(album2);
+        //ctrler.createAlbum(album);
+        Image img = new Image();
+        img.setName("imageName");
+        img.setImageURI("/storage/emulated/0/Download/alextest.jpeg");
+        ctrler.transferImage(img, album, album2);
+        //ctrler.deleteAlbum(album2);
         //ctrler.deleteAlbum(album);
 //       for(Image img : album.getImages())
 //           Log.w("FINAL IMAGES OF DEVICE", img.getImageURI());
@@ -107,7 +113,8 @@ public class MainActivity extends AppCompatActivity implements  iAsyncCallback {
 
 
     public void testAlbumCreate(View view) {
-        ctrler.createAlbumFromSelection("Album1", this);
+        Album newAlbum = new Album();
+        AlbumRepository newRepo = new AlbumRepository("Album", "this is a random album", this);
     }
     /*
     CREATED BY ALEXANDER

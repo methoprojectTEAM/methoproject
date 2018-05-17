@@ -1,8 +1,12 @@
 package com.example.niephox.methophotos.Entities;
 
+import android.os.Build;
+import android.support.annotation.RequiresApi;
+
 import com.drew.metadata.Metadata;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 
 /**
@@ -18,7 +22,6 @@ public class Image {
     public Album album;
     public Metadata metadata;
     public String description;
-    public int belongsToAlbumsCount;
     ArrayList<String> imagesPath;
 
 
@@ -39,8 +42,11 @@ public class Image {
         this.metadata = metadata;
         this.description = description;
     }
-    public void belongsToAlbumInc() {
-        belongsToAlbumsCount++;
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    @Override
+    public int hashCode(){
+        //this.name = Objects.hashCode(this.imageURI);
+        return 0;
     }
     public Image(String imageURI){
         this.imageURI = imageURI;

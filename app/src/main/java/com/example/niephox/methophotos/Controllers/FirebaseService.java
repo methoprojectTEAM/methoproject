@@ -18,7 +18,7 @@ public class FirebaseService {
 	}
 
 	public void queryAlbumDelete(Album albumToDelete) {
-		query = ref.child("users").child(user.getUserUID()).child("albums").orderByChild("name").equalTo("album2");
+		query = ref.child("users").child(user.getUserUID()).child("albums").orderByChild("name").equalTo(albumToDelete.getName());
 		query.addListenerForSingleValueEvent(new ValueEventListener() {
 			@Override
 			public void onDataChange(DataSnapshot snapshot) {
@@ -41,7 +41,23 @@ public class FirebaseService {
 		ref.child("users").child(user.getUserUID()).child("albums").child(albumToCreate.getName()).setValue(albumToCreate);
 	}
 
-	public void queryTransferImage(Image image, Album fromAlbum, Album toAlbum) {
+	public void queryTransferImage(final Image image, Album fromAlbum, final Album toAlbum) {
+		//delete the image with the current uri from album and add it to the other
+		query = ref.child("users").child(user.getUserUID()).child("albums").child("name").child(fromAlbum.getName()).child("images").orderByChild("ImageURI").equalTo(image.getImageURI());
+		query.addListenerForSingleValueEvent(new ValueEventListener() {
+			@Override
+			public void onDataChange(DataSnapshot snapshot) {
+				for (DataSnapshot stock : snapshot.getChildren()) {
+					if (stock.getValue().equals(image.getImageURI()))
+						stock.getRef().removeValue();
+				}
+				ref.child("users").child(user.getUserUID()).child("albums").child(toAlbum.getName()).child("images").setValue(image);
+			}
+			@Override
+			public void onCancelled(DatabaseError databaseError) {
 
+			}
+
+		});
 	}
 }
