@@ -1,4 +1,4 @@
-package com.example.niephox.methophotos.Controllers;
+package com.example.niephox.methophotos.ViewControllers;
 
 import android.content.Context;
 import android.support.annotation.Nullable;

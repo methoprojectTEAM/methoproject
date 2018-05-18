@@ -128,8 +128,8 @@ public class MetadataActivity extends AppCompatActivity implements iAsyncCallbac
     }
 
     @Override
-    public void RefreshView(int RequestCode) {
-        if(RequestCode == 3 ){
+    public void RefreshView(REQUEST_CODE rq) {
+        if(rq == REQUEST_CODE.METADATA ){
         metadataList.clear();
         metadataList.addAll(MetadataController.filteredList);
         toast(" " + metadataList.size());
@@ -137,7 +137,7 @@ public class MetadataActivity extends AppCompatActivity implements iAsyncCallbac
     }
 
     @Override
-    public void RetrieveData(int RequestCode) {
+    public void RetrieveData(REQUEST_CODE rq) {
 
     }
 
@@ -147,6 +147,7 @@ public class MetadataActivity extends AppCompatActivity implements iAsyncCallbac
         Toast toast = Toast.makeText(context, message, duration);
         toast.show();
     }
+
 
 
 }

@@ -2,12 +2,11 @@ package com.example.niephox.methophotos.Activities;
 
 
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.GridView;
 
-import com.example.niephox.methophotos.Controllers.GridViewAdapter;
+import com.example.niephox.methophotos.ViewControllers.GridViewAdapter;
 import com.example.niephox.methophotos.R;
 
 

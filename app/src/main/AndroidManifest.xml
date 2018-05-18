@@ -51,6 +51,7 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".Activities.LocalPhotosActivity"></activity>
 
         <activity android:name=".Activities.AlbumsViewActivity">
             <intent-filter>

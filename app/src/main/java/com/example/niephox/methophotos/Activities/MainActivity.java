@@ -1,19 +1,8 @@
 package com.example.niephox.methophotos.Activities;
 
-import android.Manifest;
-import android.app.ActionBar;
-import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
-import android.net.Uri;
-import android.provider.MediaStore;
 import android.support.annotation.NonNull;
-import android.support.design.widget.NavigationView;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -24,25 +13,16 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.GridView;
-import android.widget.ListView;
 import android.widget.Toast;
-import android.widget.Toolbar;
 
-import com.drew.imaging.jpeg.JpegSegmentMetadataReader;
-import com.drew.metadata.Metadata;
 import com.example.niephox.methophotos.Controllers.AlbumsGridViewAdapter;
-import com.example.niephox.methophotos.Controllers.CustomListViewAdapter;
 import com.example.niephox.methophotos.Controllers.DatabaseController;
-import com.example.niephox.methophotos.Controllers.MetadataController;
-import com.example.niephox.methophotos.Controllers.PhotosFolderAdapter;
 import com.example.niephox.methophotos.Controllers.StorageController;
 import com.example.niephox.methophotos.Entities.Album;
 import com.example.niephox.methophotos.Entities.Image;
 import com.example.niephox.methophotos.Entities.User;
 import com.example.niephox.methophotos.Interfaces.iAsyncCallback;
 import com.example.niephox.methophotos.R;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -145,11 +125,11 @@ public class MainActivity extends AppCompatActivity implements iAsyncCallback {
         }
 
         @Override
-        public void RefreshView ( int RequestCode){
-            switch (RequestCode) {
-                case 1:
+        public void RefreshView ( REQUEST_CODE rq){
+            switch (rq) {
+                case STORAGE:
                     break;
-                case 2:
+                case DATABASE:
                     alAlbums.clear();
 //                alAlbums.addAll(dbController.userAlbums);
                     albumsAdapter.notifyDataSetChanged();
@@ -158,14 +138,14 @@ public class MainActivity extends AppCompatActivity implements iAsyncCallback {
         }
 
         @Override
-        public void RetrieveData ( int RequestCode){
-            switch (RequestCode) {
-                case 1:
+        public void RetrieveData ( REQUEST_CODE rq){
+            switch (rq) {
+                case STORAGE:
                     al_images.clear();
                     al_images.addAll(storageController.al_images);
                     CreateLocalAlbum(al_images);
                     break;
-                case 2:
+                case DATABASE:
                     curentUser = dbController.returnCurentUser();
                     break;
                 default:
