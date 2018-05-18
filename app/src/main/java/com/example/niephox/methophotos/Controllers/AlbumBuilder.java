@@ -5,6 +5,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.example.niephox.methophotos.Entities.Album;
@@ -42,20 +43,26 @@ public class AlbumBuilder {
         //images.clear();
         images.addAll(localImages);
         String dateTag = "[File] File Modified Date";
+        int counter = 0;
         for (int i = 0; i < 50; i++) {
             metadataController.ExtractMetadata(images.get(i));
             metadataString.clear();
             metadataString.addAll(metadataController.filteredList);
+
             for (String tag : metadataString) {
                 if (tag.contains(dateTag)) {
+
+                    counter++;
                     String[] tagSplit = tag.split("- ", 2);
                     Date date = dateParser(tagSplit[1]);
                     calculateAlbum(date,images.get(i));
 
                 }
             }
+            Log.w("IMGTAG","image "+i + "has iffed "+counter);
+            counter = 0;
         }
-        flag = true;
+
         iAsyncCallback.RetrieveData(com.example.niephox.methophotos.Interfaces.iAsyncCallback.REQUEST_CODE.METADATA);
 
     }
@@ -76,6 +83,7 @@ public class AlbumBuilder {
            if (ChronoUnit.DAYS.between(albumdate,imageDate) == 0) {
                 albumChild.addImage(image);
                 flag = true;
+                break;
             }
         }
         if(flag == false){
