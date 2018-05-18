@@ -81,7 +81,7 @@ public class LocalPhotosController {
         if (requestCode == REQUEST_PICTURES) {
             if (resultCode == Activity.RESULT_OK) {
                 if (data.getClipData() != null) { //data.getClipData is null
-                    //count before loop so you dont reset count everiteme
+                    //description before loop so you dont reset description everiteme
                     int count = data.getClipData().getItemCount();
                     for (int i = 0; i < count; i++) {
                         currentImage.setImageURI(data.getClipData().getItemAt(i).getUri().toString());
