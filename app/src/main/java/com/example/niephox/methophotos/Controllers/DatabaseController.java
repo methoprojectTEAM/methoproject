@@ -39,12 +39,15 @@ public class DatabaseController {
 
         //getCurrentUser();
     }
-
+    public User getUser() {
+        return currentUser;
+    }
 
     public User returnCurentUser()
     {
         return currentUser;
     }
+
 
     public void getCurrentUser() {
         userAlbums.clear();
@@ -55,8 +58,17 @@ public class DatabaseController {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
-                    //currentUser = dataSnapshot.getValue(User.class);
-//                    iAsyncCallback.RetrieveData(2);
+                  String userUID =dataSnapshot.child("userUID").getValue(String.class);
+                  String username = dataSnapshot.child("username").getValue(String.class);
+//                  currentUser.albums.clear();
+                  currentUser.setUserUID(userUID);
+                  currentUser.setUsername(username);
+                    for (DataSnapshot child : dataSnapshot.getChildren()) {
+                        Album album = child.child("albums").getValue(Album.class);
+                        userAlbums.add(album);
+                    }
+                    currentUser.addAlbums(userAlbums);
+                    iAsyncCallback.RetrieveData(2);
                 } else {
                     Log.w("User", "User Doesnt exist in Database");
                 }

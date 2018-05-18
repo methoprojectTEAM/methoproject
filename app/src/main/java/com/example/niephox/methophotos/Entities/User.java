@@ -1,5 +1,8 @@
 package com.example.niephox.methophotos.Entities;
 
+import android.util.Log;
+
+import com.example.niephox.methophotos.Controllers.AuthenticationController;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
@@ -39,7 +42,7 @@ public class User {
 
 
     public String getUserUID() {
-        return userUID;
+       return AuthenticationController.GetCurrentlySignedUser().getUid();
     }
 
     public void setUserUID(String userUID) {

@@ -23,7 +23,9 @@ public class AuthenticationController {
     private static AuthCredential userCredential;
     private static String FIREBASE_AUTH;
 
+    public AuthenticationController() {
 
+    }
     public static void deleteUser() {
         databaseController.deleteUserDatabase(currentUser.getUid());
         currentUser.delete();
@@ -55,6 +57,7 @@ public class AuthenticationController {
     }
 
     public static FirebaseUser GetCurrentlySignedUser() {
+
         return currentUser;
     }
 
