@@ -69,8 +69,8 @@ public class AlbumsAdapter extends RecyclerView.Adapter<AlbumsAdapter.MyViewHold
         if (albumThumbnail.getImageURI() == null) {
             Glide.with(mContext).load(albumThumbnail.getDownloadUrl()).into(holder.thumbnail);
         } else {
-            Glide.with(mContext).load(albumThumbnail.getImageURI()).into(holder.thumbnail);
-        }
+             Glide.with(mContext).load(albumThumbnail.getImageURI()).into(holder.thumbnail);
+       }
 
         holder.overflow.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -3,6 +3,8 @@ package com.example.niephox.methophotos.Controllers;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.widget.Toast;
 
 import com.example.niephox.methophotos.Entities.Album;
@@ -12,6 +14,9 @@ import com.example.niephox.methophotos.Interfaces.iAsyncCallback;
 import java.lang.reflect.Array;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -19,7 +24,7 @@ public class AlbumBuilder {
     private ArrayList<Image> images = new ArrayList<>();
     private ArrayList<Album> albumscreated = new ArrayList<>();
     private MetadataController metadataController = new MetadataController();
-    private iAsyncCallback iAsyncCallback;
+    public static iAsyncCallback iAsyncCallback;
     private ArrayList<String> metadataString = new ArrayList<>();
     private Context context;
     private String resp;
@@ -28,44 +33,62 @@ public class AlbumBuilder {
 
     public AlbumBuilder(){
     }
+    public  ArrayList<Album> getAlbumsGenerated (){
+        return this.albumscreated;
+    }
 
-
-    public   ArrayList<Album> buildBasedOnDate(ArrayList<Image> localImages) {
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public   void buildBasedOnDate(ArrayList<Image> localImages) {
         //images.clear();
         images.addAll(localImages);
         String dateTag = "[File] File Modified Date";
-        for (int i = 0; i < 20; i++) {
+        for (int i = 0; i < 50; i++) {
             metadataController.ExtractMetadata(images.get(i));
+            metadataString.clear();
             metadataString.addAll(metadataController.filteredList);
             for (String tag : metadataString) {
                 if (tag.contains(dateTag)) {
                     String[] tagSplit = tag.split("- ", 2);
                     Date date = dateParser(tagSplit[1]);
                     calculateAlbum(date,images.get(i));
+
                 }
             }
         }
         flag = true;
-        return albumscreated;
+        iAsyncCallback.RetrieveData(com.example.niephox.methophotos.Interfaces.iAsyncCallback.REQUEST_CODE.METADATA);
+
     }
 
-    private void calculateAlbum(Date date,Image image) {
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private void calculateAlbum(Date date, Image image) {
         if(albumscreated.size()== 0){
-            newAlbumCreation(date);
+            newAlbumCreation(date,image);
         }
+        flag = false;
         for (Album albumChild: albumscreated){
-            if (albumChild.getDate() == date){
+
+            LocalDate albumdate = albumChild.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+            LocalDate imageDate = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+           long timedif = ChronoUnit.DAYS.between(albumdate,imageDate);
+
+           if (ChronoUnit.DAYS.between(albumdate,imageDate) == 0) {
                 albumChild.addImage(image);
-            }else{
-                newAlbumCreation(date);
+                flag = true;
             }
-            break;
+        }
+        if(flag == false){
+            newAlbumCreation(date,image);
+
         }
 
+
     }
-    private void newAlbumCreation(Date date){
+    private void newAlbumCreation(Date date, Image image){
         Album album = new Album();
         album.setName(date.toString());
+        album.setThumbnail(image);
         album.setDescription("Automatically created based on date");
         album.setDate(date);
         albumscreated.add(album);
@@ -80,17 +103,14 @@ public class AlbumBuilder {
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        String FormattedDate = "";
-        SimpleDateFormat formatter = new SimpleDateFormat("DD MM YYYY");
-        FormattedDate = formatter.format(date);
-        try {
-              Date newdate = formatter.parse(FormattedDate);
-              date =newdate;
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+
+
 
         return date;
     }
+    public void RegisterCallback(iAsyncCallback iAsyncCallback) {
+        this.iAsyncCallback = iAsyncCallback;
+    }
+
 
 }

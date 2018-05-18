@@ -5,8 +5,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -54,7 +56,7 @@ public class AlbumsViewActivity extends AppCompatActivity implements iAsyncCallb
     //Controllers:
     private DatabaseController dbController;
     private LocalPhotosController localPhotosController;
-
+    private AlbumBuilder albumBuilder;
 
     //Intents:
     private User curentUser;
@@ -67,6 +69,7 @@ public class AlbumsViewActivity extends AppCompatActivity implements iAsyncCallb
     private final int REQUEST_PERMISSIONS = 100;
 
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -118,6 +121,7 @@ public class AlbumsViewActivity extends AppCompatActivity implements iAsyncCallb
     @Override
     public void RetrieveData(REQUEST_CODE rq) {
         if (rq == REQUEST_CODE.METADATA) {
+            alAlbums.addAll(albumBuilder.getAlbumsGenerated());
             adapter.notifyDataSetChanged();
         } else {
             curentUser = dbController.returnCurentUser();
@@ -164,6 +168,7 @@ public class AlbumsViewActivity extends AppCompatActivity implements iAsyncCallb
         return super.onOptionsItemSelected(item);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     public void checkPermissions(Context context) {
         final int REQUEST_PERMISSIONS = 100;
         Activity activity = (Activity) context;
@@ -183,8 +188,10 @@ public class AlbumsViewActivity extends AppCompatActivity implements iAsyncCallb
             Log.e("Else", "Else");
             localAlbum = albumController.getLocalAlbum(context);
            //AUTOMATIC GENERATION
-            AlbumBuilder albumBuilder = new AlbumBuilder();
+              albumBuilder = new AlbumBuilder();
+            albumBuilder.RegisterCallback(this);
             albumBuilder.buildBasedOnDate(localAlbum.getImages());
+
 
         }
     }
