@@ -48,6 +48,12 @@ public class DatabaseController {
         return currentUser;
     }
 
+
+    public User returnCurentUser()
+    {
+        return currentUser;
+    }
+
     public void getCurrentUser() {
         userAlbums.clear();
         currentUser.albumsClear();
