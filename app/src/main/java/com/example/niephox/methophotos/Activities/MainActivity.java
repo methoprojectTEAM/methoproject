@@ -69,7 +69,7 @@ public class MainActivity extends AppCompatActivity implements  iAsyncCallback {
         dbController.getCurrentUser();
         Button button2 = (Button) findViewById(R.id.button2); //CREATED BY ALEXANDER HAIL RUSSIA
         registerForContextMenu(gvAlbums);
-        FirebaseStorage storage;
+        //FirebaseStorage storage;
         /*TODO: This chunk is to test uploading an image to
         TODO: firebase storage.. . delete it when not useful for testing.n
         StorageReference storageReference;
