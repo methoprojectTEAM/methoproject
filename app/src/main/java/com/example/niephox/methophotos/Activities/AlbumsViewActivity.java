@@ -5,8 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.os.Parcel;
-import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -17,12 +15,10 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.Toast;
 
-import com.example.niephox.methophotos.Controllers.AlbumController;
+import com.example.niephox.methophotos.Controllers.AlbumRepository;
 import com.example.niephox.methophotos.Controllers.AlbumsGridViewAdapter;
-import com.example.niephox.methophotos.Controllers.AuthenticationController;
 import com.example.niephox.methophotos.Controllers.DatabaseController;
 import com.example.niephox.methophotos.Controllers.LocalPhotosController;
-import com.example.niephox.methophotos.Controllers.StorageController;
 import com.example.niephox.methophotos.Entities.Album;
 import com.example.niephox.methophotos.Entities.Image;
 import com.example.niephox.methophotos.Entities.User;
@@ -31,7 +27,6 @@ import com.example.niephox.methophotos.Interfaces.iAsyncCallback;
 import com.example.niephox.methophotos.R;
 
 import java.util.ArrayList;
-import java.util.Date;
 
 /**
  * Created by Igor Spiridonov
@@ -56,7 +51,7 @@ public class AlbumsViewActivity extends AppCompatActivity implements iAsyncCallb
     //Intents:
     private User curentUser ;
     private Album localAlbum ;
-    private AlbumController albumController;
+    private AlbumRepository albumController;
 
     private final int REQUEST_PERMISSIONS = 100;
 
@@ -70,7 +65,7 @@ public class AlbumsViewActivity extends AppCompatActivity implements iAsyncCallb
         dbController = new DatabaseController();
         dbController.getCurrentUser();
 
-        albumController = new AlbumController();
+        albumController = new AlbumRepository();
 
         localAlbum= new Album("Local Photos",null,null,null);
 
