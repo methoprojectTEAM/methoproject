@@ -17,7 +17,7 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.Toast;
 
-import com.example.niephox.methophotos.Controllers.AlbumController;
+import com.example.niephox.methophotos.Controllers.AlbumRepository;
 import com.example.niephox.methophotos.Controllers.AlbumsGridViewAdapter;
 import com.example.niephox.methophotos.Controllers.AuthenticationController;
 import com.example.niephox.methophotos.Controllers.DatabaseController;
@@ -56,7 +56,7 @@ public class AlbumsViewActivity extends AppCompatActivity implements iAsyncCallb
     //Intents:
     private User curentUser ;
     private Album localAlbum ;
-    private AlbumController albumController;
+    private AlbumRepository albumController;
 
     private final int REQUEST_PERMISSIONS = 100;
 
@@ -70,11 +70,13 @@ public class AlbumsViewActivity extends AppCompatActivity implements iAsyncCallb
         dbController = new DatabaseController();
         dbController.getCurrentUser();
 
-        albumController = new AlbumController();
+        albumController = new AlbumRepository();
 
         localAlbum= new Album("Local Photos",null,null,null);
 
         checkPermissions(AlbumsViewActivity.this);
+        AlbumRepository repo = new AlbumRepository();
+        localAlbum = repo.getLocalAlbum(this);
         alAlbums.add(localAlbum);
 
         albumsAdapter = new AlbumsGridViewAdapter(this,alAlbums);

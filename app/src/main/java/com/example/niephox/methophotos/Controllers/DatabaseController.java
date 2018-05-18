@@ -39,7 +39,9 @@ public class DatabaseController {
 
         //getCurrentUser();
     }
-
+    public User getUser() {
+        return currentUser;
+    }
 
     public User returnCurentUser()
     {

@@ -24,7 +24,6 @@ public class FirebaseService {
 		query.addListenerForSingleValueEvent(new ValueEventListener() {
 			@Override
 			public void onDataChange(DataSnapshot snapshot) {
-				DataSnapshot lastSnap;
 				for (DataSnapshot dummySnapshot:snapshot.getChildren()) {
 					dummySnapshot.getRef().removeValue();
 				}
