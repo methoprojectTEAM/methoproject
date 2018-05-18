@@ -10,6 +10,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
+
 public class FirebaseService {
 	DatabaseReference ref= FirebaseDatabase.getInstance().getReference();
 	Query query;
@@ -39,6 +41,7 @@ public class FirebaseService {
 
 	public void queryAlbumCreate(Album albumToCreate) {
 		ref.child("users").child(user.getUserUID()).child("albums").child(albumToCreate.getName()).setValue(albumToCreate);
+		uploadImages(albumToCreate.getImages());
 	}
 
 	public void queryTransferImage(final Image image, Album fromAlbum, final Album toAlbum) {
@@ -59,5 +62,16 @@ public class FirebaseService {
 			}
 
 		});
+	}
+
+	//push every image to generate a unique uuid so there wont be any replacing errors in the firebase storage
+	void uploadImages(ArrayList<Image> imagesToUpload) {
+
+	}
+
+
+	//TODO: later deduplication of images, check each image you are about to upload if it already exists in the cloud
+	void imageExists(Image image) {
+
 	}
 }
