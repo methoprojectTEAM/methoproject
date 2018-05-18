@@ -48,6 +48,8 @@ public class MetadataController implements iAsyncCallback {
         storageController.registerCallback(this);
     }
 
+    public MetadataController() {
+    }
 
     public void ExtractMetadata(Image image) {
 
@@ -121,13 +123,15 @@ public class MetadataController implements iAsyncCallback {
             }
         }
         filteredList.addAll(metadataList);
-        iAsyncCallback.RefreshView(REQUEST_CODE.METADATA);
     }
 
     public void print(Exception exception) {
         System.err.println("EXCEPTION: " + exception);
     }
 
+    public void DownloadedFileComplete() {
+        iAsyncCallback.RefreshView(REQUEST_CODE.METADATA);
+    }
 
     public void RegisterCallback(iAsyncCallback iAsyncCallback) {
         this.iAsyncCallback = iAsyncCallback;
@@ -144,6 +148,7 @@ public class MetadataController implements iAsyncCallback {
             case STORAGE:
                 File = StorageController.StorageFile;
                 DataExtractionFromFile();
+                DownloadedFileComplete();
                 break;
             default:
                 break;

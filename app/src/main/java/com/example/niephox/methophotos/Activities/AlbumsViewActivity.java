@@ -12,7 +12,6 @@ import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
@@ -25,9 +24,9 @@ import android.view.View;
 import android.widget.GridView;
 import android.widget.Toast;
 
+import com.example.niephox.methophotos.Controllers.AlbumBuilder;
 import com.example.niephox.methophotos.Controllers.AlbumRepository;
-import com.example.niephox.methophotos.Controllers.AlbumsAdapter;
-import com.example.niephox.methophotos.Controllers.AlbumsGridViewAdapter;
+import com.example.niephox.methophotos.ViewControllers.AlbumsAdapter;
 import com.example.niephox.methophotos.Controllers.DatabaseController;
 import com.example.niephox.methophotos.ViewControllers.GridSpacingItemDecoration;
 import com.example.niephox.methophotos.Controllers.LocalPhotosController;
@@ -56,8 +55,6 @@ public class AlbumsViewActivity extends AppCompatActivity implements iAsyncCallb
     private DatabaseController dbController;
     private LocalPhotosController localPhotosController;
 
-    //Adapters:
-    private AlbumsGridViewAdapter albumsAdapter;
 
     //Intents:
     private User curentUser;
@@ -67,14 +64,13 @@ public class AlbumsViewActivity extends AppCompatActivity implements iAsyncCallb
     private AlbumsAdapter adapter;
 
 
-
     private final int REQUEST_PERMISSIONS = 100;
 
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.maintestcard);
+        setContentView(R.layout.activity_album);
 
 
         setView();
@@ -84,29 +80,8 @@ public class AlbumsViewActivity extends AppCompatActivity implements iAsyncCallb
         localAlbum = new Album("Local Photos", null, null, null);
         checkPermissions(AlbumsViewActivity.this);
         alAlbums.add(localAlbum);
-        albumsAdapter = new AlbumsGridViewAdapter(this, alAlbums);
         dbController.RegisterCallback(this);
-//        gvAlbums.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                Toast.makeText(AlbumsViewActivity.this, "Album clicked:" + alAlbums.get(position).getName(), Toast.LENGTH_LONG).show();
-////                if(position!=0) {
-//                alImages.clear();
-//                alImages.addAll(alAlbums.get(position).getImages());
-//
-//
-//                Intent intent = new Intent(AlbumsViewActivity.this, PhotosViewActivity.class);
-//                intent.putExtra("alImages", alImages);
-//                startActivity(intent);
-//
-////                }
-////                else
-////                {
-////                    Intent intent = new Intent(AlbumsViewActivity.this, LocalPhotosActivity.class);
-////                    startActivity(intent);
-////                }
-//            }
-//        });
+
     }
 
     public void setView() {
@@ -142,10 +117,15 @@ public class AlbumsViewActivity extends AppCompatActivity implements iAsyncCallb
 
     @Override
     public void RetrieveData(REQUEST_CODE rq) {
-        curentUser = dbController.returnCurentUser();
-        dbController.getUserAlbums();
-        Log.e("alAlbums", alAlbums.size() + "");
-        adapter.notifyDataSetChanged();
+        if (rq == REQUEST_CODE.METADATA) {
+            adapter.notifyDataSetChanged();
+        } else {
+            curentUser = dbController.returnCurentUser();
+            dbController.getUserAlbums();
+            Log.e("alAlbums", alAlbums.size() + "");
+            adapter.notifyDataSetChanged();
+        }
+
     }
 
     @Override
@@ -202,6 +182,10 @@ public class AlbumsViewActivity extends AppCompatActivity implements iAsyncCallb
         } else {
             Log.e("Else", "Else");
             localAlbum = albumController.getLocalAlbum(context);
+           //AUTOMATIC GENERATION
+            AlbumBuilder albumBuilder = new AlbumBuilder();
+            albumBuilder.buildBasedOnDate(localAlbum.getImages());
+
         }
     }
 

@@ -1,4 +1,4 @@
-package com.example.niephox.methophotos.Controllers;
+package com.example.niephox.methophotos.ViewControllers;
 
 import android.content.Context;
 import android.content.Intent;
@@ -15,8 +15,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.example.niephox.methophotos.Activities.AlbumsViewActivity;
-import com.example.niephox.methophotos.Activities.LocalPhotosActivity;
 import com.example.niephox.methophotos.Activities.PhotosViewActivity;
 import com.example.niephox.methophotos.Entities.Album;
 import com.example.niephox.methophotos.Entities.Image;
@@ -89,7 +87,7 @@ public class AlbumsAdapter extends RecyclerView.Adapter<AlbumsAdapter.MyViewHold
         // inflate menu
         PopupMenu popup = new PopupMenu(mContext, view);
         MenuInflater inflater = popup.getMenuInflater();
-        inflater.inflate(R.menu.menu_album, popup.getMenu());
+        inflater.inflate(R.menu.album_menu, popup.getMenu());
         popup.setOnMenuItemClickListener(new MenuItemClickListener());
         popup.show();
     }
@@ -105,11 +103,13 @@ public class AlbumsAdapter extends RecyclerView.Adapter<AlbumsAdapter.MyViewHold
         @Override
         public boolean onMenuItemClick(MenuItem menuItem) {
             switch (menuItem.getItemId()) {
-                case R.id.action_add_favourite:
-                    Toast.makeText(mContext, "1", Toast.LENGTH_SHORT).show();
+                case R.id.uploadAlbum:
+                    //TODO: UPLOAD AlBUM
+                    Toast.makeText(mContext, "UploadAlbum", Toast.LENGTH_SHORT).show();
                     return true;
-                case R.id.action_play_next:
-                    Toast.makeText(mContext, "2", Toast.LENGTH_SHORT).show();
+                case R.id.deleteAlbum:
+                    //TODO: DELETE ALBUM
+                    Toast.makeText(mContext, "DeleteAlbum", Toast.LENGTH_SHORT).show();
                     return true;
                 default:
             }
@@ -132,16 +132,12 @@ public class AlbumsAdapter extends RecyclerView.Adapter<AlbumsAdapter.MyViewHold
 
         @Override
         public void onClick(View view) {
-            if (position != 0) {
-                alImages.clear();
-                alImages.addAll(albumList.get(position).getImages());
-                Intent intent = new Intent(mContext, PhotosViewActivity.class);
-                intent.putExtra("alImages", alImages);
-                mContext.startActivity(intent);
-            } else {
-                Intent intent = new Intent(mContext, LocalPhotosActivity.class);
-                mContext.startActivity(intent);
-            }
+            alImages.clear();
+            alImages.addAll(albumList.get(position).getImages());
+            Intent intent = new Intent(mContext, PhotosViewActivity.class);
+            intent.putExtra("alImages", alImages);
+            mContext.startActivity(intent);
+
         }
     }
 

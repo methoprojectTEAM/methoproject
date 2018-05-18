@@ -90,11 +90,7 @@
                     android:layout_height="wrap_content"
                     android:text="Open" />
 
-                <android.support.design.button.MaterialButton
-                    style="@style/Widget.MaterialComponents.Button.TextButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Save"/>
+
 
                 <View
                     android:layout_width="0dp"

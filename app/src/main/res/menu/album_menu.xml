@@ -3,13 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
     <item
-        android:id="@+id/action_add_favourite"
+        android:id="@+id/uploadAlbum"
         android:orderInCategory="100"
-        android:title="1" />
+        android:title="Upload" />
 
     <item
-        android:id="@+id/action_play_next"
+        android:id="@+id/deleteAlbum"
         android:orderInCategory="101"
-        android:title="2" />
+        android:title="Delete" />
 
 </menu>

@@ -14,6 +14,7 @@ public class Album {
     private ArrayList<Image> images;
     private Image thumbnail ;
     public Album() {
+        this.images = new ArrayList<>();
     }
 
     public Album(String name, Date date, String description, ArrayList<Image> images) {
