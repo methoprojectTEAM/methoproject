@@ -12,9 +12,14 @@ public class Album {
     private Date date;
     private String description;
     private ArrayList<Image> images;
-    private Image thumbnail ;
-    public Album() {
-        this.images = new ArrayList<>();
+    private Image thumbnail;
+
+    public Album()      {
+
+    }
+    public Album(String albumName, String description) {
+        this.name = albumName;
+        this.description = description;
     }
 
     public Album(String name, Date date, String description, ArrayList<Image> images) {
@@ -34,6 +39,7 @@ public class Album {
     }
 
     public void setThumbnail(Image image){this.thumbnail= image;} // maybe get int for the intex of the specific album images array list
+
     public Image getThumbnail(){return this.thumbnail;}
 
     public void setName(String name) {
@@ -71,6 +77,9 @@ public class Album {
 
     public void setImages(ArrayList<Image> images) {
         this.images = images;
+        if (this.images != null){
+            this.thumbnail = this.images.get(0);
+        }
     }
 }
 

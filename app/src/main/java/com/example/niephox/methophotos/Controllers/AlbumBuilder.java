@@ -2,17 +2,14 @@ package com.example.niephox.methophotos.Controllers;
 
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.example.niephox.methophotos.Entities.Album;
 import com.example.niephox.methophotos.Entities.Image;
 import com.example.niephox.methophotos.Interfaces.iAsyncCallback;
 
-import java.lang.reflect.Array;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;

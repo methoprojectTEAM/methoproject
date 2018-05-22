@@ -76,7 +76,8 @@ public class MetadataController implements iAsyncCallback {
 
         Metadata metadata = null;
         metadataList.clear();
-        try {
+
+       try {
             metadata = ImageMetadataReader.readMetadata(file);
             printMetadata(metadata);
         } catch (ImageProcessingException e) {

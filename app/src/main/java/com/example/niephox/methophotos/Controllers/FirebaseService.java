@@ -39,8 +39,9 @@ public class FirebaseService {
 	}
 
 	public void queryAlbumCreate(Album albumToCreate) {
+		//ArrayList<Image> uploadedImages = uploadImages(albumToCreate.getImages());
+		//albumToCreate.setImages(uploadedImages);
 		ref.child("users").child(user.getUserUID()).child("albums").child(albumToCreate.getName()).setValue(albumToCreate);
-		uploadImages(albumToCreate.getImages());
 	}
 
 	public void queryTransferImage(final Image image, Album fromAlbum, final Album toAlbum) {
@@ -64,8 +65,9 @@ public class FirebaseService {
 	}
 
 	//push every image to generate a unique uuid so there wont be any replacing errors in the firebase storage
-	void uploadImages(ArrayList<Image> imagesToUpload) {
+	ArrayList<Image> uploadImages(ArrayList<Image> imagesToUpload) {
 
+		return null;
 	}
 
 
