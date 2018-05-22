@@ -3,6 +3,7 @@ package com.example.niephox.methophotos.Controllers;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.support.v7.app.AlertDialog;
+import android.view.MenuInflater;
 import android.widget.Toast;
 
 import com.drew.imaging.ImageMetadataReader;
@@ -39,14 +40,16 @@ public class MetadataController implements iAsyncCallback {
     public static iAsyncCallback iAsyncCallback;
     private String[] ReadersList;
     private String[] TagsList;
-    private  Image image;
+    private Image image;
 
-    public  MetadataController(Image image ) {
+    public MetadataController(Image image) {
         this.image = image;
         readers = null;
         storageController.registerCallback(this);
     }
 
+    public MetadataController() {
+    }
 
     public void ExtractMetadata(Image image) {
 
@@ -120,28 +123,35 @@ public class MetadataController implements iAsyncCallback {
             }
         }
         filteredList.addAll(metadataList);
-        iAsyncCallback.RefreshView(3);
     }
 
     public void print(Exception exception) {
         System.err.println("EXCEPTION: " + exception);
     }
 
+    public void DownloadedFileComplete() {
+        iAsyncCallback.RefreshView(REQUEST_CODE.METADATA);
+    }
 
     public void RegisterCallback(iAsyncCallback iAsyncCallback) {
         this.iAsyncCallback = iAsyncCallback;
     }
 
     @Override
-    public void RefreshView(int RequestCode) {
+    public void RefreshView(REQUEST_CODE rq) {
 
     }
 
     @Override
-    public void RetrieveData(int RequestCode) {
-        if (RequestCode == 1){
-        File = StorageController.StorageFile;
-        DataExtractionFromFile();
+    public void RetrieveData(REQUEST_CODE rq) {
+        switch (rq) {
+            case STORAGE:
+                File = StorageController.StorageFile;
+                DataExtractionFromFile();
+                DownloadedFileComplete();
+                break;
+            default:
+                break;
         }
     }
 
@@ -199,11 +209,11 @@ public class MetadataController implements iAsyncCallback {
                     }
                 })
                 .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                //Filtering Cancel
-                            }
-                        });
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        //Filtering Cancel
+                    }
+                });
         AlertDialog tagDialog = builder.create();
         tagDialog.show();
 
@@ -214,7 +224,7 @@ public class MetadataController implements iAsyncCallback {
         filteredList.addAll(metadataList);
 
         if (tagsFiltered.contains("All")) {
-            iAsyncCallback.RefreshView(3);
+            iAsyncCallback.RefreshView(REQUEST_CODE.METADATA);
         } else {
             boolean removalFlag = false;
             for (int i = filteredList.size() - 1; i >= 0; i--) {
@@ -230,7 +240,7 @@ public class MetadataController implements iAsyncCallback {
                     filteredList.remove(i);
                 }
             }
-            iAsyncCallback.RefreshView(3);
+            iAsyncCallback.RefreshView(REQUEST_CODE.METADATA);
         }
     }
 }

@@ -4,20 +4,33 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
+import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.util.TypedValue;
+import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.Toast;
 
+import com.example.niephox.methophotos.Controllers.AlbumBuilder;
 import com.example.niephox.methophotos.Controllers.AlbumRepository;
-import com.example.niephox.methophotos.Controllers.AlbumsGridViewAdapter;
+import com.example.niephox.methophotos.ViewControllers.AlbumsAdapter;
 import com.example.niephox.methophotos.Controllers.DatabaseController;
+import com.example.niephox.methophotos.ViewControllers.GridSpacingItemDecoration;
 import com.example.niephox.methophotos.Controllers.LocalPhotosController;
 import com.example.niephox.methophotos.Entities.Album;
 import com.example.niephox.methophotos.Entities.Image;
@@ -32,11 +45,10 @@ import java.util.ArrayList;
  * Created by Igor Spiridonov
  */
 
-public class AlbumsViewActivity extends AppCompatActivity implements iAsyncCallback
-{
+public class AlbumsViewActivity extends AppCompatActivity implements iAsyncCallback, View.OnClickListener {
     //ArrayLists:
-    public  ArrayList<Album> alAlbums = new ArrayList<>();
-    public  ArrayList<Image> alImages = new ArrayList<>();
+    public ArrayList<Album> alAlbums = new ArrayList<>();
+    public ArrayList<Image> alImages = new ArrayList<>();
 
     //Layout Items:
     private GridView gvAlbums;
@@ -44,88 +56,88 @@ public class AlbumsViewActivity extends AppCompatActivity implements iAsyncCallb
     //Controllers:
     private DatabaseController dbController;
     private LocalPhotosController localPhotosController;
-
-    //Adapters:
-    private AlbumsGridViewAdapter albumsAdapter;
+    private AlbumBuilder albumBuilder;
 
     //Intents:
-    private User curentUser ;
-    private Album localAlbum ;
+    private User curentUser;
+    private Album localAlbum;
     private AlbumRepository albumController;
+    private RecyclerView recyclerView;
+    private AlbumsAdapter adapter;
+
 
     private final int REQUEST_PERMISSIONS = 100;
 
-    @Override
-    public void onCreate(Bundle savedInstanceState)
-    {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
 
-        gvAlbums = (GridView)findViewById(R.id.gv_folder);
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_album);
+
+
+        setView();
         dbController = new DatabaseController();
         dbController.getCurrentUser();
-
         albumController = new AlbumRepository();
-
-        localAlbum= new Album("Local Photos",null,null,null);
-
+        localAlbum = new Album("Local Photos", null, null, null);
         checkPermissions(AlbumsViewActivity.this);
         alAlbums.add(localAlbum);
-
-        albumsAdapter = new AlbumsGridViewAdapter(this,alAlbums);
-        gvAlbums.setAdapter(albumsAdapter);
-
         dbController.RegisterCallback(this);
-        gvAlbums.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(AlbumsViewActivity.this,"Album clicked:"+alAlbums.get(position).getName(),Toast.LENGTH_LONG).show();
-//                if(position!=0) {
-                    alImages.clear();
-                    alImages.addAll(alAlbums.get(position).getImages());
 
+    }
 
-                    Intent intent = new Intent(AlbumsViewActivity.this, PhotosViewActivity.class);
-                    intent.putExtra("alImages", alImages);
-                    startActivity(intent);
-
-//                }
-//                else
-//                {
-//                    Intent intent = new Intent(AlbumsViewActivity.this, LocalPhotosActivity.class);
-//                    startActivity(intent);
-//                }
-            }
-        });
+    public void setView() {
+        initCollapsingToolbar();
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        android.support.v7.app.ActionBar actionBar = getSupportActionBar();
+        actionBar.setHomeAsUpIndicator(R.drawable.ic_menu);
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+        adapter = new AlbumsAdapter(this, alAlbums);
+        RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(this, 1);
+        recyclerView.setLayoutManager(mLayoutManager);
+        recyclerView.addItemDecoration(new GridSpacingItemDecoration(2, dpToPx(10), true));
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        recyclerView.setAdapter(adapter);
+        FloatingActionButton floatingActionButton =
+                (FloatingActionButton) findViewById(R.id.addAlbum);
+        floatingActionButton.setOnClickListener(this);
     }
 
     @Override
-    public void RefreshView(int RequestCode) {
-        switch (RequestCode) {
-            case 1:
+    public void RefreshView(REQUEST_CODE rq) {
+        switch (rq) {
+            case STORAGE:
                 alAlbums.addAll(curentUser.getAlbums());
-                albumsAdapter.notifyDataSetChanged();
+                adapter.notifyDataSetChanged();
                 break;
-            case 2:
+            case DATABASE:
                 break;
         }
     }
 
     @Override
-    public void RetrieveData(int RequestCode) {
-        curentUser = dbController.returnCurentUser();
-        dbController.getUserAlbums();
-        Log.e("alAlbums",alAlbums.size()+"");
-        albumsAdapter.notifyDataSetChanged();
+    public void RetrieveData(REQUEST_CODE rq) {
+        if (rq == REQUEST_CODE.METADATA) {
+            alAlbums.addAll(albumBuilder.getAlbumsGenerated());
+            adapter.notifyDataSetChanged();
+        } else {
+            curentUser = dbController.returnCurentUser();
+            dbController.getUserAlbums();
+            Log.e("alAlbums", alAlbums.size() + "");
+            adapter.notifyDataSetChanged();
+        }
+
     }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         localPhotosController.onActivityResult(requestCode, resultCode, data);
     }
-    public void testAlbumCreate(View v)
-    {
-        localPhotosController= new LocalPhotosController("FAMILY",AlbumsViewActivity.this);
-    }
+
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], @NonNull int[] grantResults) {
 
@@ -136,7 +148,7 @@ public class AlbumsViewActivity extends AppCompatActivity implements iAsyncCallb
                 for (int i = 0; i < grantResults.length; i++) {
                     if (grantResults.length > 0 && grantResults[i] == PackageManager.PERMISSION_GRANTED) {
                         //fn_imagespath();
-                        localAlbum =   albumController.getLocalAlbum(this);
+                        localAlbum = albumController.getLocalAlbum(this);
                     } else {
                         Toast.makeText(AlbumsViewActivity.this, "The app was not allowed to read or write to your storage. Hence, it cannot function properly. Please consider granting it this permission", Toast.LENGTH_LONG).show();
                     }
@@ -145,6 +157,22 @@ public class AlbumsViewActivity extends AppCompatActivity implements iAsyncCallb
         }
 
     }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                albumBuilder = new AlbumBuilder();
+                albumBuilder.RegisterCallback(this);
+                albumBuilder.buildBasedOnDate(localAlbum.getImages());
+                //TODO:: add drawer
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
     public void checkPermissions(Context context) {
         final int REQUEST_PERMISSIONS = 100;
         Activity activity = (Activity) context;
@@ -162,7 +190,54 @@ public class AlbumsViewActivity extends AppCompatActivity implements iAsyncCallb
             }
         } else {
             Log.e("Else", "Else");
-            localAlbum  = albumController.getLocalAlbum(context);
+            localAlbum = albumController.getLocalAlbum(context);
+           //AUTOMATIC GENERATION
+
+
+
+        }
+    }
+
+
+    private void initCollapsingToolbar() {
+        final CollapsingToolbarLayout collapsingToolbar =
+                (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
+        collapsingToolbar.setTitle(" ");
+        AppBarLayout appBarLayout = (AppBarLayout) findViewById(R.id.appbar);
+        appBarLayout.setExpanded(true);
+
+
+        // hiding & showing the title when toolbar expanded & collapsed
+        appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
+            boolean isShow = false;
+            int scrollRange = -1;
+
+            @Override
+            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+                if (scrollRange == -1) {
+                    scrollRange = appBarLayout.getTotalScrollRange();
+                }
+                if (scrollRange + verticalOffset == 0) {
+                    collapsingToolbar.setTitle(getString(R.string.app_name));
+                    isShow = true;
+                } else if (isShow) {
+                    collapsingToolbar.setTitle(" ");
+                    isShow = false;
+                }
+            }
+        });
+    }
+
+
+    private int dpToPx(int dp) {
+        Resources r = getResources();
+        return Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, r.getDisplayMetrics()));
+    }
+
+    @Override
+    public void onClick(View view) {
+        if (view.getId() == R.id.addAlbum) {
+            localPhotosController = new LocalPhotosController("FAMILY", AlbumsViewActivity.this);
         }
     }
 }

@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import com.example.niephox.methophotos.Interfaces.iAsyncCallback.REQUEST_CODE;
 
 /**
  * Created by Niephox on 4/18/2018.
@@ -68,7 +69,7 @@ public class DatabaseController {
                         userAlbums.add(album);
                     }
                     currentUser.addAlbums(userAlbums);
-                    iAsyncCallback.RetrieveData(2);
+                    iAsyncCallback.RetrieveData( REQUEST_CODE.DATABASE);
                 } else {
                     Log.w("User", "User Doesnt exist in Database");
                 }
@@ -137,7 +138,7 @@ public class DatabaseController {
                                 userAlbums.add(album);
                             }
                             currentUser.addAlbums(userAlbums);
-                            iAsyncCallback.RefreshView(1);
+                            iAsyncCallback.RefreshView(REQUEST_CODE.STORAGE);
                             Log.e("size", userAlbums.size()+"");
 
                         } else {

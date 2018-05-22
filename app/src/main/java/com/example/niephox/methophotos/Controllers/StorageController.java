@@ -11,10 +11,11 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
-
+import  com.example.niephox.methophotos.Interfaces.iAsyncCallback;
 import com.drew.imaging.jpeg.JpegSegmentMetadataReader;
 import com.example.niephox.methophotos.Entities.Image;
-import com.example.niephox.methophotos.Interfaces.iAsyncCallback;
+import com.example.niephox.methophotos.Interfaces.iAsyncCallback.REQUEST_CODE;
+import com.example.niephox.methophotos.ViewControllers.PhotosFolderAdapter;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.FileDownloadTask;
@@ -55,7 +56,7 @@ public class StorageController   {
             public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
                // MetadataController.ExtractMetadata(finalTempFile,readers);
                 StorageFile = finalTempFile;
-                iAsyncCallback.RetrieveData(1);
+                iAsyncCallback.RetrieveData( REQUEST_CODE.STORAGE);
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
@@ -150,6 +151,6 @@ public class StorageController   {
                 Log.e("FILE", al_images.get(i).getImagesPath().get(j));
             }
         }
-        iAsyncCallback.RetrieveData(1);
+        iAsyncCallback.RetrieveData(REQUEST_CODE.STORAGE);
     }
 }

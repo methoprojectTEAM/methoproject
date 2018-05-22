@@ -2,13 +2,12 @@ package com.example.niephox.methophotos.Activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
 
-import com.example.niephox.methophotos.Controllers.PhotosGridViewAdapter;
+import com.example.niephox.methophotos.ViewControllers.PhotosGridViewAdapter;
 import com.example.niephox.methophotos.Entities.Image;
 import com.example.niephox.methophotos.R;
 
