@@ -50,8 +50,8 @@ public class RegisterActivity extends AppCompatActivity {
         mEmailView = (TextView) findViewById(R.id.email);
         mPasswordView = (EditText) findViewById(R.id.password);
 
-        Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
-        mEmailSignInButton.setOnClickListener(new View.OnClickListener() {
+        Button btRegister = (Button) findViewById(R.id.btRegister);
+        btRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 attemptRegister();

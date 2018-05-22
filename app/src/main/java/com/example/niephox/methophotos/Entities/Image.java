@@ -24,15 +24,8 @@ public class Image implements Parcelable {
     public int belongsToAlbumsCount;
     private ArrayList<String> imagesPath;
 
-    //String str_folder;
     ArrayList<String> al_imagepath;
 
-    /*public String getStr_folder() {
-        return str_folder;
-    }
-    public void setStr_folder(String str_folder) {
-        this.str_folder = str_folder;
-    }*/
 
     public void belongsToAlbumInc() {
         belongsToAlbumsCount++;
