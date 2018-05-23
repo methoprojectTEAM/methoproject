@@ -12,8 +12,12 @@ import android.support.annotation.RequiresApi;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
@@ -52,7 +56,7 @@ public class AlbumsViewActivity extends AppCompatActivity implements iAsyncCallb
 
     //Layout Items:
     private GridView gvAlbums;
-
+    private DrawerLayout mdrawerLayout;
     //Controllers:
     private DatabaseController dbController;
     private LocalPhotosController localPhotosController;
@@ -104,6 +108,18 @@ public class AlbumsViewActivity extends AppCompatActivity implements iAsyncCallb
         FloatingActionButton floatingActionButton =
                 (FloatingActionButton) findViewById(R.id.addAlbum);
         floatingActionButton.setOnClickListener(this);
+        mdrawerLayout = findViewById(R.id.drawer_layout);
+        NavigationView navigationView = findViewById(R.id.navigation);
+        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                item.setChecked(true);
+                mdrawerLayout.closeDrawers();
+                return  true;
+            }
+        });
+        mdrawerLayout.openDrawer(GravityCompat.START);
+
     }
 
     @Override
@@ -168,6 +184,7 @@ public class AlbumsViewActivity extends AppCompatActivity implements iAsyncCallb
 //                albumBuilder.RegisterCallback(this);
 //                albumBuilder.buildBasedOnDate(localAlbum.getImages());
                 //TODO:: add drawer
+                mdrawerLayout.openDrawer(GravityCompat.START);
                 return true;
         }
         return super.onOptionsItemSelected(item);
