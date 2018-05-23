@@ -163,9 +163,10 @@ public class AlbumsViewActivity extends AppCompatActivity implements iAsyncCallb
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                albumBuilder = new AlbumBuilder();
-                albumBuilder.RegisterCallback(this);
-                albumBuilder.buildBasedOnDate(localAlbum.getImages());
+                new AlbumBuilder.AsyncBuild(findViewById(android.R.id.content),this).execute("String");
+//                albumBuilder = new AlbumBuilder();
+//                albumBuilder.RegisterCallback(this);
+//                albumBuilder.buildBasedOnDate(localAlbum.getImages());
                 //TODO:: add drawer
                 return true;
         }
@@ -191,7 +192,7 @@ public class AlbumsViewActivity extends AppCompatActivity implements iAsyncCallb
         } else {
             Log.e("Else", "Else");
             localAlbum = albumController.getLocalAlbum(context);
-           //AUTOMATIC GENERATION
+
 
 
 

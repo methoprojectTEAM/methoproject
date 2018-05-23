@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/Sheet"
+    android:layout_width="match_parent"
+    android:layout_height="300dp"
+    android:layout_marginBottom="8dp"
+    android:layout_marginTop="8dp"
+    android:orientation="vertical"
+    app:behavior_hideable="true"
+    android:background="@color/colorPrimaryVariant2"
+    app:behavior_peekHeight="300dp"
+    app:layout_behavior="android.support.design.widget.BottomSheetBehavior">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
+        android:text="Progress"
+        android:textSize="16sp"></TextView>
+
+    <ProgressBar
+        android:id="@+id/progressBar2"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0"
+        android:max="100"
+        android:progress="0"
+        android:visibility="gone" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
+        android:text="Progress"
+        android:textSize="16sp"></TextView>
+
+
+</LinearLayout>
