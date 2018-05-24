@@ -1,5 +1,6 @@
 package com.example.niephox.methophotos.Activities;
 
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -17,6 +18,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
@@ -94,7 +96,7 @@ public class AlbumsViewActivity extends AppCompatActivity implements iAsyncCallb
         initCollapsingToolbar();
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        android.support.v7.app.ActionBar actionBar = getSupportActionBar();
+        ActionBar actionBar= getSupportActionBar();
         actionBar.setHomeAsUpIndicator(R.drawable.ic_menu);
         actionBar.setDisplayHomeAsUpEnabled(true);
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
@@ -109,7 +111,7 @@ public class AlbumsViewActivity extends AppCompatActivity implements iAsyncCallb
         floatingActionButton.setOnClickListener(this);
         mdrawerLayout = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.navigation);
-        navigationView.setNavigationItemSelectedListener(new NavigationItemListener(mdrawerLayout));
+        navigationView.setNavigationItemSelectedListener(new NavigationItemListener(mdrawerLayout ));
 
     }
 
@@ -164,7 +166,19 @@ public class AlbumsViewActivity extends AppCompatActivity implements iAsyncCallb
 
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                new AlbumBuilder.AsyncBuild(findViewById(android.R.id.content), this).execute("String");
 
+
+                mdrawerLayout.openDrawer(GravityCompat.START);
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     public void checkPermissions(Context context) {
