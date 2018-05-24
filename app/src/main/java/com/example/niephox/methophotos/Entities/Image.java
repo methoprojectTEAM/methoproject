@@ -3,6 +3,7 @@ package com.example.niephox.methophotos.Entities;
 import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
 
 import com.drew.metadata.Metadata;
 
@@ -45,6 +46,7 @@ public class Image implements Parcelable {
 
     public Image(Uri uri){
         setName();
+        Log.w("Image URI BEFORE", uri.toString());
         this.imageURI = uri.toString();
     }
 

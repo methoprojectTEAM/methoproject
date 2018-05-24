@@ -59,7 +59,7 @@ public class AlbumRepository {
 	}
 
 	private void openSelectionImageGallery() {
-		Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+		Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
 		Activity genActivity;
 		//allows any image file type. Change * to specific extension to limit it
 		intent.setType("image/*");
@@ -76,6 +76,7 @@ public class AlbumRepository {
 			selectedImages.add(new Image(uri));
 		album.setImages(selectedImages);
 		album.setDate(Calendar.getInstance().getTime());
+
 		createAlbum(album);
 	}
 
