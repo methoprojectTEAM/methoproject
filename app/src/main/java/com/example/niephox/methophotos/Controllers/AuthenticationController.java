@@ -3,14 +3,12 @@ package com.example.niephox.methophotos.Controllers;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
-import com.example.niephox.methophotos.Entities.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.UserProfileChangeRequest;
 
 /**
  * Created by Niephox on 4/18/2018.
@@ -19,7 +17,7 @@ import com.google.firebase.auth.UserProfileChangeRequest;
 public class AuthenticationController {
     private static FirebaseAuth AuthRef = FirebaseAuth.getInstance();
     private static FirebaseUser currentUser = AuthRef.getCurrentUser();
-    private static DatabaseController databaseController = new DatabaseController();
+    private static FirebaseService firebaseService = new FirebaseService();
     private static AuthCredential userCredential;
     private static String FIREBASE_AUTH;
 
@@ -27,14 +25,14 @@ public class AuthenticationController {
 
     }
     public static void deleteUser() {
-        databaseController.deleteUserDatabase(currentUser.getUid());
+        firebaseService.queryDeleteUser();
         currentUser.delete();
         //TODO:: Implement call
     }
 
     public static void UpdateEmail(String newEmail) {
         currentUser.updateEmail(newEmail);
-        databaseController.changeUserEmailDatabase(currentUser.getUid(), newEmail);
+        firebaseService.queryChangeUserEmail(newEmail);
     }
 
     public static void UpdatePassword(String newPassword) {

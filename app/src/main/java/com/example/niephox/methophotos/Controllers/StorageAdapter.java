@@ -9,7 +9,7 @@ import com.example.niephox.methophotos.Entities.Image;
 
 import java.util.ArrayList;
 
-public class InternalStorageAdapter {
+public class StorageAdapter {
 	private ArrayList<Image> imagesArray = new ArrayList<>(); //Style 2 of initialization styles :) idk
 	private ArrayList<Image> tempImagesArray = new ArrayList<>();
 	private Cursor cursor;
@@ -22,10 +22,10 @@ public class InternalStorageAdapter {
 
 
 
-	public InternalStorageAdapter() {
+	public StorageAdapter() {
 	}
 
-	public InternalStorageAdapter(Activity activity) {
+	public StorageAdapter(Activity activity) {
 		this.activity = activity;
 	}
 

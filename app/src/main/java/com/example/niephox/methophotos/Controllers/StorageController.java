@@ -74,26 +74,5 @@ public class StorageController   {
         this.iAsyncCallback = iAsyncCallback;
     }
 
-    public void GetLocalPhotos(Context context){
-        final int REQUEST_PERMISSIONS = 100;
-        Activity activity = (Activity) context;
-        if ((ContextCompat.checkSelfPermission(context,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) && (ContextCompat.checkSelfPermission(context,
-                Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)) {
-            if ((ActivityCompat.shouldShowRequestPermissionRationale(activity,
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE)) && (ActivityCompat.shouldShowRequestPermissionRationale(activity,
-                    Manifest.permission.READ_EXTERNAL_STORAGE))) {
 
-            } else {
-                ActivityCompat.requestPermissions(activity,
-                        new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE},
-                        REQUEST_PERMISSIONS);
-            }
-        } else {
-            Log.e("Else", "Else");
-            //fn_imagespath(context);
-        }
-
-
-    }
 }

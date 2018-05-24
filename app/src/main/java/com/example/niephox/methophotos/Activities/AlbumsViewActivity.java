@@ -31,8 +31,8 @@ import android.widget.Toast;
 
 import com.example.niephox.methophotos.Controllers.AlbumBuilder;
 import com.example.niephox.methophotos.Controllers.AlbumRepository;
+import com.example.niephox.methophotos.Controllers.FirebaseService;
 import com.example.niephox.methophotos.ViewControllers.AlbumsAdapter;
-import com.example.niephox.methophotos.Controllers.DatabaseController;
 import com.example.niephox.methophotos.ViewControllers.GridSpacingItemDecoration;
 import com.example.niephox.methophotos.Entities.Album;
 import com.example.niephox.methophotos.Entities.User;
@@ -52,7 +52,7 @@ public class AlbumsViewActivity extends AppCompatActivity implements iAsyncCallb
     public ArrayList<Album> alAlbums = new ArrayList<>();
 
     //Controllers:
-    private DatabaseController dbController;
+    FirebaseService firebaseService;
     private AlbumRepository albumRepo;
     private AlbumBuilder albumBuilder;
 
@@ -75,14 +75,14 @@ public class AlbumsViewActivity extends AppCompatActivity implements iAsyncCallb
         alAlbums.clear();
 
         setView();
-        dbController = new DatabaseController();
-        dbController.getCurrentUser();
+        firebaseService = new FirebaseService();
+        firebaseService.getCurrentUser();
         albumRepo = new AlbumRepository();
         localAlbum = new Album();
         album2 = new Album("Album2", "Desc");
         checkPermissions(AlbumsViewActivity.this);
         alAlbums.add(localAlbum);
-        dbController.RegisterCallback(this);
+        firebaseService.RegisterCallback(this);
 
 
     }
@@ -110,6 +110,8 @@ public class AlbumsViewActivity extends AppCompatActivity implements iAsyncCallb
     public void RefreshView(REQUEST_CODE rq) {
         switch (rq) {
             case STORAGE:
+               alAlbums.clear(); //edited code alexander
+                alAlbums.add(localAlbum);
                 alAlbums.addAll(curentUser.getAlbums());
                 adapter.notifyDataSetChanged();
                 break;
@@ -124,8 +126,8 @@ public class AlbumsViewActivity extends AppCompatActivity implements iAsyncCallb
             alAlbums.addAll(albumBuilder.getAlbumsGenerated());
             adapter.notifyDataSetChanged();
         } else {
-            curentUser = dbController.returnCurentUser();
-            dbController.getUserAlbums();
+            curentUser = firebaseService.getUser();
+            firebaseService.getUserAlbums();
             Log.e("alAlbums", alAlbums.size() + "");
             adapter.notifyDataSetChanged();
         }
@@ -144,10 +146,13 @@ public class AlbumsViewActivity extends AppCompatActivity implements iAsyncCallb
                 imageURIs.add(data.getData()); //if data is not null and theres only one image selected just add the single image uri
         } else
             return;
-
+        //saves the selected images to the album that the repo is managing
         albumRepo.saveSelectedImages(imageURIs);
-        alAlbums.clear();
+        //getting the album that has been created
         alAlbums.add(albumRepo.getAlbum());
+        albumRepo.createAlbum(albumRepo.getAlbum());
+        //curentUser.addAlbums(alAlbums);
+        //adapter.notifyDataSetChanged();
     }
 
 
@@ -180,7 +185,7 @@ public class AlbumsViewActivity extends AppCompatActivity implements iAsyncCallb
                 albumBuilder = new AlbumBuilder();
                 albumBuilder.RegisterCallback(this);
                 albumBuilder.buildBasedOnDate(localAlbum.getImages());
-                //TODO:: add drawer
+                //xTODO:: add drawer
                 return true;
         }
         return super.onOptionsItemSelected(item);

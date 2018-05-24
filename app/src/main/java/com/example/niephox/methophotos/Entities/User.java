@@ -19,7 +19,7 @@ public class User {
 
     private String userUID;
     private String username;
-    private ArrayList<Album> albums;
+    private ArrayList<Album> albums = new ArrayList<>();
 
 
     public User() {
