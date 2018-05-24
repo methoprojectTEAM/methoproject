@@ -17,7 +17,6 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
@@ -34,6 +33,7 @@ import com.example.niephox.methophotos.Controllers.AlbumBuilder;
 import com.example.niephox.methophotos.Controllers.AlbumRepository;
 import com.example.niephox.methophotos.ViewControllers.AlbumsAdapter;
 import com.example.niephox.methophotos.Controllers.DatabaseController;
+import com.example.niephox.methophotos.ViewControllers.NavigationItemListener;
 import com.example.niephox.methophotos.ViewControllers.GridSpacingItemDecoration;
 import com.example.niephox.methophotos.Controllers.LocalPhotosController;
 import com.example.niephox.methophotos.Entities.Album;
@@ -79,7 +79,6 @@ public class AlbumsViewActivity extends AppCompatActivity implements iAsyncCallb
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_album);
 
-
         setView();
         dbController = new DatabaseController();
         dbController.getCurrentUser();
@@ -110,15 +109,7 @@ public class AlbumsViewActivity extends AppCompatActivity implements iAsyncCallb
         floatingActionButton.setOnClickListener(this);
         mdrawerLayout = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.navigation);
-        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                item.setChecked(true);
-                mdrawerLayout.closeDrawers();
-                return  true;
-            }
-        });
-        mdrawerLayout.openDrawer(GravityCompat.START);
+        navigationView.setNavigationItemSelectedListener(new NavigationItemListener(mdrawerLayout));
 
     }
 
@@ -145,7 +136,6 @@ public class AlbumsViewActivity extends AppCompatActivity implements iAsyncCallb
             Log.e("alAlbums", alAlbums.size() + "");
             adapter.notifyDataSetChanged();
         }
-
     }
 
     @Override
@@ -174,21 +164,7 @@ public class AlbumsViewActivity extends AppCompatActivity implements iAsyncCallb
 
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                new AlbumBuilder.AsyncBuild(findViewById(android.R.id.content),this).execute("String");
-//                albumBuilder = new AlbumBuilder();
-//                albumBuilder.RegisterCallback(this);
-//                albumBuilder.buildBasedOnDate(localAlbum.getImages());
-                //TODO:: add drawer
-                mdrawerLayout.openDrawer(GravityCompat.START);
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
+
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     public void checkPermissions(Context context) {
@@ -209,9 +185,6 @@ public class AlbumsViewActivity extends AppCompatActivity implements iAsyncCallb
         } else {
             Log.e("Else", "Else");
             localAlbum = albumController.getLocalAlbum(context);
-
-
-
 
         }
     }
