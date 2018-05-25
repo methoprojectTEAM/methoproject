@@ -4,7 +4,7 @@ android {
     compileSdkVersion "android-P"
     defaultConfig {
         applicationId "com.example.niephox.methophotos"
-        minSdkVersion 16
+        minSdkVersion 21
         targetSdkVersion 26
         versionCode 1
         versionName "1.0"
@@ -55,6 +55,9 @@ dependencies {
     implementation 'com.android.support:support-fragment:28.0.0-alpha1'
     implementation 'com.android.support:design:28.0.0-alpha1'
     implementation 'com.mikhaellopez:circularimageview:3.0.2'
+    // https://mvnrepository.com/artifact/com.adobe.xmp/xmpcore
+    implementation group: 'com.adobe.xmp', name: 'xmpcore', version: '5.1.2'
+
 }
 
 

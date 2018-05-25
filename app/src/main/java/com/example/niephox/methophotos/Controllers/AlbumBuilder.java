@@ -39,12 +39,13 @@ public class AlbumBuilder {
     private MetadataController metadataController = new MetadataController();
     public static iAsyncCallback iAsyncCallback;
     private ArrayList<String> metadataString = new ArrayList<>();
-    private Context context;
-    private String resp;
     boolean flag = false;
-    ProgressDialog progressDialog;
 
-    public AlbumBuilder() {
+
+    public AlbumBuilder(ArrayList<Image> inputImages ) {
+        this.images = inputImages;
+
+
     }
 
     public ArrayList<Album> getAlbumsGenerated() {
@@ -133,17 +134,25 @@ public class AlbumBuilder {
         this.iAsyncCallback = iAsyncCallback;
     }
 
-    public static class AsyncBuild extends AsyncTask<String, Integer, String> {
+    public static class AsyncBuild extends AsyncTask<ArrayList<Image>, Integer, String> {
 
+        private MetadataController metadataController = new MetadataController();
         private View rootView;
         private Context context;
         private InfoBottomDialog infoBottomDialog;
         private ProgressBar progressBar;
+        private ArrayList<String> metadataString = new ArrayList<>();
+        private ArrayList<Image> images = new ArrayList<>();
+        private ArrayList<Album> albumscreated = new ArrayList<>();
 
-        public AsyncBuild(View rootView, Context context) {
+        public AsyncBuild(View rootView, Context context , ArrayList<Image> inputImages) {
             this.rootView = rootView;
             this.context = context;
+            this.images = inputImages;
         }
+
+
+
 
         /**
          * ASYNCTASK <PARAMS,PROGRESS, RESULT>
@@ -162,6 +171,7 @@ public class AlbumBuilder {
             snackbar.show();
             progressBar = rootView.findViewById(R.id.progressBar2);
             progressBar.setVisibility(View.VISIBLE);
+            progressBar.setMax(images.size());
             BottomSheetBehavior sheetBehavior = BottomSheetBehavior.from(rootView.findViewById(R.id.Sheet));
             sheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
                 @Override
@@ -182,28 +192,44 @@ public class AlbumBuilder {
 
             // Display Snackbar
         }
-
-        //This is the background thread
         @Override
-        protected String doInBackground(String... strings) {
-            // get the string form params , which is an ARRAY
-            String myString = strings[0];
-            //Do something that takes a long time
-            for (int i = 0; i <= 100; i++) {
-                //DO STUFF
-                try {
-                    Thread.sleep(250);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                //Update progress
+        protected String doInBackground(ArrayList<Image>... inputImages) {
+            ArrayList<Image> images = new ArrayList<>();
+            images.addAll(inputImages[0]);
+            for (int i = 0; i< images.size(); i++){
+                metadataController.ExtractMetadata(images.get(i));
+                metadataString.clear();
+                metadataString.addAll(metadataController.filteredList);
+
                 publishProgress(i);
+                }
+                return "Done";
             }
 
-            //Return something passed on post execute
-            return "STRING PASSED ON POST EXECUTE";
 
-        }
+
+        //This is the background thread
+//        @Override
+//        protected String doInBackground(String... strings) {
+//            // get the string form params , which is an ARRAY
+//            String myString = strings[0];
+//            //Do something that takes a long time
+//            for (int i = 0; i <= 100; i++) {
+//                //DO STUFF
+//                try {
+//                    Thread.sleep(250);
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
+//                //Update progress
+//                publishProgress(i);
+//            }
+//
+//            //Return something passed on post execute
+//            return "STRING PASSED ON POST EXECUTE";
+//
+//        }
+
 
         //This is called from the background thread but  runs in UI
         @Override
@@ -223,4 +249,6 @@ public class AlbumBuilder {
             //Hide progress bar  and make the changes
         }
     }
+
+
 }

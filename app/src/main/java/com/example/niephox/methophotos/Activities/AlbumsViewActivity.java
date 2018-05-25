@@ -171,7 +171,7 @@ public class AlbumsViewActivity extends AppCompatActivity implements iAsyncCallb
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                new AlbumBuilder.AsyncBuild(findViewById(android.R.id.content), this).execute("String");
+              new AlbumBuilder.AsyncBuild(findViewById(android.R.id.content), this,localAlbum.getImages()).execute(localAlbum.getImages());
 
 
                 mdrawerLayout.openDrawer(GravityCompat.START);
