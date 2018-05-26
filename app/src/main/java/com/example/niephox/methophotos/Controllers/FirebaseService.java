@@ -179,7 +179,7 @@ public class FirebaseService {
 						//Stores the album in the database with the correct references
 						if(createdAlbumInCloud.getName()!=null) {
 							firebaseUserAlbumsRef.child(createdAlbumInCloud.getName()).setValue(createdAlbumInCloud);
-							iAsyncCallback.RetrieveData(com.example.niephox.methophotos.Interfaces.iAsyncCallback.REQUEST_CODE.DATABASE);
+							//iAsyncCallback.RetrieveData(com.example.niephox.methophotos.Interfaces.iAsyncCallback.REQUEST_CODE.DATABASE);
 						}
 					}
 
