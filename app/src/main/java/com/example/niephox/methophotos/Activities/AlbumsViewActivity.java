@@ -234,6 +234,7 @@ public class AlbumsViewActivity extends AppCompatActivity implements iAsyncCallb
         return Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, r.getDisplayMetrics()));
     }
 
+
     @Override
     public void onClick(View view) {
         if (view.getId() == R.id.addAlbum) {

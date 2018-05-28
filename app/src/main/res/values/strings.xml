@@ -31,4 +31,5 @@
         <item>[File Type]</item>
         <item>[GPS]</item>
     </string-array>
+    <string name="title_activity_album_on_map">Map</string>
 </resources>

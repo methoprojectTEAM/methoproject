@@ -15,6 +15,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.example.niephox.methophotos.Activities.AlbumOnMapActivity;
+import com.example.niephox.methophotos.Activities.AlbumsViewActivity;
 import com.example.niephox.methophotos.Activities.PhotosViewActivity;
 import com.example.niephox.methophotos.Entities.Album;
 import com.example.niephox.methophotos.Entities.Image;
@@ -28,6 +30,8 @@ public class AlbumsAdapter extends RecyclerView.Adapter<AlbumsAdapter.MyViewHold
 
     private Context mContext;
     private List<Album> albumList;
+
+    private AlbumsViewActivity alb = new AlbumsViewActivity();
 
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
@@ -111,11 +115,15 @@ public class AlbumsAdapter extends RecyclerView.Adapter<AlbumsAdapter.MyViewHold
                     //TODO: DELETE ALBUM
                     Toast.makeText(mContext, "DeleteAlbum", Toast.LENGTH_SHORT).show();
                     return true;
+                case R.id.mapAlbum:
+                    mContext.startActivity(new Intent(mContext,AlbumOnMapActivity.class));
+
                 default:
             }
             return false;
         }
     }
+
 
     @Override
     public int getItemCount() {
