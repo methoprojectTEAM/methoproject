@@ -65,7 +65,8 @@ public class AlbumsAdapter extends RecyclerView.Adapter<AlbumsAdapter.MyViewHold
         holder.title.setText(album.getName());
         holder.description.setText(album.getDescription());
         holder.btOpen.setOnClickListener(new ButtonClickListener(position));
-        Image albumThumbnail = album.getThumbnail();
+        Image albumThumbnail = new Image();
+            albumThumbnail=album.getThumbnail();
         if (albumThumbnail.getImageURI() == null) {
             Glide.with(mContext).load(albumThumbnail.getDownloadUrl()).into(holder.thumbnail);
         } else {

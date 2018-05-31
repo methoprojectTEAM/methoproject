@@ -3,11 +3,13 @@ package com.example.niephox.methophotos.Entities;
 import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
 
 import com.drew.metadata.Metadata;
 
-import java.io.Serializable;
+import java.util.UUID;
 import java.util.ArrayList;
+
 
 
 /**
@@ -21,32 +23,15 @@ public class Image implements Parcelable {
     private Album album;
     private Metadata metadata;
     private String description;
-    public int belongsToAlbumsCount;
     private ArrayList<String> imagesPath;
-
-    ArrayList<String> al_imagepath;
-
-
-    public void belongsToAlbumInc() {
-        belongsToAlbumsCount++;
+    public Image() {
+        setName();
     }
 
     public ArrayList<String> getImagesPath() {
         return imagesPath;
     }
 
-
-    public ArrayList<String> getAl_imagepath() {
-        return al_imagepath;
-    }
-
-    public void setImagesPath(ArrayList<String> imagesPath) {
-        this.imagesPath = imagesPath;
-    }
-
-    public void setAl_imagepath(ArrayList<String> al_imagepath) {
-        this.al_imagepath = al_imagepath;
-    }
     public Image(String storageLocationURL, String downloadUrl, String name, Album album, Metadata metadata, String description) {
         this.storageLocationURL = storageLocationURL;
         this.downloadUrl = downloadUrl;
@@ -57,9 +42,8 @@ public class Image implements Parcelable {
     }
     public Image(String imageURI){
         this.imageURI = imageURI;
+        setName();
     }
-
-    public Image (){}
 
     public Image(String storageLocationURL, String downloadUrl, String description) {
         this.storageLocationURL = storageLocationURL;
@@ -94,8 +78,12 @@ public class Image implements Parcelable {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setName() {
+        UUID uuid;
+        if(this.name == null) {
+            uuid = UUID.randomUUID();
+            this.name = uuid.toString();
+        }
     }
 
     public Album getAlbum() {

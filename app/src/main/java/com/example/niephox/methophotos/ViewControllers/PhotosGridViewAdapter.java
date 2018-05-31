@@ -1,6 +1,7 @@
 package com.example.niephox.methophotos.ViewControllers;
 
 import android.content.Context;
+import android.net.Uri;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.LayoutInflater;

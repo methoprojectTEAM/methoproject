@@ -16,7 +16,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.niephox.methophotos.Controllers.DatabaseController;
+import com.example.niephox.methophotos.Controllers.FirebaseService;
 import com.example.niephox.methophotos.Entities.Album;
 import com.example.niephox.methophotos.Entities.Image;
 import com.example.niephox.methophotos.Entities.User;
@@ -142,8 +142,8 @@ public class RegisterActivity extends AppCompatActivity {
         userAlbums.add(album);
         User DBuser = new User(user.getUid(),user.getEmail(),userAlbums);
         DatabaseReference mDB = FirebaseDatabase.getInstance().getReference();
-        DatabaseController mDBController = new DatabaseController();
-        mDBController.createUser(DBuser);
+        FirebaseService firebaseService = new FirebaseService();
+        firebaseService.createUser(DBuser);
         //DBuser.userCreationOnDB(mDB,DBuser);
         Intent intent = new Intent(this, LoginActivity.class);
         startActivity(intent);

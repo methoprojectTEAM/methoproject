@@ -1,8 +1,16 @@
 package com.example.niephox.methophotos.Controllers;
 
+import android.content.ContentProvider;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.database.Cursor;
+import android.net.Uri;
+import android.provider.MediaStore;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.MenuInflater;
 import android.widget.Toast;
 
@@ -16,13 +24,20 @@ import com.drew.metadata.Metadata;
 import com.drew.metadata.Tag;
 import com.drew.metadata.exif.ExifReader;
 import com.drew.metadata.iptc.IptcReader;
+import com.drew.tools.FileUtil;
+import com.example.niephox.methophotos.Activities.AlbumsViewActivity;
 import com.example.niephox.methophotos.Entities.Image;
 import com.example.niephox.methophotos.Entities.MetadataTag;
 import com.example.niephox.methophotos.Interfaces.iAsyncCallback;
 import com.example.niephox.methophotos.R;
 
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -41,6 +56,8 @@ public class MetadataController implements iAsyncCallback {
     private String[] ReadersList;
     private String[] TagsList;
     private Image image;
+
+    private AlbumsViewActivity act = new AlbumsViewActivity();
 
     public MetadataController(Image image) {
         this.image = image;
@@ -76,8 +93,9 @@ public class MetadataController implements iAsyncCallback {
 
         Metadata metadata = null;
         metadataList.clear();
-        try {
-            metadata = ImageMetadataReader.readMetadata(file);
+
+       try {
+            metadata = ImageMetadataReader.readMetadata(File);
             printMetadata(metadata);
         } catch (ImageProcessingException e) {
             print(e);
@@ -103,7 +121,7 @@ public class MetadataController implements iAsyncCallback {
     }
 
 
-    private void printMetadata(Metadata metadata) {
+    public void printMetadata(Metadata metadata) {
         metadataList.clear();
         for (Directory directory : metadata.getDirectories()) {
             //
