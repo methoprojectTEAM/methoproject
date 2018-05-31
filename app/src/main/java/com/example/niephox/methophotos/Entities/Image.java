@@ -42,12 +42,7 @@ public class Image implements Parcelable {
     }
     public Image(String imageURI){
         this.imageURI = imageURI;
-    }
-
-    public Image(Uri uri){
         setName();
-        Log.w("Image URI BEFORE", uri.toString());
-        this.imageURI = uri.toString();
     }
 
     public Image(String storageLocationURL, String downloadUrl, String description) {

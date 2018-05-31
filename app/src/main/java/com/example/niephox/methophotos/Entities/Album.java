@@ -37,7 +37,7 @@ public class Album {
 
         return name;
     }
-
+    //TODO: CHANGE FUNCTIONALLITY TO SUPPORT POSSIBLE DELETION OF IMAGE THAT EXISTS AS THUMBNAIL
     public void setThumbnail(Image image){this.thumbnail= image;} // maybe get int for the intex of the specific album images array list
 
     public Image getThumbnail(){return this.thumbnail;}

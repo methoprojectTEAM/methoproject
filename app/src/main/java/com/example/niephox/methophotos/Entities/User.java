@@ -19,6 +19,7 @@ public class User {
 
     private String userUID;
     private String username;
+    private Image userImage;
     private ArrayList<Album> albums = new ArrayList<>();
 
 

@@ -1,11 +1,16 @@
 package com.example.niephox.methophotos.Controllers;
 
+import android.content.ContentProvider;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.MenuInflater;
 import android.widget.Toast;
 
@@ -26,6 +31,7 @@ import com.example.niephox.methophotos.Entities.MetadataTag;
 import com.example.niephox.methophotos.Interfaces.iAsyncCallback;
 import com.example.niephox.methophotos.R;
 
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -50,7 +56,7 @@ public class MetadataController implements iAsyncCallback {
     private String[] ReadersList;
     private String[] TagsList;
     private Image image;
-    private InputStream in;
+
     private AlbumsViewActivity act = new AlbumsViewActivity();
 
     public MetadataController(Image image) {
@@ -69,7 +75,6 @@ public class MetadataController implements iAsyncCallback {
             StorageController.DownloadFile(DownloadURL, readers);
         } else {
             File = new File(image.getImageURI());
-            //InputStream in = act.GetInputStream(Uri.parse(image.getImageURI()));
             DataExtractionFromFile();
         }
 
@@ -90,7 +95,7 @@ public class MetadataController implements iAsyncCallback {
         metadataList.clear();
 
        try {
-            metadata = ImageMetadataReader.readMetadata(in);
+            metadata = ImageMetadataReader.readMetadata(File);
             printMetadata(metadata);
         } catch (ImageProcessingException e) {
             print(e);

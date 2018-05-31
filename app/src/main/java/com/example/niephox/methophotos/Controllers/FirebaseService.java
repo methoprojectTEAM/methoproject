@@ -12,7 +12,7 @@ import com.example.niephox.methophotos.Entities.Image;
 import com.example.niephox.methophotos.Entities.User;
 import com.example.niephox.methophotos.Interfaces.iAsyncCallback;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.auth.FirebaseAuth;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -24,26 +24,28 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
-import java.lang.reflect.Array;
+import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
 public class FirebaseService {
 
 	private User currentUser = new User();
 	//TODO: final FIREBASE STRUCTURAL REFERENCES
-	private final DatabaseReference ref= FirebaseDatabase.getInstance().getReference();
 	private final DatabaseReference firebaseUserAlbumsRef = FirebaseDatabase.getInstance().getReference("/users/" + currentUser.getUserUID() + "/albums");
-	private DatabaseReference firebaseUserRef = FirebaseDatabase.getInstance().getReference("/users/" + currentUser.getUserUID());
+	private DatabaseReference firebaseUserRef = FirebaseDatabase.getInstance().getReference("/users");
 	private final StorageReference userStorageReference = FirebaseStorage.getInstance().getReference("/" + currentUser.getUserUID());
 	private Query query;
-	private Album createdAlbumInCloud = new Album();
+	private Album albumToUpload = new Album();
 	private ArrayList<Album> userAlbums = new ArrayList<>();
 	private GenericTypeIndicator<Map<String, Album>> albumsGenericTypeIndicator = new GenericTypeIndicator<Map<String, Album>>() {};
-	private static com.example.niephox.methophotos.Interfaces.iAsyncCallback iAsyncCallback;
+	private GenericTypeIndicator<HashMap<String,Image>> imagesGenericTypeIndicator = new GenericTypeIndicator<HashMap<String, Image>>() {};
+	private HashMap<String, Image> imageHashMap = new HashMap<>();
+ 	private static com.example.niephox.methophotos.Interfaces.iAsyncCallback iAsyncCallback;
 
 
-
+	//TODO: CHANGE THE WAY ANY CHANGES TO THE DATABASE ARE MADE, THERE IS NOT NEED TO DOWNLOAD ALL DATA WHEN SOMETHING SMALL LIKE AN EMAIL IS CHANGED
 	public FirebaseService() {
 	}
 
@@ -79,9 +81,12 @@ public class FirebaseService {
 
 	public void getCurrentUser() {
 		//currentUser.albumsClear();
-		firebaseUserRef.addListenerForSingleValueEvent(new ValueEventListener() {
+		//firebaseUserRef.child(currentUser.getUserUID()).
+		firebaseUserRef.child(currentUser.getUserUID()).addListenerForSingleValueEvent(new ValueEventListener() {
 			@Override
 			public void onDataChange(DataSnapshot dataSnapshot) {
+
+	//			User user = dataSnapshot.getValue(User.class);
 
 				Map<String, Album> map = dataSnapshot.child("albums").getValue(albumsGenericTypeIndicator);
 				if(map != null)
@@ -90,8 +95,9 @@ public class FirebaseService {
 				currentUser.setUserUID(dataSnapshot.child("userUID").getValue(String.class));
 				currentUser.setUsername(dataSnapshot.child("username").getValue(String.class));
 				iAsyncCallback.RetrieveData(com.example.niephox.methophotos.Interfaces.iAsyncCallback.REQUEST_CODE.DATABASE);
+//
+//				//Log.w("User", "User Doesnt exist in Database");
 
-				//Log.w("User", "User Doesnt exist in Database");
 
 			}
 			@Override
@@ -99,7 +105,10 @@ public class FirebaseService {
 
 			}
 		});
+
+
 	}
+
 
 	public void queryChangeUserEmail(String newEmail) {
 		firebaseUserRef.child("email").setValue(newEmail);
@@ -107,91 +116,191 @@ public class FirebaseService {
 	}
 	//IF THESE DONT WORK CHECK THE firebaseUserRef final reference up above for possible corrections
 	public void queryDeleteUser() {
-		firebaseUserRef.removeValue(new DatabaseReference.CompletionListener() {
-			@Override
-			public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-			}
-		});
-		//TODO:: IMPLEMENT Call
+		firebaseUserRef.child(currentUser.getUserUID()).getRef().removeValue();
+//		firebaseUserRef.removeValue(new DatabaseReference.CompletionListener() {
+//			@Override
+//			public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+//			}
+//		});
+//		//TODO:: IMPLEMENT Call
 	}
-
+//
+	//Asynchronous call-back method
 	public void RegisterCallback(iAsyncCallback iAsyncCallback) {
 		this.iAsyncCallback = iAsyncCallback;
 	}
 
-
+	//Deletes album selected
 	public void queryAlbumDelete(Album albumToDelete) {
-		query = firebaseUserAlbumsRef.orderByChild("name").equalTo(albumToDelete.getName());
-		query.addListenerForSingleValueEvent(new ValueEventListener() {
-			@Override
-			public void onDataChange(DataSnapshot snapshot) {
-				for (DataSnapshot dummySnapshot:snapshot.getChildren()) {
-					dummySnapshot.getRef().removeValue();
-				}
-				//lastSnap.getRef().removeValue();
-			}
-
-			@Override
-			public void onCancelled(DatabaseError databaseError) {
-
-			}
-
-		});
+		firebaseUserAlbumsRef.child(albumToDelete.getName()).getRef().removeValue();
 	}
 
+	public Image setImage(Image imageToAddRefs, UploadTask.TaskSnapshot snap) {
 
+		return imageToAddRefs;
+	}
 
-	public void queryTransferImage(final Image image, Album fromAlbum, final Album toAlbum) {
-		/*//delete the image with the current uri from album and add it to the other
-		query = ref.child("users").child(user.getUserUID()).child("albums").child("name").child(fromAlbum.getName()).child("images").orderByChild("ImageURI").equalTo(image.getImageURI());
-		query.addListenerForSingleValueEvent(new ValueEventListener() {
+	//TODO: add a help function to check if the image the user wants to transfer exists in the cloud
+	//TODO: finish workaround indexing and finish whole implementation of fire-base service
+	public void addImageToAlbum(final Image imageToAdd, final Album albumDest) {
+		//albumDest.addImage(imageToAdd);
+		firebaseUserAlbumsRef.child(albumDest.getName()).addListenerForSingleValueEvent(new ValueEventListener() {
 			@Override
-			public void onDataChange(DataSnapshot snapshot) {
-				for (DataSnapshot stock : snapshot.getChildren()) {
-					if (stock.getValue().equals(image.getImageURI()))
-						stock.getRef().removeValue();
-				}
-				ref.child("users").child(user.getUserUID()).child("albums").child(toAlbum.getName()).child("images").setValue(image);
+			public void onDataChange(DataSnapshot dataSnapshot) {
+				final Album albumToAddImageTo = dataSnapshot.getValue(Album.class);
+				final StorageReference dbRef = userStorageReference.child(imageToAdd.getName()); //reference based on current user to upload in the cloud
+				Uri fileUri = Uri.fromFile(new File(imageToAdd.getImageURI()));
+				dbRef.putFile(fileUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+					@Override
+					public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+						imageToAdd.setDownloadUrl(taskSnapshot.getDownloadUrl().toString());
+						imageToAdd.setStorageLocationURL(taskSnapshot.getStorage().toString());
+						albumToAddImageTo.addImage(imageToAdd);
+						//queryAlbumDelete(albumToAddImageTo);
+						firebaseUserAlbumsRef.child(albumDest.getName()).setValue(albumToAddImageTo); //Stores the album in database with the correct references
+						}
+
+				});
+				//ArrayList<Image> images = new ArrayList<>();
+				//HashMap<String, Object> map;
+
+//					Album album1 = new Album();
+//					album1.setDate(dataSnapshot.child("date").getValue(Date.class));
+//					album1.setDescription(dataSnapshot.child("description").getValue(String.class));
+				//FOUND DA WAY ALRIGHET
+//				albumToAddImageTo.addImage(imageToAdd);
+//				firebaseUserAlbumsRef.child(albumDest.getName()).setValue(albumToAddImageTo);
+//				HashMap<String, Album> album = new HashMap<>();
+//				album.put(dataSnapshot.getKey(),dataSnapshot.getValue(Album.class));
+//					HashMap<String, Image> images = new HashMap<>();
+//					Album newAlbum = album.get(albumDest.getName());
+//					for(DataSnapshot snap : dataSnapshot.child("images").getChildren()) {
+//						images.put(snap.getKey(), snap.getValue(Image.class));
+//					}
+
+
+//				if(map!=null)
+//				Log.w("IMAGE", map.get("sadad") );
+				HashMap<String, Image> imageMap = new HashMap<>();
+//				for(DataSnapshot image: dataSnapshot.getChildren()) {
+//					imageMap.put(image.getKey(), image.getValue());
+//				}
+//				if(map != null)
+//				for(Object actualImages:images) {
+//
+//				}
+//					images.addAll(map.values());
+//				images.add(imageToAdd);
+//				albumDest.setImages(images);
+//				firebaseUserAlbumsRef.child(albumDest.getName()).setValue(albumDest);
+
+
+
+
+//
+//					albumDest.getImages().addAll(map.values());
+
+				//albumDest.addImage(imageToAdd);
+				//images.addAll(albumDest.getImages());
+				//firebaseUserAlbumsImagesRef.setValue(images);
+
+				//iAsyncCallback.RefreshView(com.example.niephox.methophotos.Interfaces.iAsyncCallback.REQUEST_CODE.STORAGE);
+
 			}
 			@Override
 			public void onCancelled(DatabaseError databaseError) {
-
+				Log.w("Database CANCEL", "Didnt Get Albums");
 			}
-
 		});
-		*/
+
+//		imagesGenericTypeIndicator
+		//imageHashMap.;
+		//firebaseUserAlbumsRef.child("album2").child("images").updateChildren()
 	}
+	//TODO: TRANSFERRING AN IMAGE FROM ONE ALBUM TO ANOTHER WILL CAUSE DUPLICATION ISSUES AND THE BUG SCALES
+	public void deleteImageFromAlbum(final Image imageToDelete, Album albumSource) {
+		//query = firebaseUserAlbumsRef.child("album1").child("images").orderByChild("imageURI").equalTo(imageToDelete.getImageURI());
+		//TODO: TRY TO LIMIT LOOPING THROUGH VALUES AND FIND A WAY TO DELETE A DATABASE ENTRY IN ONE LINE
+
+ 	firebaseUserAlbumsRef.child("testing1").child("images").orderByChild("imageURI").equalTo("/storage/emulated/0/Download/rainforest.jpg").getRef().removeValue();
+//
+//		query.addListenerForSingleValueEvent(new ValueEventListener() {
+//			@Override
+//			public void onDataChange(DataSnapshot snapshot) {
+//				for (DataSnapshot dummySnapshot:snapshot.getChildren()) {
+//					dummySnapshot.getRef().removeValue();
+//				}
+//				//lastSnap.getRef().removeValue();
+//			}
+//
+//			@Override
+//			public void onCancelled(DatabaseError databaseError) {
+//
+//			}
+//
+//		});
+	}
+//	public Image uploadImage(final Image imageToUpload) {
+//		Uri fileUri = Uri.fromFile(new File(imageToUpload.getImageURI()));
+//		final StorageReference dbRef = userStorageReference.child(imageToUpload.getName()); //reference based on current user to upload in the cloud
+//		final UploadTask uploadTask = dbRef.putFile(fileUri);
+//		final Task<Uri> urlTask = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+//			@Override
+//			public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+//				if (!task.isSuccessful()) {
+//					throw task.getException();
+//				}
+//				imageToUpload.setStorageLocationURL(dbRef.getStorage().toString());
+//				imageToUpload.setDownloadUrl(dbRef.getDownloadUrl().toString());
+//				// Continue with the task to get the download URL
+//				return dbRef.getDownloadUrl();
+//
+//			}
+//		}).addOnCompleteListener(new OnCompleteListener<Uri>() {
+//			@Override
+//			public void onComplete(@NonNull Task<Uri> task) {
+//				if (task.isSuccessful()) {
+//					Uri downloadUri = task.getResult();
+//				} else {
+//					// Handle failures
+//					// ...
+//				}
+//			}
+//		});
+//		return imageToUpload;
+//	}
+	//TODO: you s hould not upload images here you should user a different function to upload images and then upload the album because
+	//TODO: the function to just upload images is needed in case we want to transfer photos from local album to another album
+	//TODO: Implement a view update with the updated album (album that has the downloadUrl and StorageLocUrl references)
 	//getting all the image uris->uploading the images to the firebase storage->creating the album with the correct storage and dowload urls images
 	public void queryAlbumCreate(final Album albumToUpload) {
 		final ArrayList<Image> tempUploadedImages = albumToUpload.getImages(); //temp image array to store FINAL IMAGES WITH REFERENCES
-		createdAlbumInCloud = albumToUpload;
 		for(final Image image:albumToUpload.getImages()) {
-			Uri myUri = Uri.parse(image.getImageURI());
-			StorageReference dbRef = userStorageReference.child(image.getName()); //reference based on current user to upload in the cloud
-			dbRef.putFile(myUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+			Uri fileUri = Uri.fromFile(new File(image.getImageURI()));
+			final StorageReference dbRef = userStorageReference.child(image.getName()); //reference based on current user to upload in the cloud
+			//UploadTask uploadTask = dbRef.putFile(fileUri);
+			dbRef.putFile(fileUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
 				@Override
 				public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+
 					image.setDownloadUrl(taskSnapshot.getDownloadUrl().toString());
 					image.setStorageLocationURL(taskSnapshot.getStorage().toString());
-					//if the
 					if (tempUploadedImages.size() == albumToUpload.getImages().size()) {
-						createdAlbumInCloud.setImages(tempUploadedImages);
-						//Stores the album in the database with the correct references
-						if(createdAlbumInCloud.getName()!=null) {
-							firebaseUserAlbumsRef.child(createdAlbumInCloud.getName()).setValue(createdAlbumInCloud);
-							//iAsyncCallback.RetrieveData(com.example.niephox.methophotos.Interfaces.iAsyncCallback.REQUEST_CODE.DATABASE);
-						}
-					}
+						albumToUpload.setImages(tempUploadedImages);
+						firebaseUserAlbumsRef.child(albumToUpload.getName()).setValue(albumToUpload); //Stores the album in database with the correct references
 
+					}
 				}
 			});
+
 		}
 	}
 
 
 
 	//TODO: later deduplication of images, check each image you are about to upload if it already exists in the cloud
-	void imageExists(Image image) {
+	public boolean imageExists(Image image) {
 
+		return false;
 	}
 }

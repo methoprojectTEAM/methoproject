@@ -59,7 +59,7 @@ public class AlbumRepository {
 	}
 
 	private void openSelectionImageGallery() {
-		Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+		Intent intent = new Intent(Intent.ACTION_PICK);
 		Activity genActivity;
 		//allows any image file type. Change * to specific extension to limit it
 		intent.setType("image/*");
@@ -70,13 +70,12 @@ public class AlbumRepository {
 
 	}
 	//This is an Album that is created locally, if you want the created album to be uploaded to the cloud you can call createAlbum
-	public void saveSelectedImages(List<Uri> imageURIs) {
+	public void saveSelectedImages(List<String> imageURIs) {
 		selectedImages = new ArrayList<>();
-		for (Uri uri : imageURIs)
+		for (String uri : imageURIs)
 			selectedImages.add(new Image(uri));
 		album.setImages(selectedImages);
 		album.setDate(Calendar.getInstance().getTime());
-
 		createAlbum(album);
 	}
 
@@ -88,9 +87,10 @@ public class AlbumRepository {
 		album = new Album("Local Album", Calendar.getInstance().getTime(), "These pictures are taken from the phone storage", selectedImages);
 		return album;
 	}
-
+	//remove image with the help of firebase service and add image to the other album with firebase service too
 	public void transferImage(Image imgToTransfer, Album fromAlbum, Album toAlbum) {
-		//service.queryTransferImage(imgToTransfer, fromAlbum, toAlbum);
+		service.deleteImageFromAlbum(imgToTransfer, fromAlbum); //delete from one album,
+		service.addImageToAlbum(imgToTransfer, toAlbum); //add to the other album
 	}
 
 	public void createAlbum(Album albumToCreate) {
