@@ -29,14 +29,15 @@ public class AlbumBuilder {
     boolean flag = false;
     ProgressDialog progressDialog;
 
-    public AlbumBuilder(){
+    public AlbumBuilder() {
     }
-    public  ArrayList<Album> getAlbumsGenerated (){
+
+    public ArrayList<Album> getAlbumsGenerated() {
         return this.albumscreated;
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    public   void buildBasedOnDate(ArrayList<Image> localImages) {
+    public void buildBasedOnDate(ArrayList<Image> localImages) {
         //images.clear();
         images.addAll(localImages);
         String dateTag = "[File] File Modified Date";
@@ -52,11 +53,11 @@ public class AlbumBuilder {
                     counter++;
                     String[] tagSplit = tag.split("- ", 2);
                     Date date = dateParser(tagSplit[1]);
-                    calculateAlbum(date,images.get(i));
+                    calculateAlbum(date, images.get(i));
 
                 }
             }
-            Log.w("IMGTAG","image "+i + "has iffed "+counter);
+            Log.w("IMGTAG", "image " + i + "has iffed " + counter);
             counter = 0;
         }
 
@@ -67,30 +68,31 @@ public class AlbumBuilder {
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void calculateAlbum(Date date, Image image) {
-        if(albumscreated.size()== 0){
-            newAlbumCreation(date,image);
+        if (albumscreated.size() == 0) {
+            newAlbumCreation(date, image);
         }
         flag = false;
-        for (Album albumChild: albumscreated){
+        for (Album albumChild : albumscreated) {
 
             LocalDate albumdate = albumChild.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
             LocalDate imageDate = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-           long timedif = ChronoUnit.DAYS.between(albumdate,imageDate);
+            long timedif = ChronoUnit.DAYS.between(albumdate, imageDate);
 
-           if (ChronoUnit.DAYS.between(albumdate,imageDate) == 0) {
+            if (ChronoUnit.DAYS.between(albumdate, imageDate) == 0) {
                 albumChild.addImage(image);
                 flag = true;
                 break;
             }
         }
-        if(flag == false){
-            newAlbumCreation(date,image);
+        if (flag == false) {
+            newAlbumCreation(date, image);
 
         }
 
 
     }
-    private void newAlbumCreation(Date date, Image image){
+
+    private void newAlbumCreation(Date date, Image image) {
         Album album = new Album();
         album.setName(date.toString());
         album.setThumbnail(image);
@@ -110,9 +112,9 @@ public class AlbumBuilder {
         }
 
 
-
         return date;
     }
+
     public void RegisterCallback(iAsyncCallback iAsyncCallback) {
         this.iAsyncCallback = iAsyncCallback;
     }

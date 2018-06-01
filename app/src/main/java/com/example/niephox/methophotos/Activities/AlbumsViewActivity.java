@@ -2,6 +2,7 @@ package com.example.niephox.methophotos.Activities;
 
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -28,16 +29,17 @@ import android.util.Log;
 import android.util.TypedValue;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.Toast;
-
 import com.example.niephox.methophotos.Controllers.AlbumBuilder;
 import com.example.niephox.methophotos.Controllers.AlbumRepository;
+import com.example.niephox.methophotos.Controllers.FirebaseService;
+import com.example.niephox.methophotos.Controllers.StorageAdapter;
 import com.example.niephox.methophotos.ViewControllers.AlbumsAdapter;
-import com.example.niephox.methophotos.Controllers.DatabaseController;
 import com.example.niephox.methophotos.ViewControllers.NavigationItemListener;
 import com.example.niephox.methophotos.ViewControllers.GridSpacingItemDecoration;
-import com.example.niephox.methophotos.Controllers.LocalPhotosController;
 import com.example.niephox.methophotos.Entities.Album;
 import com.example.niephox.methophotos.Entities.Image;
 import com.example.niephox.methophotos.Entities.User;
@@ -46,6 +48,7 @@ import com.example.niephox.methophotos.Interfaces.iAsyncCallback;
 import com.example.niephox.methophotos.R;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Igor Spiridonov
@@ -54,22 +57,21 @@ import java.util.ArrayList;
 public class AlbumsViewActivity extends AppCompatActivity implements iAsyncCallback, View.OnClickListener {
     //ArrayLists:
     public ArrayList<Album> alAlbums = new ArrayList<>();
-    public ArrayList<Image> alImages = new ArrayList<>();
 
     //Layout Items:
-    private GridView gvAlbums;
     private DrawerLayout mdrawerLayout;
     //Controllers:
-    private DatabaseController dbController;
-    private LocalPhotosController localPhotosController;
+    FirebaseService firebaseService;
+    private AlbumRepository albumRepo;
     private AlbumBuilder albumBuilder;
-   private AlbumBuilder.AsyncBuild builder;
+
     //Intents:
     private User curentUser;
     private Album localAlbum;
     private AlbumRepository albumController;
     private RecyclerView recyclerView;
     private AlbumsAdapter adapter;
+    //Controllers:
 
 
     private final int REQUEST_PERMISSIONS = 100;
@@ -80,15 +82,16 @@ public class AlbumsViewActivity extends AppCompatActivity implements iAsyncCallb
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_album);
+        alAlbums.clear();
 
         setView();
-        dbController = new DatabaseController();
-        dbController.getCurrentUser();
-        albumController = new AlbumRepository();
+        firebaseService = new FirebaseService();
+        firebaseService.getCurrentUser();
+        albumRepo = new AlbumRepository();
         localAlbum = new Album("Local Photos", null, null, null);
         checkPermissions(AlbumsViewActivity.this);
         alAlbums.add(localAlbum);
-        dbController.RegisterCallback(this);
+        firebaseService.RegisterCallback(this);
 
     }
 
@@ -96,7 +99,7 @@ public class AlbumsViewActivity extends AppCompatActivity implements iAsyncCallb
         initCollapsingToolbar();
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        ActionBar actionBar= getSupportActionBar();
+        ActionBar actionBar = getSupportActionBar();
         actionBar.setHomeAsUpIndicator(R.drawable.ic_menu);
         actionBar.setDisplayHomeAsUpEnabled(true);
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
@@ -111,7 +114,7 @@ public class AlbumsViewActivity extends AppCompatActivity implements iAsyncCallb
         floatingActionButton.setOnClickListener(this);
         mdrawerLayout = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.navigation);
-        navigationView.setNavigationItemSelectedListener(new NavigationItemListener(mdrawerLayout ));
+        navigationView.setNavigationItemSelectedListener(new NavigationItemListener(mdrawerLayout));
 
     }
 
@@ -119,6 +122,8 @@ public class AlbumsViewActivity extends AppCompatActivity implements iAsyncCallb
     public void RefreshView(REQUEST_CODE rq) {
         switch (rq) {
             case STORAGE:
+                alAlbums.clear(); //edited code alexander
+                alAlbums.add(localAlbum);
                 alAlbums.addAll(curentUser.getAlbums());
                 adapter.notifyDataSetChanged();
                 break;
@@ -130,19 +135,40 @@ public class AlbumsViewActivity extends AppCompatActivity implements iAsyncCallb
     @Override
     public void RetrieveData(REQUEST_CODE rq) {
         if (rq == REQUEST_CODE.METADATA) {
-            alAlbums.addAll(builder.getAlbumscreated());
             adapter.notifyDataSetChanged();
         } else {
-            curentUser = dbController.returnCurentUser();
-            dbController.getUserAlbums();
+            curentUser = firebaseService.getUser();
+            firebaseService.getUserAlbums();
             Log.e("alAlbums", alAlbums.size() + "");
             adapter.notifyDataSetChanged();
         }
     }
 
+    //WRITTEN BY PETALIDIS:::::::::::::::::::::::::::::::::::::::
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        localPhotosController.onActivityResult(requestCode, resultCode, data);
+        String path;
+        List<String> imageURIs = new ArrayList<>();
+        if (data != null) { //if user did not select anything
+            if (data.getClipData() != null) { //if user selected more than one images, get the images from clipData
+                for (int i = 0; i < data.getClipData().getItemCount(); i++)
+                    imageURIs.add(StorageAdapter.getRealPathFromURI(this, data.getClipData().getItemAt(i).getUri()));
+            } else
+                imageURIs.add(StorageAdapter.getRealPathFromURI(this, data.getData())); //if data is not null and theres only one image selected just add the single image uri
+        } else //if no Image is selected...
+            return;
+
+        //saves the selected images to the album that the repo is managing, and create an album simulteniously
+        albumRepo.saveSelectedImages(imageURIs);
+        //getting the album that has been created
+        alAlbums.add(albumRepo.getAlbum());
+        curentUser.addAlbums(alAlbums);
+        adapter.notifyDataSetChanged();
+        //curentUser.albumsClear();
+        // albumRepo.transferImage(localAlbum.getImages().get(4), curentUser.getAlbums().get(0), curentUser.getAlbums().get(1));
+        //albumRepo.deleteAlbum(curentUser.getAlbums().get(0));
+        //firebaseService.getCurrentUser();
+        //firebaseService.addImageToAlbum(localAlbum.getImages().get(0), curentUser.getAlbums().get(1));
     }
 
 
@@ -155,8 +181,7 @@ public class AlbumsViewActivity extends AppCompatActivity implements iAsyncCallb
             case REQUEST_PERMISSIONS: {
                 for (int i = 0; i < grantResults.length; i++) {
                     if (grantResults.length > 0 && grantResults[i] == PackageManager.PERMISSION_GRANTED) {
-                        //fn_imagespath();
-                        localAlbum = albumController.getLocalAlbum(this);
+                        localAlbum = albumRepo.generateLocalAlbum(this);
                     } else {
                         Toast.makeText(AlbumsViewActivity.this, "The app was not allowed to read or write to your storage. Hence, it cannot function properly. Please consider granting it this permission", Toast.LENGTH_LONG).show();
                     }
@@ -171,10 +196,10 @@ public class AlbumsViewActivity extends AppCompatActivity implements iAsyncCallb
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-              builder = (AlbumBuilder.AsyncBuild) new AlbumBuilder.AsyncBuild(findViewById(android.R.id.content), this,localAlbum.getImages()).execute(localAlbum.getImages());
-              builder.RegisterCallback(this);
-
-                mdrawerLayout.openDrawer(GravityCompat.START);
+                albumBuilder = new AlbumBuilder();
+                albumBuilder.RegisterCallback(this);
+                albumBuilder.buildBasedOnDate(localAlbum.getImages());
+                //xTODO:: add drawer
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -198,7 +223,9 @@ public class AlbumsViewActivity extends AppCompatActivity implements iAsyncCallb
             }
         } else {
             Log.e("Else", "Else");
-            localAlbum = albumController.getLocalAlbum(context);
+            localAlbum = albumRepo.generateLocalAlbum(context);
+            //AUTOMATIC GENERATION
+
 
         }
     }
@@ -242,7 +269,27 @@ public class AlbumsViewActivity extends AppCompatActivity implements iAsyncCallb
     @Override
     public void onClick(View view) {
         if (view.getId() == R.id.addAlbum) {
-            localPhotosController = new LocalPhotosController("FAMILY", AlbumsViewActivity.this);
+            final AlertDialog.Builder diaBuilder = new AlertDialog.Builder(AlbumsViewActivity.this);
+            albumRepo = new AlbumRepository();
+            View createAlbumView = getLayoutInflater().inflate(R.layout.layout_create_album, null);
+            final EditText albumName = (EditText) createAlbumView.findViewById(R.id.albumName);
+            final EditText albumDescription = (EditText) createAlbumView.findViewById(R.id.albumDescription);
+            Button createAlbum = (Button) createAlbumView.findViewById(R.id.createAlbumButton);
+            diaBuilder.setView(createAlbumView);
+            final AlertDialog dialog = diaBuilder.create();
+            dialog.show();
+            createAlbum.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (!albumName.getText().toString().isEmpty() && !albumDescription.getText().toString().isEmpty()) {
+                        Album albumToCreate = new Album(albumName.getText().toString(), albumDescription.getText().toString());
+                        albumRepo.createAlbumFromSelection(albumToCreate, AlbumsViewActivity.this);
+                        dialog.dismiss();
+                    }
+                }
+            });
+
         }
+
     }
 }
