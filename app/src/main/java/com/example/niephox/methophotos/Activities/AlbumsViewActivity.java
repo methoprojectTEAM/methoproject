@@ -63,7 +63,7 @@ public class AlbumsViewActivity extends AppCompatActivity implements iAsyncCallb
     private DatabaseController dbController;
     private LocalPhotosController localPhotosController;
     private AlbumBuilder albumBuilder;
-
+   private AlbumBuilder.AsyncBuild builder;
     //Intents:
     private User curentUser;
     private Album localAlbum;
@@ -130,7 +130,7 @@ public class AlbumsViewActivity extends AppCompatActivity implements iAsyncCallb
     @Override
     public void RetrieveData(REQUEST_CODE rq) {
         if (rq == REQUEST_CODE.METADATA) {
-            alAlbums.addAll(albumBuilder.getAlbumsGenerated());
+            alAlbums.addAll(builder.getAlbumscreated());
             adapter.notifyDataSetChanged();
         } else {
             curentUser = dbController.returnCurentUser();
@@ -171,8 +171,8 @@ public class AlbumsViewActivity extends AppCompatActivity implements iAsyncCallb
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-              new AlbumBuilder.AsyncBuild(findViewById(android.R.id.content), this,localAlbum.getImages()).execute(localAlbum.getImages());
-
+              builder = (AlbumBuilder.AsyncBuild) new AlbumBuilder.AsyncBuild(findViewById(android.R.id.content), this,localAlbum.getImages()).execute(localAlbum.getImages());
+              builder.RegisterCallback(this);
 
                 mdrawerLayout.openDrawer(GravityCompat.START);
                 return true;

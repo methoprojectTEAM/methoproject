@@ -1,21 +1,15 @@
 package com.example.niephox.methophotos.Controllers;
 
-import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.BottomSheetBehavior;
-import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import com.example.niephox.methophotos.Entities.Album;
 import com.example.niephox.methophotos.Entities.Image;
@@ -23,7 +17,6 @@ import com.example.niephox.methophotos.Interfaces.iAsyncCallback;
 import com.example.niephox.methophotos.R;
 import com.example.niephox.methophotos.ViewControllers.InfoBottomDialog;
 
-import java.lang.reflect.Array;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -42,15 +35,13 @@ public class AlbumBuilder {
     boolean flag = false;
 
 
-    public AlbumBuilder(ArrayList<Image> inputImages ) {
+    public AlbumBuilder(ArrayList<Image> inputImages) {
         this.images = inputImages;
 
 
     }
 
-    public ArrayList<Album> getAlbumsGenerated() {
-        return this.albumscreated;
-    }
+
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     public void buildBasedOnDate(ArrayList<Image> localImages) {
@@ -68,8 +59,8 @@ public class AlbumBuilder {
 
                     counter++;
                     String[] tagSplit = tag.split("- ", 2);
-                    Date date = dateParser(tagSplit[1]);
-                    calculateAlbum(date, images.get(i));
+                   // Date date = dateParser(tagSplit[1]);
+                   // calculateAlbum(date, images.get(i));
 
                 }
             }
@@ -119,40 +110,11 @@ public class AlbumBuilder {
     }
 
 
-    private Date dateParser(String input) {
-        SimpleDateFormat parser = new SimpleDateFormat("EEE MMM dd HH:mm:ss Z yyyy");
-        Date date = new Date();
-        try {
-            date = parser.parse(input);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        return date;
-    }
-
     public void RegisterCallback(iAsyncCallback iAsyncCallback) {
         this.iAsyncCallback = iAsyncCallback;
     }
 
     public static class AsyncBuild extends AsyncTask<ArrayList<Image>, Integer, String> {
-
-        private MetadataController metadataController = new MetadataController();
-        private View rootView;
-        private Context context;
-        private InfoBottomDialog infoBottomDialog;
-        private ProgressBar progressBar;
-        private ArrayList<String> metadataString = new ArrayList<>();
-        private ArrayList<Image> images = new ArrayList<>();
-        private ArrayList<Album> albumscreated = new ArrayList<>();
-
-        public AsyncBuild(View rootView, Context context , ArrayList<Image> inputImages) {
-            this.rootView = rootView;
-            this.context = context;
-            this.images = inputImages;
-        }
-
-
-
 
         /**
          * ASYNCTASK <PARAMS,PROGRESS, RESULT>
@@ -162,11 +124,34 @@ public class AlbumBuilder {
          * @RESULT =the type that returns from doInBackground()
          */
 
+
+        private MetadataController metadataController = new MetadataController();
+        private View rootView;
+        private Context context;
+        private InfoBottomDialog infoBottomDialog;
+        private ProgressBar progressBar;
+        private ArrayList<String> metadataString = new ArrayList<>();
+        private ArrayList<Image> images = new ArrayList<>();
+        public static iAsyncCallback iAsyncCallback;
+
+        public ArrayList<Album> getAlbumscreated() {
+            return albumscreated;
+        }
+        public void RegisterCallback(iAsyncCallback iAsyncCallback) {
+            this.iAsyncCallback = iAsyncCallback;
+        }
+        private ArrayList<Album> albumscreated = new ArrayList<>();
+
+        public AsyncBuild(View rootView, Context context, ArrayList<Image> inputImages) {
+            this.rootView = rootView;
+            this.context = context;
+            this.images = inputImages;
+        }
+
         //Runs  in  UI before  background thread is called.
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-
             Snackbar snackbar = Snackbar.make(rootView, "FML?", Snackbar.LENGTH_LONG);
             snackbar.show();
             progressBar = rootView.findViewById(R.id.progressBar2);
@@ -187,48 +172,24 @@ public class AlbumBuilder {
 //            FragmentManager fragmentManager = ((FragmentActivity) context).getSupportFragmentManager();
 //            infoBottomDialog = InfoBottomDialog.newInstance();
 //            infoBottomDialog.show(fragmentManager, "add diallog");
-
-
-
             // Display Snackbar
         }
+
         @Override
         protected String doInBackground(ArrayList<Image>... inputImages) {
             ArrayList<Image> images = new ArrayList<>();
             images.addAll(inputImages[0]);
-            for (int i = 0; i< images.size(); i++){
+
+            //For each image get  metadata and sort into the correct album
+            for (int i = 0; i < 40; i++) {
                 metadataController.ExtractMetadata(images.get(i));
                 metadataString.clear();
                 metadataString.addAll(metadataController.filteredList);
-
+                calculateAlbumBase(metadataString,"Date",images.get(i));
                 publishProgress(i);
-                }
-                return "Done";
             }
-
-
-
-        //This is the background thread
-//        @Override
-//        protected String doInBackground(String... strings) {
-//            // get the string form params , which is an ARRAY
-//            String myString = strings[0];
-//            //Do something that takes a long time
-//            for (int i = 0; i <= 100; i++) {
-//                //DO STUFF
-//                try {
-//                    Thread.sleep(250);
-//                } catch (InterruptedException e) {
-//                    e.printStackTrace();
-//                }
-//                //Update progress
-//                publishProgress(i);
-//            }
-//
-//            //Return something passed on post execute
-//            return "STRING PASSED ON POST EXECUTE";
-//
-//        }
+            return "Done";
+        }
 
 
         //This is called from the background thread but  runs in UI
@@ -237,8 +198,9 @@ public class AlbumBuilder {
             super.onProgressUpdate(values);
             //infoBottomDialog.updateProgress(values[0] + 1);
             //update progressBar
-            progressBar.setProgress(values[0]+1);
+            progressBar.setProgress(values[0] + 1);
         }
+
 
         //This  runs in UI when background thread finishes
         @Override
@@ -246,7 +208,72 @@ public class AlbumBuilder {
             super.onPostExecute(s);
             Snackbar snackbar = Snackbar.make(rootView, "Done", Snackbar.LENGTH_LONG);
             snackbar.show();
+            iAsyncCallback.RetrieveData(com.example.niephox.methophotos.Interfaces.iAsyncCallback.REQUEST_CODE.METADATA);
             //Hide progress bar  and make the changes
+        }
+        private void calculateAlbumBase(ArrayList<String> metadataString, String baseTag, Image image) {
+            switch (baseTag) {
+                case "Date":
+                    calculateByDate(metadataString, image);
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        private Date parseDate(ArrayList<String> metadataString) {
+            String dateTag = "[File] File Modified Date";
+            for (String tag : metadataString) {
+                if (tag.contains(dateTag)) {
+                    String[] tagSplit = tag.split("- ", 2);
+                    Date date = dateParser(tagSplit[1]);
+                    return date;
+                }
+            }
+            return null;
+        }
+
+        private Date dateParser(String input) {
+            SimpleDateFormat parser = new SimpleDateFormat("EEE MMM dd HH:mm:ss Z yyyy");
+            Date date = new Date();
+            try {
+                date = parser.parse(input);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            return date;
+        }
+
+        private void newAlbumByDate(Date imageDate, Image image) {
+            Album album = new Album();
+            album.setName(imageDate.toString());
+            album.setThumbnail(image);
+            album.setDescription("Automatically created based on date");
+            album.setDate(imageDate);
+            albumscreated.add(album);
+        }
+
+        private void calculateByDate(ArrayList<String> metadataString, Image image) {
+            Date imageDate = parseDate(metadataString);
+            if (imageDate != null) {
+                if (albumscreated.size() == 0) {
+                    newAlbumByDate(imageDate, image);
+                } else {
+                    boolean albumExists = false;
+                    int albumIndex = 0;
+                    for (int i = 0; i < albumscreated.size(); i++) {
+                        if (albumscreated.get(i).getDate() == imageDate) {
+                            albumExists = true;
+                            albumIndex = i;
+                        }
+                        if (albumExists) {
+                            albumscreated.get(albumIndex).addImage(image);
+                        } else {
+                            newAlbumByDate(imageDate, image);
+                        }
+                    }
+                }
+            }
         }
     }
 
