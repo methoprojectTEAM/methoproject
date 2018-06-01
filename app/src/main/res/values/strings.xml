@@ -11,9 +11,7 @@
     <string name="error_invalid_password">This password is too short</string>
     <string name="error_incorrect_password">This password is incorrect</string>
     <string name="error_field_required">This field is required</string>
-    <string name="permission_rationale">"Contacts permissions are needed for providing email
-        completions."
-    </string>
+    <string name="permission_rationale">"Contacts permissions are needed for providing emailcompletions." </string>
     <string-array name="readers_list">
         <item>All</item>
         <item>Exif and Iptc (JPEG)</item>
@@ -31,4 +29,13 @@
         <item>[File Type]</item>
         <item>[GPS]</item>
     </string-array>
+    <!--Strings Related to navigation menu-->
+    <string name="Albums">Albums</string>
+    <string name="Metadata">Metadata</string>
+    <string name="Settings">Settings</string>
+    <string name="ManageAccount">Manage Account</string>
+    <string name="Logout">Logout</string>
+    <string name="About">About</string>
+    <string name="Feedback">Feedback</string>
+    <string name="Version">Version</string>
 </resources>
