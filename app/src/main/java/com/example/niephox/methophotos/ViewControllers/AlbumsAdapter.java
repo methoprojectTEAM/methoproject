@@ -64,7 +64,7 @@ public class AlbumsAdapter extends RecyclerView.Adapter<AlbumsAdapter.MyViewHold
         Album album = albumList.get(position);
         holder.title.setText(album.getName());
         holder.description.setText(album.getDescription());
-        holder.btOpen.setOnClickListener(new ButtonClickListener(position));
+        holder.btOpen.setOnClickListener(new ButtonClickListener(position,albumList.get(position)));
         Image albumThumbnail = new Image();
             albumThumbnail=album.getThumbnail();
         if (albumThumbnail.getImageURI() == null) {
@@ -126,16 +126,19 @@ public class AlbumsAdapter extends RecyclerView.Adapter<AlbumsAdapter.MyViewHold
     class ButtonClickListener implements View.OnClickListener {
         private ArrayList<Image> alImages = new ArrayList<>();
         private int position;
+        private Album album;
 
-        ButtonClickListener(int position) {
+        ButtonClickListener(int position, Album album) {
             this.position = position;
+            this.album = album;
         }
 
         @Override
         public void onClick(View view) {
             alImages.clear();
-            alImages.addAll(albumList.get(position).getImages());
+            alImages.addAll(album.getImages());
             Intent intent = new Intent(mContext, PhotosViewActivity.class);
+
             intent.putExtra("alImages", alImages);
             mContext.startActivity(intent);
 

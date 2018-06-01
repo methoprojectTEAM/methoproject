@@ -8,7 +8,8 @@ public interface iAsyncCallback {
     enum REQUEST_CODE {
         STORAGE,
         DATABASE,
-        METADATA
+        METADATA,
+        AUTOGENERATE
     }
 
     void RefreshView(REQUEST_CODE rq);

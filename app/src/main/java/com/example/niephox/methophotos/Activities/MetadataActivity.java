@@ -25,6 +25,7 @@ import com.example.niephox.methophotos.Controllers.MetadataController;
 import com.example.niephox.methophotos.Entities.Image;
 import com.example.niephox.methophotos.Interfaces.iAsyncCallback;
 import com.example.niephox.methophotos.R;
+import com.example.niephox.methophotos.ViewControllers.MetadataViewController;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
@@ -44,11 +45,11 @@ public class MetadataActivity extends AppCompatActivity implements iAsyncCallbac
     TextView tvDate;
     Button btTags;
 
-
     public static ArrayAdapter<String> arrayAdapter;
     private StorageReference storageRef = FirebaseStorage.getInstance().getReference();
     private ArrayList<String> metadataList = new ArrayList<String>();
     public MetadataController metadataController;
+    private MetadataViewController metadataViewController;
     private Image image;
     private String[] listitems;
 
@@ -60,9 +61,10 @@ public class MetadataActivity extends AppCompatActivity implements iAsyncCallbac
         InitialiseViews();
         GetImage();
         metadataController = new MetadataController(image);
+        metadataViewController = new MetadataViewController(metadataController);
         metadataController.RegisterCallback(this);
         SetViews();
-        metadataController.ReaderAlertDialog(this);
+        metadataViewController.ReaderAlertDialog(this);
 
     }
 
@@ -96,7 +98,7 @@ public class MetadataActivity extends AppCompatActivity implements iAsyncCallbac
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.btTags:
-                metadataController.TagAlertDialog(this);
+                metadataViewController.TagAlertDialog(this);
                 break;
             default:
                 break;
