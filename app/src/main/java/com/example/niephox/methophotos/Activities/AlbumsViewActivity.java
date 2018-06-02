@@ -77,9 +77,6 @@ public class AlbumsViewActivity extends AppCompatActivity implements iAsyncCallb
 	private Album localAlbum;
 	private RecyclerView recyclerView;
 	private AlbumsAdapter adapter;
-
-	private Album album2;
-
 	private final int REQUEST_PERMISSIONS = 100;
 
 
@@ -95,11 +92,9 @@ public class AlbumsViewActivity extends AppCompatActivity implements iAsyncCallb
 		firebaseService.getCurrentUser();
 		albumRepo = new AlbumRepository();
 		localAlbum = new Album();
-		album2 = new Album("Album2", "Desc");
 		checkPermissions(AlbumsViewActivity.this);
 		alAlbums.add(localAlbum);
 		firebaseService.RegisterCallback(this);
-
 
 	}
 
@@ -150,7 +145,6 @@ public class AlbumsViewActivity extends AppCompatActivity implements iAsyncCallb
 
 	}
 
-    //WRITTEN BY PETALIDIS:::::::::::::::::::::::::::::::::::::::
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		String path;
@@ -164,12 +158,11 @@ public class AlbumsViewActivity extends AppCompatActivity implements iAsyncCallb
         } else //if no Image is selected...
             return;
 
-        //saves the selected images to the album that the repo is managing, and create an album simulteniously
-        albumRepo.saveSelectedImages(imageURIs);
-        //getting the album that has been created
-        alAlbums.add(albumRepo.getAlbum());
-        curentUser.addAlbums(alAlbums);
+		albumRepo.saveSelectedImages(imageURIs); //saves the selected images to the album that the repo is managing, and create an album simulteniously
+		alAlbums.add(albumRepo.getAlbum()); //getting the album that has been created
+		curentUser.addAlbums(alAlbums);
         adapter.notifyDataSetChanged();
+
         //curentUser.albumsClear();
        // albumRepo.transferImage(localAlbum.getImages().get(4), curentUser.getAlbums().get(0), curentUser.getAlbums().get(1));
        //albumRepo.deleteAlbum(curentUser.getAlbums().get(0));

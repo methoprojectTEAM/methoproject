@@ -2,6 +2,7 @@ package com.example.niephox.methophotos.Entities;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by Niephox on 3/30/2018.
@@ -11,7 +12,7 @@ public class Album {
     private String name;
     private Date date;
     private String description;
-    private ArrayList<Image> images;
+    private ArrayList<Image> images = new ArrayList<>();
     private Image thumbnail;
 
     public Album()      {
@@ -76,10 +77,10 @@ public class Album {
     }
 
     public void setImages(ArrayList<Image> images) {
-        this.images = images;
-        if (this.images != null){
-            this.thumbnail = this.images.get(0);
-        }
+
+        this.images = images ==  null ? new ArrayList<Image>(): images;
+        this.thumbnail = this.images.get(0);
+
     }
 }
 

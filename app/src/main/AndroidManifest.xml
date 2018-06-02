@@ -30,7 +30,6 @@
         android:supportsRtl="true"
         android:theme="@style/newTheme">
 
-
         <activity
             android:name=".Activities.MetadataActivity"
             android:label="@string/title_activity_login">

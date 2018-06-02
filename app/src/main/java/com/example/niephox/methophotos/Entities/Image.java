@@ -63,14 +63,20 @@ public class Image implements Parcelable {
         return downloadUrl;
     }
 
-    public void setDownloadUrl(String downloadUrl) {
+    private void setDownloadUrl(String downloadUrl) {
         this.downloadUrl = downloadUrl;
+    }
+
+    public void setUrls(Uri downloadUrl, String storageLocationURL) {
+        String downloadString = downloadUrl == null ? "" : downloadUrl.toString();
+        setDownloadUrl(downloadString);
+        setStorageLocationURL(storageLocationURL);
     }
     public String getStorageLocationURL() {
         return storageLocationURL;
     }
 
-    public void setStorageLocationURL(String storageLocationURL) {
+    private void setStorageLocationURL(String storageLocationURL) {
         this.storageLocationURL = storageLocationURL;
     }
 
