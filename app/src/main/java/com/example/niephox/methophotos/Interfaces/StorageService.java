@@ -8,14 +8,19 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Looper;
+import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.v4.app.JobIntentService;
+import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.example.niephox.methophotos.Entities.Album;
 import com.example.niephox.methophotos.Entities.Image;
 import com.example.niephox.methophotos.Entities.User;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -31,37 +36,56 @@ import java.util.concurrent.TimeUnit;
 
 import static java.security.AccessController.getContext;
 
-public class StorageService implements Subject {
+public class StorageService extends AppCompatActivity implements Subject {
 	private Album completeAlbum = new Album();
 	private User currentUser = new User();
-	private ArrayList<Image> uploadedImages;
+	private ArrayList<Image> uploadedImages = new ArrayList<>();
 	private ArrayList<Observer> observers = new ArrayList<>();
 	private final StorageReference userStorageReference = FirebaseStorage.getInstance().getReference("/" + currentUser.getUserUID());
-
-	public StorageService() {
-
+	private int numCores;
+	private ThreadPoolExecutor executor;
+	public StorageService()  {
+		numCores = Runtime.getRuntime().availableProcessors();
+		executor = new ThreadPoolExecutor(numCores * 2, numCores *2,
+				60L, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
 	}
 	//TODO: THIS IS NOT RUNNING WHEN WE PLAY THE APP, SOMETHING IS GETTING OVERWRITTEN AND THE LISTENERS DIE/
 	public void uploadImages(final ArrayList<Image> imagesToUpload, final Album albumDest) {
 		uploadedImages = new ArrayList<>();
 		completeAlbum = albumDest;
+		for(final Image image:imagesToUpload) {
+			final Uri fileUri = Uri.fromFile(new File(image.getImageURI()));
+			final StorageReference dbRef = userStorageReference.child(image.getName()); //reference based on current user to uploadImages in the cloud
+//			HandlerThread handlerThread = new HandlerThread("UploadImageHandlerThread");
+//			handlerThread.start();
+//			Looper looper = handlerThread.getLooper();
 
-//		for(final Image image:imagesToUpload) {
-//			final Uri fileUri = Uri.fromFile(new File(image.getImageURI()));
-//			final StorageReference dbRef = userStorageReference.child(image.getName()); //reference based on current user to uploadImages in the cloud
-//
-//					dbRef.putFile(fileUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+			dbRef.putFile(fileUri).addOnSuccessListener(executor, new OnSuccessListener<UploadTask.TaskSnapshot>() {
+						@Override
+						public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+							image.setUrls(taskSnapshot.getDownloadUrl(), taskSnapshot.getStorage().toString());
+							uploadedImages.add(image);
+							if (imagesToUpload.size() == uploadedImages.size()) {
+								completeAlbum.setImages(uploadedImages);
+								notifyObservers();
+							}
+						}
+					});
+
+
+//					dbRef.putFile(fileUri)..addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
 //						@Override
 //						public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
 //							image.setUrls(taskSnapshot.getDownloadUrl(), taskSnapshot.getStorage().toString());
 //							uploadedImages.add(image);
+//							if(imagesToUpload.equals(uploadedImages)) {
+//								completeAlbum.setImages(uploadedImages);
+//								notifyObservers();
+//							}
 //						}
 //					});
-//					if(imagesToUpload.equals(uploadedImages)) {
-//						completeAlbum.setImages(uploadedImages);
-//						notifyObservers();
-//					}
-//		}
+
+		}
 	}
 
 //	private Image uploadImage(Image imageToUploadAsync) {

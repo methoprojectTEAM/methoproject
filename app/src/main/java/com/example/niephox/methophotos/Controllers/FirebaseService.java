@@ -5,7 +5,6 @@ package com.example.niephox.methophotos.Controllers;
  */
 
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Looper;
@@ -258,26 +257,27 @@ public class FirebaseService implements Observer{
 //					if (tempUploadedImages.size() == albumToUpload.getImages().size()) {
 //						albumToUpload.setImages(tempUploadedImages);
 		//storageService.register(this);
-		this.uploadImageTask = new UploadImageTask(albumToUpload.getImages(), albumToUpload);
-		uploadImageTask.register(this);
-		ArrayList<Uri> imageUris = new ArrayList<>();
-		for(Image images:albumToUpload.getImages()) {
-			imageUris.add(Uri.parse(images.getImageURI()));
-		}
-		uploadImageTask.executeOnExecutor( AsyncTask.THREAD_POOL_EXECUTOR, imageUris);
+//		this.uploadImageTask = new UploadImageTask(albumToUpload.getImages(), albumToUpload);
+//		uploadImageTask.register(this);
+//		ArrayList<Uri> imageUris = new ArrayList<>();
+//		for(Image images:albumToUpload.getImages()) {
+//			imageUris.add(Uri.parse(images.getImageURI()));
+//		}
+		//uploadImageTask
 		//uploadImageTask.execute(imageUris);
-//		HandlerThread handlerThread = new HandlerThread("MyHandlerThread");
-//		handlerThread.start();
-//		Looper looper = handlerThread.getLooper();
-//		Handler handler = new Handler(looper);
-//		handler.post(new Runnable() {
-//						 @Override
-//						 public void run() {
-//							 StorageService storageService = new StorageService(); //class variable
-//							 storageService.uploadImages(albumToUpload.getImages(), albumToUpload);
-//						 }
-//
-//					 });
+//		final StorageService storageService = new StorageService(); //class variable
+		storageService.register(this);
+		HandlerThread handlerThread = new HandlerThread("MyHandlerThread");
+		handlerThread.start();
+		Looper looper = handlerThread.getLooper();
+		Handler handler = new Handler(looper);
+		handler.post(new Runnable() {
+						 @Override
+						 public void run() {
+							 storageService.uploadImages(albumToUpload.getImages(), albumToUpload);
+						 }
+
+					 });
 
 						//firebaseUserAlbumsRef.child(albumToUpload.getName()).setValue(albumToUpload); //Stores the album in database with the correct references
 
@@ -298,9 +298,9 @@ public class FirebaseService implements Observer{
 	//what if i implement this observer here to have 2 different methods attached to it and then create another update that
 	@Override
 	public void update(Object objectToCastTo) {
-		if (objectToCastTo instanceof UploadImageTask) {
-			uploadImageTask = (UploadImageTask) objectToCastTo;
-			Album albumToUpload = uploadImageTask.getFinishedAlbum();
+		if (objectToCastTo instanceof StorageService) {
+			storageService = (StorageService) objectToCastTo;
+			Album albumToUpload = storageService.getCompleteAlbum();
 			firebaseUserAlbumsRef.child(albumToUpload.getName()).setValue(albumToUpload);
 		}
 	}
