@@ -15,6 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.example.niephox.methophotos.Activities.AlbumOnMapActivity;
 import com.example.niephox.methophotos.Activities.PhotosViewActivity;
 import com.example.niephox.methophotos.Entities.Album;
 import com.example.niephox.methophotos.Entities.Image;
@@ -60,7 +61,7 @@ public class AlbumsAdapter extends RecyclerView.Adapter<AlbumsAdapter.MyViewHold
     }
 
     @Override
-    public void onBindViewHolder(final MyViewHolder holder, int position) {
+    public void onBindViewHolder(final MyViewHolder holder, final int position) {
         Album album = albumList.get(position);
         holder.title.setText(album.getName());
         holder.description.setText(album.getDescription());
@@ -76,7 +77,7 @@ public class AlbumsAdapter extends RecyclerView.Adapter<AlbumsAdapter.MyViewHold
         holder.overflow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showPopupMenu(holder.overflow);
+                showPopupMenu(holder.overflow,position);
             }
         });
     }
@@ -84,12 +85,12 @@ public class AlbumsAdapter extends RecyclerView.Adapter<AlbumsAdapter.MyViewHold
     /**
      * Showing popup menu when tapping on 3 dots
      */
-    private void showPopupMenu(View view) {
+    private void showPopupMenu(View view,int position) {
         // inflate menu
         PopupMenu popup = new PopupMenu(mContext, view);
         MenuInflater inflater = popup.getMenuInflater();
         inflater.inflate(R.menu.album_menu, popup.getMenu());
-        popup.setOnMenuItemClickListener(new MenuItemClickListener());
+        popup.setOnMenuItemClickListener(new MenuItemClickListener(position));
         popup.show();
     }
 
@@ -97,8 +98,9 @@ public class AlbumsAdapter extends RecyclerView.Adapter<AlbumsAdapter.MyViewHold
      * Click listener for popup menu items
      */
     class MenuItemClickListener implements PopupMenu.OnMenuItemClickListener {
-
-        public MenuItemClickListener() {
+        int position;
+        public MenuItemClickListener(int position) {
+            this.position=position;
         }
 
         @Override
@@ -111,6 +113,11 @@ public class AlbumsAdapter extends RecyclerView.Adapter<AlbumsAdapter.MyViewHold
                 case R.id.deleteAlbum:
                     //TODO: DELETE ALBUM
                     Toast.makeText(mContext, "DeleteAlbum", Toast.LENGTH_SHORT).show();
+                case R.id.mapAlbum:
+
+                    Intent intent = new Intent(mContext,AlbumOnMapActivity.class);
+                    intent.putExtra("alImages", albumList.get(position).getImages());
+                    mContext.startActivity(intent);
                     return true;
                 default:
             }
