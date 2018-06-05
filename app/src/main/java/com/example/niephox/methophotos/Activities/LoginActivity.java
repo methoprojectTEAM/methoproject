@@ -195,7 +195,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if (task.isSuccessful()) {
-                                // Sign in success, update UI with the signed-in user's information
+                                // Sign in success, imageUploadUpdate UI with the signed-in user's information
                                 toast("Success");
                                 FirebaseUser user = mAuth.getCurrentUser();
                                 showProgress(false);

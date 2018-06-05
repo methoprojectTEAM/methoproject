@@ -5,12 +5,18 @@ package com.example.niephox.methophotos.Controllers;
  */
 
 import android.net.Uri;
+import android.os.Handler;
+import android.os.HandlerThread;
+import android.os.Looper;
 import android.util.Log;
 
 import com.example.niephox.methophotos.Entities.Album;
 import com.example.niephox.methophotos.Entities.Image;
 import com.example.niephox.methophotos.Entities.User;
+import com.example.niephox.methophotos.Interfaces.Observer;
+import com.example.niephox.methophotos.Interfaces.StorageService;
 import com.example.niephox.methophotos.Interfaces.iAsyncCallback;
+import com.example.niephox.methophotos.Tasks.UploadImageTask;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
@@ -29,19 +35,17 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class FirebaseService {
+public class FirebaseService implements Observer{
 
 	private User currentUser = new User();
 	//TODO: final FIREBASE STRUCTURAL REFERENCES
 	private final DatabaseReference firebaseUserAlbumsRef = FirebaseDatabase.getInstance().getReference("/users/" + currentUser.getUserUID() + "/albums");
-	private DatabaseReference firebaseUserRef = FirebaseDatabase.getInstance().getReference("/users");
+	private final DatabaseReference firebaseUserRef = FirebaseDatabase.getInstance().getReference("/users/");
 	private final StorageReference userStorageReference = FirebaseStorage.getInstance().getReference("/" + currentUser.getUserUID());
-	private Query query;
-	private Album albumToUpload = new Album();
+	StorageService storageService = new StorageService();
+	UploadImageTask uploadImageTask;
 	private ArrayList<Album> userAlbums = new ArrayList<>();
 	private GenericTypeIndicator<Map<String, Album>> albumsGenericTypeIndicator = new GenericTypeIndicator<Map<String, Album>>() {};
-	private GenericTypeIndicator<HashMap<String,Image>> imagesGenericTypeIndicator = new GenericTypeIndicator<HashMap<String, Image>>() {};
-	private HashMap<String, Image> imageHashMap = new HashMap<>();
  	private static com.example.niephox.methophotos.Interfaces.iAsyncCallback iAsyncCallback;
 
 
@@ -61,16 +65,13 @@ public class FirebaseService {
 	}
 
 	public void getUserAlbums() {
-		//userAlbums.clear();
 		firebaseUserAlbumsRef.addListenerForSingleValueEvent(new ValueEventListener() {
 			@Override
 			public void onDataChange(DataSnapshot dataSnapshot) {
 				Map<String, Album> map = dataSnapshot.getValue(albumsGenericTypeIndicator);
 				if(map != null)
 					userAlbums.addAll(map.values());
-
 				iAsyncCallback.RefreshView(com.example.niephox.methophotos.Interfaces.iAsyncCallback.REQUEST_CODE.STORAGE);
-
 			}
 			@Override
 			public void onCancelled(DatabaseError databaseError) {
@@ -80,25 +81,16 @@ public class FirebaseService {
 	}
 
 	public void getCurrentUser() {
-		//currentUser.albumsClear();
-		//firebaseUserRef.child(currentUser.getUserUID()).
 		firebaseUserRef.child(currentUser.getUserUID()).addListenerForSingleValueEvent(new ValueEventListener() {
 			@Override
 			public void onDataChange(DataSnapshot dataSnapshot) {
-
-	//			User user = dataSnapshot.getValue(User.class);
-
-				Map<String, Album> map = dataSnapshot.child("albums").getValue(albumsGenericTypeIndicator);
-				if(map != null)
-					userAlbums.addAll(map.values());
+				Map<String, Album> albumMap = dataSnapshot.child("albums").getValue(albumsGenericTypeIndicator);
+				if(albumMap != null)
+					userAlbums.addAll(albumMap.values());
 				currentUser.addAlbums(userAlbums);
 				currentUser.setUserUID(dataSnapshot.child("userUID").getValue(String.class));
 				currentUser.setUsername(dataSnapshot.child("username").getValue(String.class));
 				iAsyncCallback.RetrieveData(com.example.niephox.methophotos.Interfaces.iAsyncCallback.REQUEST_CODE.DATABASE);
-//
-//				//Log.w("User", "User Doesnt exist in Database");
-
-
 			}
 			@Override
 			public void onCancelled(DatabaseError databaseError) {
@@ -148,15 +140,13 @@ public class FirebaseService {
 			@Override
 			public void onDataChange(DataSnapshot dataSnapshot) {
 				final Album albumToAddImageTo = dataSnapshot.getValue(Album.class);
-				final StorageReference dbRef = userStorageReference.child(imageToAdd.getName()); //reference based on current user to upload in the cloud
+				final StorageReference dbRef = userStorageReference.child(imageToAdd.getName()); //reference based on current user to uploadImages in the cloud
 				Uri fileUri = Uri.fromFile(new File(imageToAdd.getImageURI()));
 				dbRef.putFile(fileUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
 					@Override
 					public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-						imageToAdd.setDownloadUrl(taskSnapshot.getDownloadUrl().toString());
-						imageToAdd.setStorageLocationURL(taskSnapshot.getStorage().toString());
+						imageToAdd.setUrls(taskSnapshot.getDownloadUrl(), taskSnapshot.getStorage().toString());
 						albumToAddImageTo.addImage(imageToAdd);
-						//queryAlbumDelete(albumToAddImageTo);
 						firebaseUserAlbumsRef.child(albumDest.getName()).setValue(albumToAddImageTo); //Stores the album in database with the correct references
 						}
 
@@ -219,30 +209,11 @@ public class FirebaseService {
 	}
 	//TODO: TRANSFERRING AN IMAGE FROM ONE ALBUM TO ANOTHER WILL CAUSE DUPLICATION ISSUES AND THE BUG SCALES
 	public void deleteImageFromAlbum(final Image imageToDelete, Album albumSource) {
-		//query = firebaseUserAlbumsRef.child("album1").child("images").orderByChild("imageURI").equalTo(imageToDelete.getImageURI());
-		//TODO: TRY TO LIMIT LOOPING THROUGH VALUES AND FIND A WAY TO DELETE A DATABASE ENTRY IN ONE LINE
-
- 	firebaseUserAlbumsRef.child("testing1").child("images").orderByChild("imageURI").equalTo("/storage/emulated/0/Download/rainforest.jpg").getRef().removeValue();
-//
-//		query.addListenerForSingleValueEvent(new ValueEventListener() {
-//			@Override
-//			public void onDataChange(DataSnapshot snapshot) {
-//				for (DataSnapshot dummySnapshot:snapshot.getChildren()) {
-//					dummySnapshot.getRef().removeValue();
-//				}
-//				//lastSnap.getRef().removeValue();
-//			}
-//
-//			@Override
-//			public void onCancelled(DatabaseError databaseError) {
-//
-//			}
-//
-//		});
+ 		firebaseUserAlbumsRef.child(albumSource.getName()).child("images").orderByChild("imageURI").equalTo(imageToDelete.getImageURI()).getRef().removeValue();
 	}
 //	public Image uploadImage(final Image imageToUpload) {
 //		Uri fileUri = Uri.fromFile(new File(imageToUpload.getImageURI()));
-//		final StorageReference dbRef = userStorageReference.child(imageToUpload.getName()); //reference based on current user to upload in the cloud
+//		final StorageReference dbRef = userStorageReference.child(imageToUpload.getName()); //reference based on current user to uploadImages in the cloud
 //		final UploadTask uploadTask = dbRef.putFile(fileUri);
 //		final Task<Uri> urlTask = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
 //			@Override
@@ -269,38 +240,72 @@ public class FirebaseService {
 //		});
 //		return imageToUpload;
 //	}
-	//TODO: you s hould not upload images here you should user a different function to upload images and then upload the album because
-	//TODO: the function to just upload images is needed in case we want to transfer photos from local album to another album
-	//TODO: Implement a view update with the updated album (album that has the downloadUrl and StorageLocUrl references)
+	//TODO: you should not uploadImages images here you should user a different function to uploadImages images and then uploadImages the album because
+	//TODO: the function to just uploadImages images is needed in case we want to transfer photos from local album to another album
+	//TODO: Implement a view imageUploadUpdate with the updated album (album that has the downloadUrl and StorageLocUrl references)
 	//getting all the image uris->uploading the images to the firebase storage->creating the album with the correct storage and dowload urls images
 	public void queryAlbumCreate(final Album albumToUpload) {
-		final ArrayList<Image> tempUploadedImages = albumToUpload.getImages(); //temp image array to store FINAL IMAGES WITH REFERENCES
-		for(final Image image:albumToUpload.getImages()) {
-			Uri fileUri = Uri.fromFile(new File(image.getImageURI()));
-			final StorageReference dbRef = userStorageReference.child(image.getName()); //reference based on current user to upload in the cloud
-			//UploadTask uploadTask = dbRef.putFile(fileUri);
-			dbRef.putFile(fileUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-				@Override
-				public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+//		final ArrayList<Image> tempUploadedImages = albumToUpload.getImages(); //temp image array to store FINAL IMAGES WITH REFERENCES
+//		for(final Image image:albumToUpload.getImages()) {
+//			Uri fileUri = Uri.fromFile(new File(image.getImageURI()));
+//			final StorageReference dbRef = userStorageReference.child(image.getName()); //reference based on current user to uploadImages in the cloud
+//			//UploadTask uploadTask = dbRef.putFile(fileUri);
+//			dbRef.putFile(fileUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+//				@Override
+//				public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+//					image.setUrls(taskSnapshot.getDownloadUrl(), taskSnapshot.getStorage().toString());
+//					if (tempUploadedImages.size() == albumToUpload.getImages().size()) {
+//						albumToUpload.setImages(tempUploadedImages);
+		//storageService.register(this);
+//		this.uploadImageTask = new UploadImageTask(albumToUpload.getImages(), albumToUpload);
+//		uploadImageTask.register(this);
+//		ArrayList<Uri> imageUris = new ArrayList<>();
+//		for(Image images:albumToUpload.getImages()) {
+//			imageUris.add(Uri.parse(images.getImageURI()));
+//		}
+		//uploadImageTask
+		//uploadImageTask.execute(imageUris);
+//		final StorageService storageService = new StorageService(); //class variable
+		StorageService storageService = new StorageService();
+		storageService.register(this);
+//		HandlerThread handlerThread = new HandlerThread("MyHandlerThread");
+//		handlerThread.start();
+//		Looper looper = handlerThread.getLooper();
+//		Handler handler = new Handler(looper);
+//		handler.post(new Runnable() {
+//						 @Override
+//						 public void run() {
+							//this happens async
+							 storageService.uploadImages(albumToUpload.getImages(), albumToUpload);
+//						 }
+//
+//					 });
 
-					image.setDownloadUrl(taskSnapshot.getDownloadUrl().toString());
-					image.setStorageLocationURL(taskSnapshot.getStorage().toString());
-					if (tempUploadedImages.size() == albumToUpload.getImages().size()) {
-						albumToUpload.setImages(tempUploadedImages);
-						firebaseUserAlbumsRef.child(albumToUpload.getName()).setValue(albumToUpload); //Stores the album in database with the correct references
+						//firebaseUserAlbumsRef.child(albumToUpload.getName()).setValue(albumToUpload); //Stores the album in database with the correct references
 
-					}
-				}
-			});
-
-		}
+//					}
+//				}
+//			});
+//
+//		}
 	}
 
 
 
-	//TODO: later deduplication of images, check each image you are about to upload if it already exists in the cloud
+	//TODO: later deduplication of images, check each image you are about to uploadImages if it already exists in the cloud
 	public boolean imageExists(Image image) {
 
 		return false;
+	}
+	//what if i implement this observer here to have 2 different methods attached to it and then create another update that
+	//ti allo mporei na kanei observe o firebase service?
+	//TODO: AFOU DIMIOURGOUME DIAFORETIKA STORAGESERVICE OBJECTS GIA UPLOAD KAI DOWNLOAD TOTE TO ENA APO TA DUO GET THA EINAI NULL.
+	@Override
+	public void update(Object objectToCastTo) {
+		storageService = (StorageService) objectToCastTo;
+
+			Album albumToUpload = storageService.getCompleteAlbum();
+			firebaseUserAlbumsRef.child(albumToUpload.getName()).setValue(albumToUpload);
+
 	}
 }
