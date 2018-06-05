@@ -11,5 +11,9 @@
         android:id="@+id/deleteAlbum"
         android:orderInCategory="101"
         android:title="Delete" />
+    <item
+        android:id="@+id/mapAlbum"
+        android:orderInCategory="101"
+        android:title="Show Album on Map" />
 
 </menu>
