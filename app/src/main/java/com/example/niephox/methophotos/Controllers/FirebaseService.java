@@ -266,18 +266,20 @@ public class FirebaseService implements Observer{
 		//uploadImageTask
 		//uploadImageTask.execute(imageUris);
 //		final StorageService storageService = new StorageService(); //class variable
+		StorageService storageService = new StorageService();
 		storageService.register(this);
-		HandlerThread handlerThread = new HandlerThread("MyHandlerThread");
-		handlerThread.start();
-		Looper looper = handlerThread.getLooper();
-		Handler handler = new Handler(looper);
-		handler.post(new Runnable() {
-						 @Override
-						 public void run() {
+//		HandlerThread handlerThread = new HandlerThread("MyHandlerThread");
+//		handlerThread.start();
+//		Looper looper = handlerThread.getLooper();
+//		Handler handler = new Handler(looper);
+//		handler.post(new Runnable() {
+//						 @Override
+//						 public void run() {
+							//this happens async
 							 storageService.uploadImages(albumToUpload.getImages(), albumToUpload);
-						 }
-
-					 });
+//						 }
+//
+//					 });
 
 						//firebaseUserAlbumsRef.child(albumToUpload.getName()).setValue(albumToUpload); //Stores the album in database with the correct references
 
@@ -296,12 +298,14 @@ public class FirebaseService implements Observer{
 		return false;
 	}
 	//what if i implement this observer here to have 2 different methods attached to it and then create another update that
+	//ti allo mporei na kanei observe o firebase service?
+	//TODO: AFOU DIMIOURGOUME DIAFORETIKA STORAGESERVICE OBJECTS GIA UPLOAD KAI DOWNLOAD TOTE TO ENA APO TA DUO GET THA EINAI NULL.
 	@Override
 	public void update(Object objectToCastTo) {
-		if (objectToCastTo instanceof StorageService) {
-			storageService = (StorageService) objectToCastTo;
+		storageService = (StorageService) objectToCastTo;
+
 			Album albumToUpload = storageService.getCompleteAlbum();
 			firebaseUserAlbumsRef.child(albumToUpload.getName()).setValue(albumToUpload);
-		}
+
 	}
 }

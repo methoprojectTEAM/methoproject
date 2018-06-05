@@ -49,6 +49,8 @@ public class StorageService extends AppCompatActivity implements Subject {
 		executor = new ThreadPoolExecutor(numCores * 2, numCores *2,
 				60L, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
 	}
+
+
 	//TODO: THIS IS NOT RUNNING WHEN WE PLAY THE APP, SOMETHING IS GETTING OVERWRITTEN AND THE LISTENERS DIE/
 	public void uploadImages(final ArrayList<Image> imagesToUpload, final Album albumDest) {
 		uploadedImages = new ArrayList<>();
