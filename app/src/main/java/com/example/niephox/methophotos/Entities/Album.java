@@ -11,7 +11,7 @@ public class Album {
     private String name;
     private Date date;
     private String description;
-    private ArrayList<Image> images;
+    private ArrayList<Image> images = new ArrayList<>();
     private Image thumbnail;
 
     public Album()      {

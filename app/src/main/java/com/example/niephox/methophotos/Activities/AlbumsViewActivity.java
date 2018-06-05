@@ -1,29 +1,25 @@
 package com.example.niephox.methophotos.Activities;
 
-import android.annotation.TargetApi;
+
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
-import android.database.Cursor;
-import android.media.ExifInterface;
-import android.media.MediaMetadataRetriever;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.MediaStore;
-import android.provider.OpenableColumns;
-import android.renderscript.ScriptGroup;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
@@ -35,27 +31,23 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.GridView;
 import android.widget.Toast;
-
-import com.drew.imaging.ImageMetadataReader;
-import com.drew.imaging.ImageProcessingException;
-import com.drew.metadata.Metadata;
 import com.example.niephox.methophotos.Controllers.AlbumBuilder;
 import com.example.niephox.methophotos.Controllers.AlbumRepository;
 import com.example.niephox.methophotos.Controllers.FirebaseService;
 import com.example.niephox.methophotos.Controllers.MetadataController;
 import com.example.niephox.methophotos.Controllers.StorageAdapter;
 import com.example.niephox.methophotos.ViewControllers.AlbumsAdapter;
+import com.example.niephox.methophotos.ViewControllers.NavigationItemListener;
 import com.example.niephox.methophotos.ViewControllers.GridSpacingItemDecoration;
 import com.example.niephox.methophotos.Entities.Album;
+import com.example.niephox.methophotos.Entities.Image;
 import com.example.niephox.methophotos.Entities.User;
 import com.example.niephox.methophotos.Interfaces.iAsyncCallback;
 
 import com.example.niephox.methophotos.R;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -64,103 +56,116 @@ import java.util.List;
  */
 
 public class AlbumsViewActivity extends AppCompatActivity implements iAsyncCallback, View.OnClickListener {
-	//ArrayLists: TODO: USE THIS TO GET ALBUMS , ITS ALREADY IMPLEMENTED IN FIREBASE SERVICE AND RUNS WHEN THE APPLICATION IS FIRST LOADED, CHANGES WHEN DATA CHANGE
-	public ArrayList<Album> alAlbums = new ArrayList<>();
+    //ArrayLists:
+    public ArrayList<Album> alAlbums = new ArrayList<>();
 
-	//Controllers:
-	FirebaseService firebaseService;
-	private AlbumRepository albumRepo;
-	private AlbumBuilder albumBuilder;
-
-	//Intents:
-	private User curentUser;
-	private Album localAlbum;
-	private RecyclerView recyclerView;
-	private AlbumsAdapter adapter;
-
-	private Album album2;
-
-	private final int REQUEST_PERMISSIONS = 100;
-
-
-	@RequiresApi(api = Build.VERSION_CODES.O)
-	@Override
-	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_album);
-		alAlbums.clear();
-
-		setView();
-		firebaseService = new FirebaseService();
-		firebaseService.getCurrentUser();
-		albumRepo = new AlbumRepository();
-		localAlbum = new Album();
-		album2 = new Album("Album2", "Desc");
-		checkPermissions(AlbumsViewActivity.this);
-		alAlbums.add(localAlbum);
-		firebaseService.RegisterCallback(this);
+    //Layout Items:
+    private DrawerLayout mdrawerLayout;
+    //Controllers:
+    FirebaseService firebaseService;
+    private AlbumRepository albumRepo;
+    MetadataController mtcontrol;
+    private AlbumBuilder albumBuilder;
+    AlbumBuilder.AsyncBuild AsalbumBuilder;
+    //Intents:
+    private User curentUser;
+    private Album localAlbum;
+    private AlbumRepository albumController;
+    private RecyclerView recyclerView;
+    private AlbumsAdapter adapter;
+    //Controllers:
 
 
-	}
+    private final int REQUEST_PERMISSIONS = 100;
 
-	public void setView() {
-		initCollapsingToolbar();
-		Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-		setSupportActionBar(toolbar);
-		android.support.v7.app.ActionBar actionBar = getSupportActionBar();
-		actionBar.setHomeAsUpIndicator(R.drawable.ic_menu);
-		actionBar.setDisplayHomeAsUpEnabled(true);
-		recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
-		adapter = new AlbumsAdapter(this, alAlbums);
-		RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(this, 1);
-		recyclerView.setLayoutManager(mLayoutManager);
-		recyclerView.addItemDecoration(new GridSpacingItemDecoration(2, dpToPx(10), true));
-		recyclerView.setItemAnimator(new DefaultItemAnimator());
-		recyclerView.setAdapter(adapter);
-		FloatingActionButton floatingActionButton =
-				(FloatingActionButton) findViewById(R.id.addAlbum);
-		floatingActionButton.setOnClickListener(this);
-	}
 
-	@Override
-	public void RefreshView(REQUEST_CODE rq) {
-		switch (rq) {
-			case STORAGE:
-				alAlbums.clear(); //edited code alexander
-				alAlbums.add(localAlbum);
-				alAlbums.addAll(curentUser.getAlbums());
-				adapter.notifyDataSetChanged();
-				break;
-			case DATABASE:
-				break;
-		}
-	}
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_album);
+        alAlbums.clear();
 
-	@Override
-	public void RetrieveData(REQUEST_CODE rq) {
-		if (rq == REQUEST_CODE.METADATA) {
-			alAlbums.addAll(albumBuilder.getAlbumsGenerated());
-			adapter.notifyDataSetChanged();
-		} else {
-			curentUser = firebaseService.getUser();
-			firebaseService.getUserAlbums();
-			Log.e("alAlbums", alAlbums.size() + "");
-			adapter.notifyDataSetChanged();
-		}
+        setView();
+        firebaseService = new FirebaseService();
+        firebaseService.getCurrentUser();
+        albumRepo = new AlbumRepository();
+        localAlbum = new Album("Local Photos", null, null, null);
+        checkPermissions(AlbumsViewActivity.this);
+        alAlbums.add(localAlbum);
+        firebaseService.RegisterCallback(this);
 
-	}
+
+    }
+
+    public void setView() {
+        initCollapsingToolbar();
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setHomeAsUpIndicator(R.drawable.ic_menu);
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+        adapter = new AlbumsAdapter(this, alAlbums);
+        RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(this, 1);
+        recyclerView.setLayoutManager(mLayoutManager);
+        recyclerView.addItemDecoration(new GridSpacingItemDecoration(2, dpToPx(10), true));
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        recyclerView.setAdapter(adapter);
+        FloatingActionButton floatingActionButton =
+                (FloatingActionButton) findViewById(R.id.addAlbum);
+        floatingActionButton.setOnClickListener(this);
+        mdrawerLayout = findViewById(R.id.drawer_layout);
+        NavigationView navigationView = findViewById(R.id.navigation);
+        navigationView.setNavigationItemSelectedListener(new NavigationItemListener(mdrawerLayout));
+
+    }
+
+    @Override
+    public void RefreshView(REQUEST_CODE rq) {
+        switch (rq) {
+            case STORAGE:
+                alAlbums.clear(); //edited code alexander
+                alAlbums.add(localAlbum);
+                alAlbums.addAll(curentUser.getAlbums());
+                adapter.notifyDataSetChanged();
+                break;
+            case DATABASE:
+                break;
+            case AUTOGENERATE:
+                alAlbums.addAll(AsalbumBuilder.getAlbumscreated());
+                adapter.notifyDataSetChanged();
+                break;
+
+        }
+    }
+
+    @Override
+    public void RetrieveData(REQUEST_CODE rq) {
+        if (rq == REQUEST_CODE.METADATA) {
+            localAlbum = mtcontrol.album;
+            alAlbums.set(0,localAlbum);
+            adapter.notifyDataSetChanged();
+        }
+        else {
+            curentUser = firebaseService.getUser();
+            firebaseService.getUserAlbums();
+            Log.e("alAlbums", alAlbums.size() + "");
+            adapter.notifyDataSetChanged();
+        }
+    }
 
     //WRITTEN BY PETALIDIS:::::::::::::::::::::::::::::::::::::::
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-		String path;
+        String path;
         List<String> imageURIs = new ArrayList<>();
         if (data != null) { //if user did not select anything
             if (data.getClipData() != null) { //if user selected more than one images, get the images from clipData
                 for (int i = 0; i < data.getClipData().getItemCount(); i++)
-					imageURIs.add(StorageAdapter.getRealPathFromURI(this, data.getClipData().getItemAt(i).getUri()));
-			} else
-				imageURIs.add(StorageAdapter.getRealPathFromURI(this, data.getData())); //if data is not null and theres only one image selected just add the single image uri
+                    imageURIs.add(StorageAdapter.getRealPathFromURI(this, data.getClipData().getItemAt(i).getUri()));
+            } else
+                imageURIs.add(StorageAdapter.getRealPathFromURI(this, data.getData())); //if data is not null and theres only one image selected just add the single image uri
         } else //if no Image is selected...
             return;
 
@@ -171,10 +176,10 @@ public class AlbumsViewActivity extends AppCompatActivity implements iAsyncCallb
         curentUser.addAlbums(alAlbums);
         adapter.notifyDataSetChanged();
         //curentUser.albumsClear();
-       // albumRepo.transferImage(localAlbum.getImages().get(4), curentUser.getAlbums().get(0), curentUser.getAlbums().get(1));
-       //albumRepo.deleteAlbum(curentUser.getAlbums().get(0));
-       //firebaseService.getCurrentUser();
-		//firebaseService.addImageToAlbum(localAlbum.getImages().get(0), curentUser.getAlbums().get(1));
+        // albumRepo.transferImage(localAlbum.getImages().get(4), curentUser.getAlbums().get(0), curentUser.getAlbums().get(1));
+        //albumRepo.deleteAlbum(curentUser.getAlbums().get(0));
+        //firebaseService.getCurrentUser();
+        //firebaseService.addImageToAlbum(localAlbum.getImages().get(0), curentUser.getAlbums().get(1));
     }
 
 
@@ -202,10 +207,10 @@ public class AlbumsViewActivity extends AppCompatActivity implements iAsyncCallb
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                albumBuilder = new AlbumBuilder();
-                albumBuilder.RegisterCallback(this);
-                albumBuilder.buildBasedOnDate(localAlbum.getImages());
-                //xTODO:: add drawer
+                 AsalbumBuilder = new AlbumBuilder.AsyncBuild(getWindow().getDecorView().findViewById(android.R.id.content),this,localAlbum.getImages());
+                AsalbumBuilder.RegisterCallback(this);
+                AsalbumBuilder.execute(localAlbum.getImages());
+
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -230,10 +235,11 @@ public class AlbumsViewActivity extends AppCompatActivity implements iAsyncCallb
         } else {
             Log.e("Else", "Else");
             localAlbum = albumRepo.generateLocalAlbum(context);
-           //AUTOMATIC GENERATION
+            //AUTOMATIC GENERATION
 
-
-
+            mtcontrol = new MetadataController(localAlbum,this);
+            mtcontrol.RegisterCallback(this);
+            mtcontrol.execute(localAlbum);
         }
     }
 
@@ -288,7 +294,7 @@ public class AlbumsViewActivity extends AppCompatActivity implements iAsyncCallb
             createAlbum.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if(!albumName.getText().toString().isEmpty() && !albumDescription.getText().toString().isEmpty()) {
+                    if (!albumName.getText().toString().isEmpty() && !albumDescription.getText().toString().isEmpty()) {
                         Album albumToCreate = new Album(albumName.getText().toString(), albumDescription.getText().toString());
                         albumRepo.createAlbumFromSelection(albumToCreate, AlbumsViewActivity.this);
                         dialog.dismiss();

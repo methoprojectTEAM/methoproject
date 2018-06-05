@@ -1,21 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
-    <group android:checkableBehavior="single">
+    <group android:checkableBehavior="single" android:id="@+id/app">
         <item
-            android:id="@+id/nav_camera"
-
-            android:title="camera" />
+            android:id="@+id/album"
+            android:icon="@drawable/ic_photo_library_black_24dp"
+            android:title="@string/Albums">
+        </item>
         <item
-            android:id="@+id/nav_gallery"
+            android:id="@+id/metadata"
+            android:icon="@drawable/ic_metadata"
+            android:title="@string/Metadata"/>
 
-            android:title="galleryy" />
         <item
-            android:id="@+id/nav_slideshow"
+            android:id="@+id/settings"
+            android:icon="@drawable/ic_settings_black_24dp"
+            android:title="@string/Settings" />
 
-            android:title="slideshow" />
+    </group>
+    <group android:checkableBehavior="single" android:id="@+id/user">
+        <item android:id="@+id/manageAcc"
+            android:title="@string/ManageAccount"
+            android:icon="@drawable/ic_account_circle_black_24dp"/>
         <item
-            android:id="@+id/nav_manage"
-
-            android:title="manage" />
+            android:id="@+id/userLogout"
+            android:icon="@drawable/ic_exit_to_app_black_24dp"
+            android:title="@string/Logout" />
+    </group>
+    <group android:checkableBehavior="single" android:menuCategory="secondary" android:id="@+id/appInfo">
+        <item
+            android:id="@+id/about"
+            android:icon="@drawable/ic_info_outline_black_24dp"
+            android:title="@string/About"
+            />
+        <item
+            android:id="@+id/feedback"
+            android:icon="@drawable/ic_feedback_black_24dp"
+            android:title="@string/Feedback"
+            />
+        <item
+            android:id="@+id/version"
+            android:icon="@drawable/ic_perm_device_information_black_24dp"
+            android:title="@string/Version"/>
     </group>
 </menu>

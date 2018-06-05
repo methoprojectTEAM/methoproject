@@ -21,7 +21,7 @@ public class Image implements Parcelable {
     private String imageURI;
     private String name;
     private Album album;
-    private Metadata metadata;
+    private ArrayList<String> metadata=new ArrayList<>();
     private String description;
     private ArrayList<String> imagesPath;
     public Image() {
@@ -32,7 +32,7 @@ public class Image implements Parcelable {
         return imagesPath;
     }
 
-    public Image(String storageLocationURL, String downloadUrl, String name, Album album, Metadata metadata, String description) {
+    public Image(String storageLocationURL, String downloadUrl, String name, Album album, ArrayList<String> metadata, String description) {
         this.storageLocationURL = storageLocationURL;
         this.downloadUrl = downloadUrl;
         this.name = name;
@@ -94,15 +94,15 @@ public class Image implements Parcelable {
         this.album = album;
     }
 
-    public Metadata getMetadata() {
+    public ArrayList<String> getMetadata() {
         return metadata;
     }
 
 
 
-    public void setMetadata(Metadata metadata) {
-
-        this.metadata = metadata;
+    public void setMetadata(ArrayList<String> metadata) {
+        this.metadata.clear();
+        this.metadata.addAll(metadata);
     }
 
     public String getDescription() {
@@ -140,6 +140,5 @@ public class Image implements Parcelable {
         dest.writeString(this.downloadUrl);
         dest.writeString(this.description);
         dest.writeString(this.imageURI);
-
     }
 }
