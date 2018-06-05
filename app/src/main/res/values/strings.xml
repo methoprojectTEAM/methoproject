@@ -29,7 +29,7 @@
         <item>[File Type]</item>
         <item>[GPS]</item>
     </string-array>
-<<<<<<< HEAD
+
     <!--Strings Related to navigation menu-->
     <string name="Albums">Albums</string>
     <string name="Metadata">Metadata</string>
@@ -39,7 +39,7 @@
     <string name="About">About</string>
     <string name="Feedback">Feedback</string>
     <string name="Version">Version</string>
-=======
+
     <string name="title_activity_album_on_map">Map</string>
->>>>>>> origin/master
+
 </resources>
