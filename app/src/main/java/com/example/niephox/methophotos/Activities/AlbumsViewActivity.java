@@ -51,9 +51,6 @@ import com.example.niephox.methophotos.R;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by Igor Spiridonov
- */
 
 public class AlbumsViewActivity extends AppCompatActivity implements iAsyncCallback, View.OnClickListener {
     //ArrayLists:
@@ -207,7 +204,7 @@ public class AlbumsViewActivity extends AppCompatActivity implements iAsyncCallb
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                 AsalbumBuilder = new AlbumBuilder.AsyncBuild(getWindow().getDecorView().findViewById(android.R.id.content),this,localAlbum.getImages());
+                AsalbumBuilder = new AlbumBuilder.AsyncBuild(getWindow().getDecorView().findViewById(android.R.id.content),this,localAlbum.getImages());
                 AsalbumBuilder.RegisterCallback(this);
                 AsalbumBuilder.execute(localAlbum.getImages());
 

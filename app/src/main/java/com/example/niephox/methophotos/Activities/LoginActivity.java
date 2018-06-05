@@ -1,42 +1,28 @@
 package com.example.niephox.methophotos.Activities;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.annotation.TargetApi;
-import android.app.Activity;
-import android.content.Context;
-import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
-import android.app.LoaderManager.LoaderCallbacks;
 
+import android.annotation.TargetApi;
+import android.app.LoaderManager.LoaderCallbacks;
+import android.content.Context;
 import android.content.CursorLoader;
+import android.content.Intent;
 import android.content.Loader;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
-import android.os.AsyncTask;
-
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
+import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
-import android.util.Log;
-import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.inputmethod.EditorInfo;
-import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.Executor;
 
 import com.example.niephox.methophotos.R;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -44,6 +30,9 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static android.Manifest.permission.READ_CONTACTS;
 
@@ -58,10 +47,10 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private static final int REQUEST_READ_CONTACTS = 0;
     /**
      * Firebase Authentication
-     * */
+     */
     private FirebaseAuth mAuth;
     // UI references.
-    private   TextView mEmailView;
+    private TextView mEmailView;
     private EditText mPasswordView;
     private View mProgressView;
     private View mLoginFormView;
@@ -74,7 +63,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         //Firebase Auth init
         mAuth = FirebaseAuth.getInstance();
         // Set up the login form.
-        mEmailView =   findViewById(R.id.email);
+        mEmailView = findViewById(R.id.email);
         populateAutoComplete();
 
         mPasswordView = (EditText) findViewById(R.id.password);
@@ -98,10 +87,11 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         mProgressView = findViewById(R.id.login_progress);
     }
 
-    private void RegisterActivity(){
-        Intent RegisterIntent = new Intent(this,RegisterActivity.class);
+    private void RegisterActivity() {
+        Intent RegisterIntent = new Intent(this, RegisterActivity.class);
         startActivity(RegisterIntent);
     }
+
     private void populateAutoComplete() {
         if (!mayRequestContacts()) {
             return;
@@ -190,7 +180,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             showProgress(true);
-            mAuth.signInWithEmailAndPassword(email,password)
+            mAuth.signInWithEmailAndPassword(email, password)
                     .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
@@ -210,11 +200,12 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         }
     }
 
-    private void LoginSuccess(){
+    private void LoginSuccess() {
 
-        Intent intent = new Intent(this,AlbumsViewActivity.class);
+        Intent intent = new Intent(this, AlbumsViewActivity.class);
         startActivity(intent);
     }
+
     private boolean isEmailValid(String email) {
         //TODO: Replace this with your own logic
         return email.contains("@");
@@ -287,7 +278,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             cursor.moveToNext();
         }
 
-       // addEmailsToAutoComplete(emails);
+        // addEmailsToAutoComplete(emails);
     }
 
     @Override
@@ -322,6 +313,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         int ADDRESS = 0;
         int IS_PRIMARY = 1;
     }
+
     //comment?asd
     @Override
     protected void onStart() {
