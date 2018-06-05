@@ -1,5 +1,7 @@
 package com.example.niephox.methophotos.Controllers;
-
+/*
+ * Created by greycr0w on 5/19/2018.
+ */
 import android.app.Activity;
 import android.content.Context;
 import android.database.Cursor;
@@ -23,8 +25,7 @@ public class StorageAdapter {
 
 
 
-	public StorageAdapter() {
-	}
+	public StorageAdapter() { }
 
 	public StorageAdapter(Activity activity) {
 		this.activity = activity;
@@ -33,15 +34,15 @@ public class StorageAdapter {
 
 	public ArrayList<Image> getAllStorageImages(Activity activity) {
 			this.activity = activity;
-			loadExternalStorageImages();
+			tempImagesArray.clear();
+			imagesArray.clear();
 			loadInternalStorageImages();
-			if(!tempImagesArray.isEmpty())
-				imagesArray.addAll(tempImagesArray);
+			loadExternalStorageImages();
+			imagesArray.addAll(tempImagesArray);
 			return imagesArray;
 	}
 
 
-	//I should not be touching the Image entity from here, better return a uri Array????????
 
 	//Loads Internal Storage Images
 	private void loadInternalStorageImages() {
