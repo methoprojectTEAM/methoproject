@@ -17,7 +17,6 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -31,50 +30,44 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.GridView;
 import android.widget.Toast;
+
 import com.example.niephox.methophotos.Controllers.AlbumBuilder;
 import com.example.niephox.methophotos.Controllers.AlbumRepository;
 import com.example.niephox.methophotos.Controllers.FirebaseService;
 import com.example.niephox.methophotos.Controllers.MetadataController;
 import com.example.niephox.methophotos.Controllers.StorageAdapter;
-import com.example.niephox.methophotos.ViewControllers.AlbumsAdapter;
-import com.example.niephox.methophotos.ViewControllers.NavigationItemListener;
-import com.example.niephox.methophotos.ViewControllers.GridSpacingItemDecoration;
 import com.example.niephox.methophotos.Entities.Album;
-import com.example.niephox.methophotos.Entities.Image;
 import com.example.niephox.methophotos.Entities.User;
 import com.example.niephox.methophotos.Interfaces.iAsyncCallback;
-
 import com.example.niephox.methophotos.R;
+import com.example.niephox.methophotos.ViewControllers.AlbumsAdapter;
+import com.example.niephox.methophotos.ViewControllers.GridSpacingItemDecoration;
+import com.example.niephox.methophotos.ViewControllers.NavigationItemListener;
 
 import java.util.ArrayList;
 import java.util.List;
 
 
 public class AlbumsViewActivity extends AppCompatActivity implements iAsyncCallback, View.OnClickListener {
+    private final int REQUEST_PERMISSIONS = 100;
     //ArrayLists:
     public ArrayList<Album> alAlbums = new ArrayList<>();
-
-    //Layout Items:
-    private DrawerLayout mdrawerLayout;
     //Controllers:
     FirebaseService firebaseService;
-    private AlbumRepository albumRepo;
     MetadataController mtcontrol;
-    private AlbumBuilder albumBuilder;
-    AlbumBuilder.AsyncBuild AsalbumBuilder;
+    AlbumBuilder AsalbumBuilder;
+    //Layout Items:
+    private DrawerLayout mdrawerLayout;
+    private AlbumRepository albumRepo;
+
     //Intents:
     private User curentUser;
     private Album localAlbum;
     private AlbumRepository albumController;
     private RecyclerView recyclerView;
-    private AlbumsAdapter adapter;
     //Controllers:
-
-
-    private final int REQUEST_PERMISSIONS = 100;
-
+    private AlbumsAdapter adapter;
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
@@ -82,7 +75,6 @@ public class AlbumsViewActivity extends AppCompatActivity implements iAsyncCallb
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_album);
         alAlbums.clear();
-
         setView();
         firebaseService = new FirebaseService();
         firebaseService.getCurrentUser();
@@ -91,8 +83,6 @@ public class AlbumsViewActivity extends AppCompatActivity implements iAsyncCallb
         checkPermissions(AlbumsViewActivity.this);
         alAlbums.add(localAlbum);
         firebaseService.RegisterCallback(this);
-
-
     }
 
     public void setView() {
@@ -115,7 +105,6 @@ public class AlbumsViewActivity extends AppCompatActivity implements iAsyncCallb
         mdrawerLayout = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.navigation);
         navigationView.setNavigationItemSelectedListener(new NavigationItemListener(mdrawerLayout));
-
     }
 
     @Override
@@ -133,7 +122,6 @@ public class AlbumsViewActivity extends AppCompatActivity implements iAsyncCallb
                 alAlbums.addAll(AsalbumBuilder.getAlbumscreated());
                 adapter.notifyDataSetChanged();
                 break;
-
         }
     }
 
@@ -141,10 +129,9 @@ public class AlbumsViewActivity extends AppCompatActivity implements iAsyncCallb
     public void RetrieveData(REQUEST_CODE rq) {
         if (rq == REQUEST_CODE.METADATA) {
             localAlbum = mtcontrol.album;
-            alAlbums.set(0,localAlbum);
+            alAlbums.set(0, localAlbum);
             adapter.notifyDataSetChanged();
-        }
-        else {
+        } else {
             curentUser = firebaseService.getUser();
             firebaseService.getUserAlbums();
             Log.e("alAlbums", alAlbums.size() + "");
@@ -204,10 +191,9 @@ public class AlbumsViewActivity extends AppCompatActivity implements iAsyncCallb
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                AsalbumBuilder = new AlbumBuilder.AsyncBuild(getWindow().getDecorView().findViewById(android.R.id.content),this,localAlbum.getImages());
+                AsalbumBuilder = new AlbumBuilder(getWindow().getDecorView().findViewById(android.R.id.content), this);
                 AsalbumBuilder.RegisterCallback(this);
                 AsalbumBuilder.execute(localAlbum.getImages());
-
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -232,9 +218,8 @@ public class AlbumsViewActivity extends AppCompatActivity implements iAsyncCallb
         } else {
             Log.e("Else", "Else");
             localAlbum = albumRepo.generateLocalAlbum(context);
-            //AUTOMATIC GENERATION
-
-            mtcontrol = new MetadataController(localAlbum,this);
+            //Background image metadata Generation
+            mtcontrol = new MetadataController(localAlbum, this);
             mtcontrol.RegisterCallback(this);
             mtcontrol.execute(localAlbum);
         }
@@ -247,8 +232,6 @@ public class AlbumsViewActivity extends AppCompatActivity implements iAsyncCallb
         collapsingToolbar.setTitle(" ");
         AppBarLayout appBarLayout = (AppBarLayout) findViewById(R.id.appbar);
         appBarLayout.setExpanded(true);
-
-
         // hiding & showing the title when toolbar expanded & collapsed
         appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
             boolean isShow = false;
@@ -269,7 +252,6 @@ public class AlbumsViewActivity extends AppCompatActivity implements iAsyncCallb
             }
         });
     }
-
 
     private int dpToPx(int dp) {
         Resources r = getResources();
@@ -298,8 +280,6 @@ public class AlbumsViewActivity extends AppCompatActivity implements iAsyncCallb
                     }
                 }
             });
-
         }
-
     }
 }
