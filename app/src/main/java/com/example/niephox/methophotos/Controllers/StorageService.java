@@ -1,4 +1,4 @@
-package com.example.niephox.methophotos.Interfaces;
+package com.example.niephox.methophotos.Controllers;
 
 import android.content.Intent;
 import android.net.Uri;
@@ -9,6 +9,8 @@ import android.support.v7.app.AppCompatActivity;
 import com.example.niephox.methophotos.Entities.Album;
 import com.example.niephox.methophotos.Entities.Image;
 import com.example.niephox.methophotos.Entities.User;
+import com.example.niephox.methophotos.Interfaces.Observable;
+import com.example.niephox.methophotos.Interfaces.Observer;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;

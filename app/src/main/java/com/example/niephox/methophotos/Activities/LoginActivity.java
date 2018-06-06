@@ -15,6 +15,8 @@ import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.View;
@@ -35,6 +37,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static android.Manifest.permission.READ_CONTACTS;
+import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
+import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 
 /**
  * A login screen that offers login via email/password.
@@ -45,6 +49,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
      * Id to identity READ_CONTACTS permission request.
      */
     private static final int REQUEST_READ_CONTACTS = 0;
+    private static final int REQUEST_PERMISSIONS = 100;
     /**
      * Firebase Authentication
      */
@@ -96,11 +101,29 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         if (!mayRequestContacts()) {
             return;
         }
+        if(!mayRequestFiles()) {
+            return;
+        }
 
         getLoaderManager().initLoader(0, null, this);
     }
 
-    private boolean mayRequestContacts() {
+    private boolean mayRequestFiles() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M)
+            return true;
+        if ((checkSelfPermission(WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) && (checkSelfPermission(READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED)) {
+			return true;
+		}
+		if ((shouldShowRequestPermissionRationale(WRITE_EXTERNAL_STORAGE)) && shouldShowRequestPermissionRationale(READ_EXTERNAL_STORAGE)) {
+
+        } else {
+        	requestPermissions(new String[]{WRITE_EXTERNAL_STORAGE, READ_EXTERNAL_STORAGE}, REQUEST_PERMISSIONS);
+        }
+        return false;
+        }
+
+
+    private boolean mayRequestContacts () {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
             return true;
         }
@@ -108,31 +131,45 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             return true;
         }
         if (shouldShowRequestPermissionRationale(READ_CONTACTS)) {
-            Snackbar.make(mEmailView, R.string.permission_rationale, Snackbar.LENGTH_INDEFINITE)
-                    .setAction(android.R.string.ok, new View.OnClickListener() {
-                        @Override
-                        @TargetApi(Build.VERSION_CODES.M)
-                        public void onClick(View v) {
-                            requestPermissions(new String[]{READ_CONTACTS}, REQUEST_READ_CONTACTS);
-                        }
-                    });
+        	Snackbar.make(mEmailView, R.string.permission_rationale, Snackbar.LENGTH_INDEFINITE)
+					.setAction(android.R.string.ok, new View.OnClickListener() {
+						@Override
+						@TargetApi(Build.VERSION_CODES.M)
+						public void onClick(View v) {
+							requestPermissions(new String[]{READ_CONTACTS}, REQUEST_READ_CONTACTS);
+						}
+					});
         } else {
-            requestPermissions(new String[]{READ_CONTACTS}, REQUEST_READ_CONTACTS);
+        	requestPermissions(new String[]{READ_CONTACTS}, REQUEST_READ_CONTACTS);
+        }
+        return false;
         }
 
-        return false;
-    }
 
     /**
      * Callback received when a permissions request has been completed.
      */
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-                                           @NonNull int[] grantResults) {
-        if (requestCode == REQUEST_READ_CONTACTS) {
-            if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                populateAutoComplete();
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+//        if (requestCode == REQUEST_READ_CONTACTS) {
+//            if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+//                populateAutoComplete();
+//            }
+        switch (requestCode) {
+            case REQUEST_PERMISSIONS: {
+                for (int i = 0; i < grantResults.length; i++) {
+                    if (grantResults.length > 0 && grantResults[i] == PackageManager.PERMISSION_GRANTED)
+                        Toast.makeText(this, "Permission to write file added", Toast.LENGTH_LONG).show();
+                    else
+                        Toast.makeText(this, "The app was not allowed to read or write to your storage. Hence, it cannot function properly. Please consider granting it this permission", Toast.LENGTH_LONG).show();
+                }
             }
+            case REQUEST_READ_CONTACTS: {
+                if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    populateAutoComplete();
+                }
+            }
+
         }
     }
 

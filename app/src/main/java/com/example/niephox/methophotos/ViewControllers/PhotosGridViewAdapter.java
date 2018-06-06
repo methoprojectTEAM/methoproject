@@ -37,10 +37,12 @@ public class PhotosGridViewAdapter extends ArrayAdapter<Image> {
     private ViewHolder viewHolder = new ViewHolder();
     private ArrayList<Image> alImages = new ArrayList<>();
     private String albumName;
+    private FirebaseService service;
     public PhotosGridViewAdapter(Context context, ArrayList<Image> alImages) {
         super(context, R.layout.gridview_relative_layout, alImages);
         this.alImages = alImages;
         this.context = context;
+        service = new FirebaseService(context);
 
     }
     @Override
@@ -91,17 +93,21 @@ public class PhotosGridViewAdapter extends ArrayAdapter<Image> {
                 case R.id.ShowMDItem:
                     //TODO: UPLOAD AlBUM
                     Toast.makeText(context, "UploadAlbum", Toast.LENGTH_SHORT).show();
-                    return true;
+                    break;
                 case R.id.MoveToAlbumItem:
-                    //TODO: DELETE ALBUM
-                    Toast.makeText(context, "DeleteAlbum", Toast.LENGTH_SHORT).show();
+                    service.deleteImageFromAlbum(alImages.get(position), albumName);
+                    service.addImageToAlbum(alImages.get(position), "fromAlbum");
+                    alImages.remove(position);
+                    break;
                 case R.id.DeleteItem:
-                    FirebaseService fb = new FirebaseService();
-                    fb.deleteImageFromAlbum(alImages.get(position), albumName );
-                    return true;
+                    service.deleteImageFromAlbum(alImages.get(position), albumName );
+                    alImages.remove(position);
+                    break;
                 default:
+
             }
-            return false;
+            notifyDataSetChanged();
+            return true;
         }
     }
 

@@ -17,6 +17,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.example.niephox.methophotos.Activities.AlbumOnMapActivity;
 import com.example.niephox.methophotos.Activities.PhotosViewActivity;
+import com.example.niephox.methophotos.Controllers.FirebaseService;
 import com.example.niephox.methophotos.Entities.Album;
 import com.example.niephox.methophotos.Entities.Image;
 import com.example.niephox.methophotos.R;
@@ -32,7 +33,7 @@ public class AlbumsAdapter extends RecyclerView.Adapter<AlbumsAdapter.MyViewHold
 
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
-        public TextView title, description;
+        public TextView title, description, date;
         public ImageView thumbnail, overflow;
         public Button btOpen;
 
@@ -40,6 +41,7 @@ public class AlbumsAdapter extends RecyclerView.Adapter<AlbumsAdapter.MyViewHold
             super(view);
             btOpen = (Button) view.findViewById(R.id.btOpen);
             title = (TextView) view.findViewById(R.id.title);
+            date = (TextView) view.findViewById(R.id.date);
             description = (TextView) view.findViewById(R.id.description);
             thumbnail = (ImageView) view.findViewById(R.id.thumbnail);
             overflow = (ImageView) view.findViewById(R.id.overflow);
@@ -65,6 +67,7 @@ public class AlbumsAdapter extends RecyclerView.Adapter<AlbumsAdapter.MyViewHold
         Album album = albumList.get(position);
         holder.title.setText(album.getName());
         holder.description.setText(album.getDescription());
+        holder.date.setText(album.getDate().toString());
         holder.btOpen.setOnClickListener(new ButtonClickListener(position,albumList.get(position)));
         Image albumThumbnail = new Image();
             albumThumbnail=album.getThumbnail();
@@ -111,10 +114,10 @@ public class AlbumsAdapter extends RecyclerView.Adapter<AlbumsAdapter.MyViewHold
                     Toast.makeText(mContext, "UploadAlbum", Toast.LENGTH_SHORT).show();
                     return true;
                 case R.id.deleteAlbum:
-                    //TODO: DELETE ALBUM
+                    FirebaseService.queryAlbumDelete(albumList.get(position).getName());
                     Toast.makeText(mContext, "DeleteAlbum", Toast.LENGTH_SHORT).show();
+                    return true;
                 case R.id.mapAlbum:
-
                     Intent intent = new Intent(mContext,AlbumOnMapActivity.class);
                     intent.putExtra("alImages", albumList.get(position).getImages());
                     mContext.startActivity(intent);

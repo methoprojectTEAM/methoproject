@@ -3,6 +3,9 @@ package com.example.niephox.methophotos.Entities;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.example.niephox.methophotos.Controllers.FirebaseService;
+import com.example.niephox.methophotos.Controllers.StorageController;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -11,92 +14,107 @@ import java.util.List;
  * Created by Niephox on 3/30/2018.
  */
 
-public class Album implements Parcelable{
-    private String name;
-    private Date date;
-    private String description;
-    private ArrayList<Image> images = new ArrayList<>();
-    private Image thumbnail;
+public class Album {
+	private String name;
+	private Date date;
+	private String description;
+	private ArrayList<Image> images = new ArrayList<>();
+	private Image thumbnail;
 
-    public Album()      {
+	public Album() {
 
-    }
-    public Album(String albumName, String description) {
-        this.name = albumName;
-        this.description = description;
-    }
-    private Album(Parcel in) {
-        this.name = in.readString();
-    }
-    public Album(String name, Date date, String description, ArrayList<Image> images) {
-        this.name = name;
-        this.date = date;
-        this.description = description;
-        this.images = images;
-        if (this.images != null){
-             this.thumbnail = this.images.get(0);
-        }
-    }
+	}
+
+	public Album(String albumName, String description) {
+		this.name = albumName;
+		this.description = description;
+	}
+
+	private Album(Parcel in) {
+		this.name = in.readString();
+	}
+
+	public Album(String name, Date date, String description, ArrayList<Image> images) {
+		this.name = name;
+		this.date = date;
+		this.description = description;
+		this.images = images;
+		if (this.images != null) {
+			this.thumbnail = this.images.get(0);
+		}
+	}
 
 
-    public String getName() {
+	public String getName() {
 
-        return name;
-    }
-    //TODO: CHANGE FUNCTIONALLITY TO SUPPORT POSSIBLE DELETION OF IMAGE THAT EXISTS AS THUMBNAIL
-    public void setThumbnail(Image image){this.thumbnail= image;} // maybe get int for the intex of the specific album images array list
+		return name;
+	}
 
-    public Image getThumbnail(){return this.thumbnail;}
+	//TODO: CHANGE FUNCTIONALLITY TO SUPPORT POSSIBLE DELETION OF IMAGE THAT EXISTS AS THUMBNAIL
+	public void setThumbnail(Image image) {
+		this.thumbnail = image;
+	} // maybe get int for the intex of the specific album images array list
 
-    public void setName(String name) {
-        this.name = name;
-    }
+	public Image getThumbnail() {
+		return this.thumbnail;
+	}
 
-    public Date getDate() {
-        return date;
-    }
+	public void setName(String name) {
+		this.name = name;
+	}
 
-    public void setDate(Date date) {
-        this.date = date;
-    }
+	public Date getDate() {
+		return date;
+	}
 
-    public String getDescription() {
-        return description;
-    }
+	public void setDate(Date date) {
+		this.date = date;
+	}
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
+	public String getDescription() {
+		return description;
+	}
 
-    public ArrayList<Image> getImages() {
-        return images;
-    }
+	public void setDescription(String description) {
+		this.description = description;
+	}
 
-    public void addImage(Image image) { images.add(image); }
+	public ArrayList<Image> getImages() {
+		return images;
+	}
 
-    public void removeImage(Image image) {
-        for (Image img : images) {
-            if (img.getImageURI().equals(image.getImageURI()))
-                images.remove(img);
-        }
-    }
+	public void addImage(Image image) {
+		images.add(image);
+	}
 
-    public void setImages(ArrayList<Image> images) {
+	public void removeImage(Image image) {
+		for (Image img : images) {
+			if (img.getImageURI().equals(image.getImageURI()))
+				images.remove(img);
+		}
+	}
 
-        this.images = images ==  null ? new ArrayList<Image>(): images;
-        this.thumbnail = this.images.get(0);
+	public void setImages(ArrayList<Image> images) {
 
-    }
+		this.images = images == null ? new ArrayList<Image>() : images;
+		genThumbnail();
+//		if (images != null)
+//			this.thumbnail = this.images.get(0);
+//		else {
+//			this.thumbnail.
+//		}
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
+	}
 
-    @Override
-    public void writeToParcel(Parcel parcel, int i) {
+	private void genThumbnail() {
+		if(!images.isEmpty())
+			this.thumbnail = this.images.get(0);
+		else {
+			FirebaseService.queryAlbumDelete(name);
 
-    }
+		}
+	}
 }
+
 
 

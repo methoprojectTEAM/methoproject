@@ -35,7 +35,7 @@ public class PhotosViewActivity extends AppCompatActivity {
     //Array Lists:
     ArrayList<Image> alImages = new ArrayList<>();
 
-    //Current album
+    //Current album name
 	String albumName;
 
 
