@@ -87,7 +87,7 @@ public class AlbumRepository {
 
 	//remove image with the help of firebase service and add image to the other album with firebase service too
 	public void transferImage(Image imgToTransfer, Album fromAlbum, Album toAlbum) {
-		service.deleteImageFromAlbum(imgToTransfer, fromAlbum); //delete from one album,
+		service.deleteImageFromAlbum(imgToTransfer, fromAlbum.getName()); //delete from one album,
 		service.addImageToAlbum(imgToTransfer, toAlbum); //add to the other album
 	}
 
@@ -96,7 +96,7 @@ public class AlbumRepository {
 	}
 
 	public void deleteAlbum(Album albumToDelete) {
-		service.queryAlbumDelete(albumToDelete);
+		service.queryAlbumDelete(albumToDelete.getName());
 	}
 
 }

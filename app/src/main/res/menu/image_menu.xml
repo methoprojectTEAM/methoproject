@@ -1,14 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item
-        android:id="@+id/ViewItem"
-        android:title="UploadToCloud"></item>
+
     <item
         android:id="@+id/ShowMDItem"
         android:title="Show Metadata"></item>
-    <item
-        android:id="@+id/AddMDItem"
-        android:title="Add Metadata"></item>
     <item
         android:id="@+id/MoveToAlbumItem"
         android:title="Move to Album"></item>

@@ -1,5 +1,8 @@
 package com.example.niephox.methophotos.Entities;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -8,7 +11,7 @@ import java.util.List;
  * Created by Niephox on 3/30/2018.
  */
 
-public class Album {
+public class Album implements Parcelable{
     private String name;
     private Date date;
     private String description;
@@ -22,7 +25,9 @@ public class Album {
         this.name = albumName;
         this.description = description;
     }
-
+    private Album(Parcel in) {
+        this.name = in.readString();
+    }
     public Album(String name, Date date, String description, ArrayList<Image> images) {
         this.name = name;
         this.date = date;
@@ -80,6 +85,16 @@ public class Album {
 
         this.images = images ==  null ? new ArrayList<Image>(): images;
         this.thumbnail = this.images.get(0);
+
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
 
     }
 }

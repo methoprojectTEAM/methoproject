@@ -1,21 +1,17 @@
 package com.example.niephox.methophotos.Tasks;
 
-import android.app.ProgressDialog;
-import android.content.Context;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
-import android.view.View;
 
 import com.example.niephox.methophotos.Entities.Album;
 import com.example.niephox.methophotos.Entities.Image;
 import com.example.niephox.methophotos.Entities.User;
 import com.example.niephox.methophotos.Interfaces.Observer;
-import com.example.niephox.methophotos.Interfaces.Subject;
+import com.example.niephox.methophotos.Interfaces.Observable;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageMetadata;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
@@ -24,7 +20,7 @@ import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
 //TODO: THIS TASK HAS TO BE RUN ASYNCHRONOUSLY BECAUSE ITS STOPPING THE MAIN THREAD FROM RUNNING UI REFRESH
-public class UploadImageTask extends AsyncTask<ArrayList<Uri>, Void, ArrayList<Uri>> implements Subject {
+public class UploadImageTask extends AsyncTask<ArrayList<Uri>, Void, ArrayList<Uri>> implements Observable {
 	private static final String TAG = "UploadDocsAsyncTask";
 	User currentUser = new User();
 	private final StorageReference userStorageReference = FirebaseStorage.getInstance().getReference("/" + currentUser.getUserUID());

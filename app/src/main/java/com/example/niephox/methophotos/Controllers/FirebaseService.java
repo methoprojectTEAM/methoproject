@@ -123,8 +123,8 @@ public class FirebaseService implements Observer{
 	}
 
 	//Deletes album selected
-	public void queryAlbumDelete(Album albumToDelete) {
-		firebaseUserAlbumsRef.child(albumToDelete.getName()).getRef().removeValue();
+	public void queryAlbumDelete(String albumToDelete) {
+		firebaseUserAlbumsRef.child(albumToDelete).getRef().removeValue();
 	}
 
 	public Image setImage(Image imageToAddRefs, UploadTask.TaskSnapshot snap) {
@@ -208,8 +208,13 @@ public class FirebaseService implements Observer{
 		//firebaseUserAlbumsRef.child("album2").child("images").updateChildren()
 	}
 	//TODO: TRANSFERRING AN IMAGE FROM ONE ALBUM TO ANOTHER WILL CAUSE DUPLICATION ISSUES AND THE BUG SCALES
-	public void deleteImageFromAlbum(final Image imageToDelete, Album albumSource) {
- 		firebaseUserAlbumsRef.child(albumSource.getName()).child("images").orderByChild("imageURI").equalTo(imageToDelete.getImageURI()).getRef().removeValue();
+	public void deleteImageFromAlbum(final Image imageToDelete, String albumSource) {
+		//firebaseUserAlbumsRef.child(albumToDelete).getRef().removeValue();
+
+		Query qr = firebaseUserAlbumsRef.child(albumSource).child("images").orderByChild("name").equalTo(imageToDelete.getName()).getRef();
+		qr.getRef().removeValue();
+		//queryAlbumDelete("albumone");
+
 	}
 //	public Image uploadImage(final Image imageToUpload) {
 //		Uri fileUri = Uri.fromFile(new File(imageToUpload.getImageURI()));

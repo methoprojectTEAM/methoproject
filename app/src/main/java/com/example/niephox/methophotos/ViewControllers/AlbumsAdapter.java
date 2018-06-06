@@ -147,6 +147,7 @@ public class AlbumsAdapter extends RecyclerView.Adapter<AlbumsAdapter.MyViewHold
             Intent intent = new Intent(mContext, PhotosViewActivity.class);
 
             intent.putExtra("alImages", alImages);
+            intent.putExtra("albumName", album.getName());
             mContext.startActivity(intent);
 
         }
