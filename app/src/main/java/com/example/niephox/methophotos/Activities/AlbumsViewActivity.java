@@ -56,7 +56,7 @@ public class AlbumsViewActivity extends AppCompatActivity implements iAsyncCallb
     //Controllers:
     FirebaseService firebaseService;
     MetadataController mtcontrol;
-    AlbumBuilder  AsalbumBuilder;
+    AlbumBuilder AsalbumBuilder;
     //Layout Items:
     private DrawerLayout mdrawerLayout;
     private AlbumRepository albumRepo;
@@ -75,7 +75,6 @@ public class AlbumsViewActivity extends AppCompatActivity implements iAsyncCallb
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_album);
         alAlbums.clear();
-
         setView();
         firebaseService = new FirebaseService();
         firebaseService.getCurrentUser();
@@ -84,8 +83,6 @@ public class AlbumsViewActivity extends AppCompatActivity implements iAsyncCallb
         checkPermissions(AlbumsViewActivity.this);
         alAlbums.add(localAlbum);
         firebaseService.RegisterCallback(this);
-
-
     }
 
     public void setView() {
@@ -108,7 +105,6 @@ public class AlbumsViewActivity extends AppCompatActivity implements iAsyncCallb
         mdrawerLayout = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.navigation);
         navigationView.setNavigationItemSelectedListener(new NavigationItemListener(mdrawerLayout));
-
     }
 
     @Override
@@ -126,7 +122,6 @@ public class AlbumsViewActivity extends AppCompatActivity implements iAsyncCallb
                 alAlbums.addAll(AsalbumBuilder.getAlbumscreated());
                 adapter.notifyDataSetChanged();
                 break;
-
         }
     }
 
@@ -196,10 +191,9 @@ public class AlbumsViewActivity extends AppCompatActivity implements iAsyncCallb
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                AsalbumBuilder = new AlbumBuilder(getWindow().getDecorView().findViewById(android.R.id.content), this, localAlbum.getImages());
+                AsalbumBuilder = new AlbumBuilder(getWindow().getDecorView().findViewById(android.R.id.content), this);
                 AsalbumBuilder.RegisterCallback(this);
                 AsalbumBuilder.execute(localAlbum.getImages());
-
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -224,8 +218,7 @@ public class AlbumsViewActivity extends AppCompatActivity implements iAsyncCallb
         } else {
             Log.e("Else", "Else");
             localAlbum = albumRepo.generateLocalAlbum(context);
-            //AUTOMATIC GENERATION
-
+            //Background image metadata Generation
             mtcontrol = new MetadataController(localAlbum, this);
             mtcontrol.RegisterCallback(this);
             mtcontrol.execute(localAlbum);
@@ -239,8 +232,6 @@ public class AlbumsViewActivity extends AppCompatActivity implements iAsyncCallb
         collapsingToolbar.setTitle(" ");
         AppBarLayout appBarLayout = (AppBarLayout) findViewById(R.id.appbar);
         appBarLayout.setExpanded(true);
-
-
         // hiding & showing the title when toolbar expanded & collapsed
         appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
             boolean isShow = false;
@@ -261,7 +252,6 @@ public class AlbumsViewActivity extends AppCompatActivity implements iAsyncCallb
             }
         });
     }
-
 
     private int dpToPx(int dp) {
         Resources r = getResources();
@@ -292,5 +282,4 @@ public class AlbumsViewActivity extends AppCompatActivity implements iAsyncCallb
             });
         }
     }
-
 }

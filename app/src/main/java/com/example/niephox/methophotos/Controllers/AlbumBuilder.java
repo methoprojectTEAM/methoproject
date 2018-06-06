@@ -24,19 +24,27 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Date;
 
-
+/**
+ * This class and functionality is still at its alpha version
+ * TODO: Implement correct call
+ * TODO: Addition of more sorting Bases. (Color, Location...)
+ * TODO: Refactor to the point that the whole  AAG algorithm does not depend on a specific sort base
+ * TODO: Polish and give  efficient UX
+ *  */
 public class AlbumBuilder extends AsyncTask<ArrayList<Image>, Integer, String> {
-
-    public static iAsyncCallback iAsyncCallback;
     /**
-     * ASYNCTASK <PARAMS,PROGRESS, RESULT>
-     *
-     * @params = this  is the object you pass to the async task from .execute
-     * @PROGRESS= this is the  type that gets pass to on progressUpdate()
-     * @RESULT =the type that returns from doInBackground()
-     */
+     *  Automatic Album Generation expects that the images imported for album calculation  already have their metadata set and stored in their object.
+     *  If an image doesn't have its metadata extracted then it will not be concluded in the AAG
+     *  @param Imagesfailed : integer variable counting the images that  didn't have the corresponding tag for the AAG
+     *  @param rootView : Activity view variable used for displaying UI for best UX according the background AAG progress
+     *  @param context : Same as the above
+     *  @param progressBar infoBottomDialog : both  elements serving the UX
+     *  @param metadataString : Array list  temporarily containing String  references of the current  image obj on calculation
+     *  @param albumsCreated : Array list containing  albums created by AAG
+     * */
+    public static iAsyncCallback iAsyncCallback;
+
     private int Imagesfailed = 0;
-    private MetadataController metadataController = new MetadataController();
     private View rootView;
     private Context context;
     private InfoBottomDialog infoBottomDialog;
@@ -45,10 +53,9 @@ public class AlbumBuilder extends AsyncTask<ArrayList<Image>, Integer, String> {
     private ArrayList<Image> images = new ArrayList<>();
     private ArrayList<Album> albumscreated = new ArrayList<>();
 
-    public AlbumBuilder(View rootView, Context context, ArrayList<Image> inputImages) {
+    public AlbumBuilder(View rootView, Context context) {
         this.rootView = rootView;
         this.context = context;
-        this.images = inputImages;
     }
 
     public ArrayList<Album> getAlbumscreated() {
@@ -59,7 +66,16 @@ public class AlbumBuilder extends AsyncTask<ArrayList<Image>, Integer, String> {
         this.iAsyncCallback = iAsyncCallback;
     }
 
+    /**
+     * ASYNCTASK <PARAMS,PROGRESS, RESULT>
+     *
+     * @params = this  is the object you pass to the async task from .execute
+     * @PROGRESS= this is the  type that gets pass to on progressUpdate()
+     * @RESULT =the type that returns from doInBackground()
+     */
     //Runs  in  UI before  background thread is called.
+    //Inform the user that the automatic generation of albums has begun.
+    //Set the  according progress bars etc to show the process of the task whenever the user asks.
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
@@ -80,20 +96,17 @@ public class AlbumBuilder extends AsyncTask<ArrayList<Image>, Integer, String> {
 
             }
         });
-//            FragmentManager fragmentManager = ((FragmentActivity) context).getSupportFragmentManager();
-//            infoBottomDialog = InfoBottomDialog.newInstance();
-//            infoBottomDialog.show(fragmentManager, "add diallog");
+// FragmentManager fragmentManager = ((FragmentActivity) context).getSupportFragmentManager();
+//infoBottomDialog = InfoBottomDialog.newInstance();
+        //infoBottomDialog.show(fragmentManager, "add diallog");
         // Display Snackbar
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected String doInBackground(ArrayList<Image>... inputImages) {
-        ///ArrayList<Image> images = new ArrayList<>();
-        //images.addAll(inputImages[0]);
-
-        //For each image get  metadata and sort into the correct album
-//            for (int i = 0; i < this.images.size(); i++) {
+        //Use input images as images.
+        this.images = inputImages[0];
         int progress = 0;
         while (this.images.size() != 0) {
             metadataString.clear();
@@ -139,7 +152,7 @@ public class AlbumBuilder extends AsyncTask<ArrayList<Image>, Integer, String> {
         }
     }
 
-    private Date parseDate(ArrayList<String> metadataString) {
+    private Date parseDateTag(ArrayList<String> metadataString) {
         String dateTag = "[Exif IFD0] Date/Time";
         for (String tag : metadataString) {
             if (tag.contains(dateTag)) {
@@ -174,9 +187,10 @@ public class AlbumBuilder extends AsyncTask<ArrayList<Image>, Integer, String> {
         albumscreated.add(album);
     }
 
+    //Calculate albums by  image dates.
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void calculateByDate(ArrayList<String> metadataString) {
-        Date imageDate = parseDate(metadataString);
+        Date imageDate = parseDateTag(metadataString);
         boolean albumExists = false;
         int albumIndex = 0;
         if (albumscreated.size() == 0) {
@@ -201,7 +215,8 @@ public class AlbumBuilder extends AsyncTask<ArrayList<Image>, Integer, String> {
                 newAlbumByDate(imageDate, this.images.get(0));
             }
         } else {
-            Imagesfailed++; // didnt have the tag
+            // Images that didn't have the according Tag.
+            Imagesfailed++;
         }
     }
 }
