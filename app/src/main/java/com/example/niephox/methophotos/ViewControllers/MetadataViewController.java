@@ -36,6 +36,7 @@ public class MetadataViewController {
                 switch (which) {
                     case 0:
                         metadataController.setReaders(null);
+
                         break;
                     case 1:
                         metadataController.setReaders(Arrays.asList(new ExifReader(), new IptcReader()));
@@ -44,8 +45,7 @@ public class MetadataViewController {
                         metadataController.setReaders(null);
                         break;
                 }
-                //metadataController.refreshMetadata();
-                metadataController.iAsyncCallback.RefreshView(iAsyncCallback.REQUEST_CODE.METADATA);
+                metadataController.refreshMetadata();
                 dialog.dismiss();
             }
         });
