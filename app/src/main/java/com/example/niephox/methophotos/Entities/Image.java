@@ -134,6 +134,7 @@ public class Image implements Parcelable {
         this.downloadUrl=in.readString();
         this.description=in.readString();
         this.imageURI=in.readString();
+        this.name = in.readString();
     }
     @Override
     public int describeContents() {
@@ -146,5 +147,6 @@ public class Image implements Parcelable {
         dest.writeString(this.downloadUrl);
         dest.writeString(this.description);
         dest.writeString(this.imageURI);
+        dest.writeString(this.name);
     }
 }

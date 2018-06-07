@@ -49,7 +49,7 @@ import java.util.Arrays;
 
 public class MetadataController extends AsyncTask<Album, Integer, String> implements iAsyncCallback {
     public static ArrayList<String> metadataList = new ArrayList<>();
-    public  ArrayList<String> filteredList = new ArrayList<>();
+    public static  ArrayList<String> filteredList = new ArrayList<>();
 
     private File File;
     Iterable<JpegSegmentMetadataReader> readers = null;

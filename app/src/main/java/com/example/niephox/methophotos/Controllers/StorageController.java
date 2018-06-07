@@ -15,7 +15,6 @@ import  com.example.niephox.methophotos.Interfaces.iAsyncCallback;
 import com.drew.imaging.jpeg.JpegSegmentMetadataReader;
 import com.example.niephox.methophotos.Entities.Image;
 import com.example.niephox.methophotos.Interfaces.iAsyncCallback.REQUEST_CODE;
-import com.example.niephox.methophotos.ViewControllers.PhotosFolderAdapter;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.FileDownloadTask;

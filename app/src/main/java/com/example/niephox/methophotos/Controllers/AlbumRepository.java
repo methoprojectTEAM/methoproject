@@ -3,7 +3,6 @@ package com.example.niephox.methophotos.Controllers;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 
 import com.example.niephox.methophotos.Entities.Album;
 import com.example.niephox.methophotos.Entities.Image;
@@ -20,7 +19,7 @@ public class AlbumRepository {
 	private ArrayList<Image> selectedImages;
 	private Album album = new Album();
 	private Context context; //context is used for selectionImageGallery
-	private FirebaseService service = new FirebaseService();
+	private FirebaseService service = new FirebaseService(context);
 	private final static int REQUEST_PICTURES = 1;
 
 	public AlbumRepository() {
@@ -87,8 +86,8 @@ public class AlbumRepository {
 
 	//remove image with the help of firebase service and add image to the other album with firebase service too
 	public void transferImage(Image imgToTransfer, Album fromAlbum, Album toAlbum) {
-		service.deleteImageFromAlbum(imgToTransfer, fromAlbum); //delete from one album,
-		service.addImageToAlbum(imgToTransfer, toAlbum); //add to the other album
+		service.deleteImageFromAlbum(imgToTransfer, fromAlbum.getName()); //delete from one album,
+		service.addImageToAlbum(imgToTransfer, toAlbum.getName()); //add to the other album
 	}
 
 	public void createAlbum(Album albumToCreate) {
@@ -96,7 +95,7 @@ public class AlbumRepository {
 	}
 
 	public void deleteAlbum(Album albumToDelete) {
-		service.queryAlbumDelete(albumToDelete);
+		service.queryAlbumDelete(albumToDelete.getName());
 	}
 
 }

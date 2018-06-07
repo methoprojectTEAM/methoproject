@@ -3,10 +3,16 @@ package com.example.niephox.methophotos.Activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.PopupMenu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.Toast;
 
+import com.example.niephox.methophotos.Entities.Album;
+import com.example.niephox.methophotos.ViewControllers.AlbumsAdapter;
 import com.example.niephox.methophotos.ViewControllers.PhotosGridViewAdapter;
 import com.example.niephox.methophotos.Entities.Image;
 import com.example.niephox.methophotos.R;
@@ -29,6 +35,8 @@ public class PhotosViewActivity extends AppCompatActivity {
     //Array Lists:
     ArrayList<Image> alImages = new ArrayList<>();
 
+    //Current album name
+	String albumName;
 
 
     @Override
@@ -44,8 +52,8 @@ public class PhotosViewActivity extends AppCompatActivity {
 //        if(bundle != null){
 //            alImages=(ArrayList<Image>) bundle.getSerializable("alImages");
 //        }
+		albumName = intent.getStringExtra("albumName");
         alImages=intent.getParcelableArrayListExtra("alImages");
-
         albumsAdapter = new PhotosGridViewAdapter(this,alImages);
         gvImages.setAdapter(albumsAdapter);
 
@@ -57,6 +65,17 @@ public class PhotosViewActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+    	gvImages.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+			@Override
+			public boolean onItemLongClick(AdapterView<?> adapterView, View view, int position, long l) {
+				albumsAdapter.showPopupMenu(view, position, albumName);
+				return false;
+			}
+		});
+
+
+
     }
 
 }
