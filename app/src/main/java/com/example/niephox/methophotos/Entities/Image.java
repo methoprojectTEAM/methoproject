@@ -4,8 +4,11 @@ import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.drew.lang.GeoLocation;
+import com.google.android.gms.maps.model.LatLng;
+
 import java.util.ArrayList;
-import java.util.Map;
+import java.util.HashMap;
 import java.util.UUID;
 
 
@@ -22,7 +25,7 @@ public class Image implements Parcelable {
             return new Image[size];
         }
     };
-    public Map<String, Object> infoMap;
+    public HashMap<String, Object> infoMap;
     private String storageLocationURL;
     private String downloadUrl;
     private String imageURI;
@@ -31,6 +34,7 @@ public class Image implements Parcelable {
     private ArrayList<String> metadata = new ArrayList<>();
     private String description;
     private ArrayList<String> imagesPath;
+    private LatLng parcableLocation = null;
 
 
     public Image() {
@@ -62,6 +66,11 @@ public class Image implements Parcelable {
         this.downloadUrl = in.readString();
         this.description = in.readString();
         this.imageURI = in.readString();
+        this.parcableLocation= in.readParcelable(LatLng.class.getClassLoader());
+    }
+
+    public LatLng getParcableLocation() {
+        return parcableLocation;
     }
 
     public ArrayList<String> getImagesPath() {
@@ -110,11 +119,11 @@ public class Image implements Parcelable {
         }
     }
 
-    public Map<String, Object> getInfoMap() {
+    public HashMap<String, Object> getInfoMap() {
         return infoMap;
     }
 
-    public void setInfoMap(Map<String, Object> infoMap) {
+    public void setInfoMap(HashMap<String, Object> infoMap) {
         this.infoMap = infoMap;
     }
 
@@ -154,5 +163,14 @@ public class Image implements Parcelable {
         dest.writeString(this.downloadUrl);
         dest.writeString(this.description);
         dest.writeString(this.imageURI);
+        if(this.infoMap != null) {
+            if (this.infoMap.get("Location") != null) {
+                GeoLocation location = (GeoLocation) this.infoMap.get("Location");
+                this.parcableLocation = new LatLng(location.getLatitude(), location.getLongitude());
+            }
+        }
+        dest.writeParcelable(this.parcableLocation, flags);
     }
+
+
 }

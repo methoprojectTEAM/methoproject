@@ -41,7 +41,7 @@ public class MetadataController extends AsyncTask<Album, Integer, String> implem
     Iterable<JpegSegmentMetadataReader> readers = null;
     StorageController storageController = new StorageController();
     public static iAsyncCallback iAsyncCallback;
-    public Map<String,Object>  imageInfoMap = new HashMap<String,Object>();
+    public HashMap<String,Object>  imageInfoMap = new HashMap<String,Object>();
 
 
     private Image image;
@@ -141,6 +141,7 @@ public class MetadataController extends AsyncTask<Album, Integer, String> implem
 
     public void printMetadata(Metadata metadata) {
         metadataList.clear();
+
         for (Directory directory : metadata.getDirectories()) {
             //
             // Each Directory stores values in Tag objects
@@ -218,12 +219,14 @@ public class MetadataController extends AsyncTask<Album, Integer, String> implem
 
         for (int i = 0 ; i< imagesToProcess.size(); i++){
             filteredList.clear();
+
             ExtractMetadata(imagesToProcess.get(i));
             Image processedImage =  new Image(imagesToProcess.get(i).getImageURI());
             processedImage.setMetadata(filteredList);
-            if (this.imageInfoMap != null){
+            if (this.imageInfoMap.size() != 0){
                 processedImage.setInfoMap(this.imageInfoMap);
             }
+
             proccesedImages.add(processedImage);
         }
 //        for (Image image:imagesToProcess) {
@@ -243,6 +246,7 @@ public class MetadataController extends AsyncTask<Album, Integer, String> implem
     }
 
     private void imageInfo(Metadata metadata){
+        this.imageInfoMap = new HashMap<String, Object>();
         GpsDirectory gpsDirectory = metadata.getFirstDirectoryOfType(GpsDirectory.class);
         if(gpsDirectory != null) {
             GeoLocation captureLocation = gpsDirectory.getGeoLocation();
