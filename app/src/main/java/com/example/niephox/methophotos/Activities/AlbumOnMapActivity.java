@@ -49,10 +49,10 @@ public class AlbumOnMapActivity extends FragmentActivity implements OnMapReadyCa
         Intent intent = getIntent();
         imagesToShow=intent.getParcelableArrayListExtra("alImages");
         for (Image imgToShow : imagesToShow){
-            if(imgToShow.getImageURI() == null)
-                urls.add(imgToShow.getDownloadUrl());
-            else
+            if(imgToShow.getDownloadUrl() == null)
                 urls.add(imgToShow.getImageURI());
+            else
+                urls.add(imgToShow.getDownloadUrl());
         }
     }
 
@@ -82,6 +82,14 @@ public class AlbumOnMapActivity extends FragmentActivity implements OnMapReadyCa
 
         String[] imageLocation = getLocationFromCoordinates(coord);
         InfoWindowData info = new InfoWindowData(url,imageLocation[0],imageLocation[1],"1/6/2018");
+        CustomMapMarkerAdapter customMapMarkerAdapter = new CustomMapMarkerAdapter
+                                                                                    .Builder()
+                                                                                    .context(context)
+                                                                                    .map(mMap)
+                                                                                    .marker(marker)
+                                                                                    .coordinates(coord)
+                                                                                    .imageData(info)
+                                                                                    .build();
 
         Glide
                 .with(context)
@@ -91,7 +99,7 @@ public class AlbumOnMapActivity extends FragmentActivity implements OnMapReadyCa
                 .centerCrop()
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .skipMemoryCache(false)
-                .listener(new CustomMapRequestListener(new CustomMapMarkerAdapter(context,info,mMap,marker,coord))) //When Glide loads the image then create the new custom marker
+                .listener(new CustomMapRequestListener(customMapMarkerAdapter)) //When Glide loads the image then create the new custom marker
                 .into(markerImage);
     }
 
