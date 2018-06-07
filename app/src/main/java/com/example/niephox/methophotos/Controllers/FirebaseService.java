@@ -21,6 +21,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.functions.FirebaseFunctions;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -54,18 +55,18 @@ public class FirebaseService implements Observer{
 		this.context = context;
 	}
 
-
+	//TODO: AUTHENTICATION CONTROLLER IS CALLING THIS FUNCTION TO CREATE AN ENTRY?
+	//TODO: IS THIS USED FOR UPDATING THE USER DATA IN DATABASE
 	public void createUser(User user) {
 		firebaseUserRef.child(user.getUserUID()).setValue(user);
 	}
 
 
-	public  User getUser() {
+	public User getUser() {
 		return currentUser;
 	}
 
-	public  void getUserAlbums() {
-
+	public void getUserAlbums() {
 		firebaseUserAlbumsRef.addValueEventListener(new ValueEventListener() {
 			@Override
 			public void onDataChange(DataSnapshot dataSnapshot) {
@@ -81,10 +82,8 @@ public class FirebaseService implements Observer{
 			}
 		});
 	}
-
-	//TODO: THIS IS DONE THERE CANT BE ANY ERRORS and its a static method
+	//TODO: THIS IS CALLED ONCE WHEN THE USER FIRST LOGINS. ANY CHANGES TO THE USER SHOULD NOT BE LISTENED TO BECAUSE IT WILL GET UNESSECARY DATA LIKE ALBUMS
 	public  void getCurrentUser() {
-//		currentUser = new User();
 		firebaseUserRef.child(currentUser.getUserUID()).addListenerForSingleValueEvent(new ValueEventListener() {
 			@Override
 			public void onDataChange(DataSnapshot dataSnapshot) {
@@ -99,19 +98,19 @@ public class FirebaseService implements Observer{
 			}
 			@Override
 			public void onCancelled(DatabaseError databaseError) {
-
 			}
 		});
 
 
 	}
 
-
+	//TODO: OBSERVE tHE getCurrentUser METHOD AND THE SINGLEVALUEEVENT LISTENER WHEN THE EMAIL OF THE USER IS CHANGED. OBSERVER IF ITS RUNNING TWICE.
 	public void queryChangeUserEmail(String newEmail) {
 		firebaseUserRef.child("email").setValue(newEmail);
 		//TODO:: IMPLEMENT Call
 	}
-	//IF THESE DONT WORK CHECK THE firebaseUserRef final reference up above for possible corrections
+
+
 	public void queryDeleteUser() {
 		firebaseUserRef.child(currentUser.getUserUID()).getRef().removeValue();
 //		firebaseUserRef.removeValue(new DatabaseReference.CompletionListener() {
@@ -127,14 +126,24 @@ public class FirebaseService implements Observer{
 		this.iAsyncCallback = iAsyncCallback;
 	}
 
-	//Deletes album selected
-	public  void queryAlbumDelete(String albumToDelete) {
+	//TODO: DELETION OF FOLDER IN STORAGE IS NOT YET SUPPORTED, LOOP THROUGH ALL THE ALBUM FOLDER IMAGES AND DELETE ONE BY ONE
+	public  void queryAlbumDelete(final String albumToDelete) {
 
 		firebaseUserAlbumsRef.child(albumToDelete).addListenerForSingleValueEvent(new ValueEventListener() {
 			@Override
 			public void onDataChange(DataSnapshot dataSnapshot) {
-				if(dataSnapshot!=null)
+				//TODO:USE STORAGE SERVICE TO DELETE ALL PHOTOS
+				String ref = FirebaseStorage.getInstance().getReference().toString();//TODO: THE STORAGELOCATIONURL IS GOING TO BE USED!!!!!!!!!!!!!! FOR DELETING THE IMAGES SO WE NEED TO GET AN ALBUM OBJECT
+				Log.w("REF", ref);
+				/*.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+					@Override
+					public void onSuccess(Void aVoid) {
+						Log.w("SUCCESS DELETING", "DELETED");
+					}
+				});*/
+				if(dataSnapshot!=null) {
 					dataSnapshot.getRef().removeValue();
+				}
 //				else
 					//TODO: HANDLE ALBUM DOESNT EXIST
 			}
