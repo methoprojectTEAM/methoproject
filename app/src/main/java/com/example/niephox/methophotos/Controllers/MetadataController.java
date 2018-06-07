@@ -1,18 +1,8 @@
 package com.example.niephox.methophotos.Controllers;
 
-import android.content.ContentProvider;
-import android.content.ContentResolver;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.database.Cursor;
-import android.net.Uri;
 import android.os.AsyncTask;
-import android.provider.MediaStore;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v7.app.AlertDialog;
 import android.util.Log;
-import android.view.MenuInflater;
 import android.widget.Toast;
 
 import com.drew.imaging.ImageMetadataReader;
@@ -20,28 +10,24 @@ import com.drew.imaging.ImageProcessingException;
 import com.drew.imaging.jpeg.JpegMetadataReader;
 import com.drew.imaging.jpeg.JpegProcessingException;
 import com.drew.imaging.jpeg.JpegSegmentMetadataReader;
+import com.drew.lang.GeoLocation;
 import com.drew.metadata.Directory;
 import com.drew.metadata.Metadata;
 import com.drew.metadata.Tag;
-import com.drew.metadata.exif.ExifReader;
-import com.drew.metadata.iptc.IptcReader;
-import com.drew.tools.FileUtil;
+import com.drew.metadata.exif.ExifSubIFDDirectory;
+import com.drew.metadata.exif.GpsDirectory;
 import com.example.niephox.methophotos.Activities.AlbumsViewActivity;
 import com.example.niephox.methophotos.Entities.Album;
 import com.example.niephox.methophotos.Entities.Image;
 import com.example.niephox.methophotos.Entities.MetadataTag;
 import com.example.niephox.methophotos.Interfaces.iAsyncCallback;
-import com.example.niephox.methophotos.R;
 
-import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by Niephox on 4/20/2018.
@@ -55,6 +41,7 @@ public class MetadataController extends AsyncTask<Album, Integer, String> implem
     Iterable<JpegSegmentMetadataReader> readers = null;
     StorageController storageController = new StorageController();
     public static iAsyncCallback iAsyncCallback;
+    public HashMap<String,Object>  imageInfoMap = new HashMap<String,Object>();
 
 
     private Image image;
@@ -154,6 +141,7 @@ public class MetadataController extends AsyncTask<Album, Integer, String> implem
 
     public void printMetadata(Metadata metadata) {
         metadataList.clear();
+
         for (Directory directory : metadata.getDirectories()) {
             //
             // Each Directory stores values in Tag objects
@@ -161,6 +149,15 @@ public class MetadataController extends AsyncTask<Album, Integer, String> implem
             for (Tag tag : directory.getTags()) {
                 System.out.println(tag);
                 MetadataTag metadataTag = new MetadataTag(tag.getTagType(), directory);
+
+//                ArrayList<String> taginfo = new ArrayList<>();
+//                taginfo.add(metadataTag.getDescription());
+//                taginfo.add(metadataTag.getDirectoryName());
+//                taginfo.add(metadataTag.getTagName());
+//                taginfo.add(metadataTag.getTagTypeHex());
+//                int type = metadataTag.getTagType();
+
+
                 metadataList.add(metadataTag.toString());
             }
             //
@@ -171,6 +168,8 @@ public class MetadataController extends AsyncTask<Album, Integer, String> implem
                 metadataList.add(error);
             }
         }
+        //Fill the image info hashmap
+        imageInfo(metadata);
         filteredList.clear();
         filteredList.addAll(metadataList);
     }
@@ -220,9 +219,14 @@ public class MetadataController extends AsyncTask<Album, Integer, String> implem
 
         for (int i = 0 ; i< imagesToProcess.size(); i++){
             filteredList.clear();
+
             ExtractMetadata(imagesToProcess.get(i));
             Image processedImage =  new Image(imagesToProcess.get(i).getImageURI());
             processedImage.setMetadata(filteredList);
+            if (this.imageInfoMap.size() != 0){
+                processedImage.setInfoMap(this.imageInfoMap);
+            }
+
             proccesedImages.add(processedImage);
         }
 //        for (Image image:imagesToProcess) {
@@ -239,6 +243,26 @@ public class MetadataController extends AsyncTask<Album, Integer, String> implem
         super.onPostExecute(s);
         Toast.makeText(context,s,Toast.LENGTH_LONG).show();
         iAsyncCallback.RetrieveData(REQUEST_CODE.METADATA);
+    }
+
+    private void imageInfo(Metadata metadata){
+        this.imageInfoMap = new HashMap<String, Object>();
+        GpsDirectory gpsDirectory = metadata.getFirstDirectoryOfType(GpsDirectory.class);
+        if(gpsDirectory != null) {
+            GeoLocation captureLocation = gpsDirectory.getGeoLocation();
+            if (captureLocation != null) {
+                this.imageInfoMap.put("Location", captureLocation);
+                Log.w("HASHMAP", this.imageInfoMap.get("Location").toString());
+            }
+        }
+        Directory dateDirectory = metadata.getFirstDirectoryOfType(ExifSubIFDDirectory.class);
+         if (dateDirectory != null) {
+             Date date = dateDirectory.getDate(ExifSubIFDDirectory.TAG_DATETIME_ORIGINAL);
+             if (date != null) {
+                 this.imageInfoMap.put("Date", date);
+                 Log.w("HASHMAP", this.imageInfoMap.get("Date").toString());
+             }
+         }
     }
 }
 

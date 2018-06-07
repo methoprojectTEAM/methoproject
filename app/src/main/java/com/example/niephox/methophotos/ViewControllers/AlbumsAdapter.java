@@ -2,6 +2,7 @@ package com.example.niephox.methophotos.ViewControllers;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -121,7 +122,11 @@ public class AlbumsAdapter extends RecyclerView.Adapter<AlbumsAdapter.MyViewHold
                     return true;
                 case R.id.mapAlbum:
                     Intent intent = new Intent(mContext,AlbumOnMapActivity.class);
-                    intent.putExtra("alImages", albumList.get(position).getImages());
+                    Bundle bundle = new Bundle();
+                    bundle.putParcelableArrayList("alImages",albumList.get(position).getImages());
+                    intent.putExtras( bundle);
+                    //intent.putExtra("alImages", albumList.get(position).getImages());
+
                     mContext.startActivity(intent);
                     return true;
                 default:
