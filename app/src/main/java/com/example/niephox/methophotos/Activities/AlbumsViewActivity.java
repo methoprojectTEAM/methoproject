@@ -52,7 +52,7 @@ public class AlbumsViewActivity extends AppCompatActivity implements iAsyncCallb
     FirebaseService firebaseService;
     private AlbumRepository albumRepo;
     private MetadataController mtcontrol;
-    private AlbumBuilder.AsyncBuild AsalbumBuilder;
+    private AlbumBuilder AsalbumBuilder;
     //Intents:
     private User curentUser;
     private Album localAlbum;
@@ -161,7 +161,7 @@ public class AlbumsViewActivity extends AppCompatActivity implements iAsyncCallb
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                AsalbumBuilder = new AlbumBuilder.AsyncBuild(getWindow().getDecorView().findViewById(android.R.id.content),this,localAlbum.getImages());
+                AsalbumBuilder = new AlbumBuilder(getWindow().getDecorView().findViewById(android.R.id.content),this);
                 AsalbumBuilder.RegisterCallback(this);
                 AsalbumBuilder.execute(localAlbum.getImages());
 

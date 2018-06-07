@@ -87,10 +87,11 @@ public class MetadataActivity extends AppCompatActivity implements iAsyncCallbac
 
     private void SetViews() {
         ShowImage();
-        if (image.getName()!=null && image.getAlbum().getName() !=null) {
-            tvName.setText(image.getName());
-            tvAlbumName.setText(image.getAlbum().getName());
-        }
+        tvName.setText(image.getName());
+//        if (image.getName()!=null && image.getAlbum().getName() !=null) {
+//            tvName.setText(image.getName());
+//            //tvAlbumName.setText(image.getAlbum().getName());
+//        }
     }
 
     @Override
