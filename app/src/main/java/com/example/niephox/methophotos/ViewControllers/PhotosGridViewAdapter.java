@@ -19,9 +19,11 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.niephox.methophotos.Activities.AlbumOnMapActivity;
+import com.example.niephox.methophotos.Activities.AlbumsViewActivity;
 import com.example.niephox.methophotos.Controllers.FirebaseService;
 import com.example.niephox.methophotos.Entities.Album;
 import com.example.niephox.methophotos.Entities.Image;
+import com.example.niephox.methophotos.Interfaces.iAsyncCallback;
 import com.example.niephox.methophotos.R;
 
 import java.util.ArrayList;
@@ -96,7 +98,7 @@ public class PhotosGridViewAdapter extends ArrayAdapter<Image> {
                     break;
                 case R.id.MoveToAlbumItem:
                     service.deleteImageFromAlbum(alImages.get(position), albumName);
-                    service.addImageToAlbum(alImages.get(position), "fromAlbum");
+                    service.addImageToAlbum(alImages.get(position), "nealbum");
                     alImages.remove(position);
                     break;
                 case R.id.DeleteItem:
@@ -106,6 +108,7 @@ public class PhotosGridViewAdapter extends ArrayAdapter<Image> {
                 default:
 
             }
+            //TODO: IF ALIMAGES IS EMPTY MOVE OUT THE PHOTOVIEW ACTIVITY BACK TO THE ALBUMS VIEW
             notifyDataSetChanged();
             return true;
         }
@@ -122,9 +125,9 @@ public class PhotosGridViewAdapter extends ArrayAdapter<Image> {
 
         viewHolder.ivImage =(ImageView)convertView.findViewById(R.id.photoViewRelative);
 
-        if(alImages.get(position).getImageURI()==null){
+        if(alImages.get(position).getDownloadUrl()==null){
             Glide.with(context)
-                    .load(alImages.get(position).getDownloadUrl())
+                    .load(alImages.get(position).getImageURI())
                     .thumbnail(0.01f)
                     .centerCrop()
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
@@ -133,7 +136,7 @@ public class PhotosGridViewAdapter extends ArrayAdapter<Image> {
         }
         else{
             Glide.with(context)
-                    .load(alImages.get(position).getImageURI())
+                    .load(alImages.get(position).getDownloadUrl())
                     .thumbnail(0.01f)
                     .centerCrop()
                     .diskCacheStrategy(DiskCacheStrategy.ALL)

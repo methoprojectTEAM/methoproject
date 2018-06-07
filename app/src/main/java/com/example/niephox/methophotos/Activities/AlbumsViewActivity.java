@@ -45,7 +45,7 @@ import java.util.List;
 
 public class AlbumsViewActivity extends AppCompatActivity implements iAsyncCallback, View.OnClickListener {
     //ArrayLists:
-    public ArrayList<Album> alAlbums = new ArrayList<>();
+    public  ArrayList<Album> alAlbums;
     //Layout Items:
     private ViewHolder viewHolder ;
     //Controllers:
@@ -62,24 +62,25 @@ public class AlbumsViewActivity extends AppCompatActivity implements iAsyncCallb
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        alAlbums = new ArrayList<>();
+        curentUser = new User();
         setContentView(R.layout.activity_album);
         viewHolder = new ViewHolder();
-        albumRepo = new AlbumRepository();
-        localAlbum = albumRepo.generateLocalAlbum(this);
+        albumRepo = new AlbumRepository(); //TODO: we create a repo object to manage albums
+        localAlbum = albumRepo.generateLocalAlbum(this); //TODO: we generate a local album using the albumRepo
 
         //AUTOMATIC GENERATION
         mtcontrol = new MetadataController(localAlbum,this);
         mtcontrol.RegisterCallback(this);
         mtcontrol.execute(localAlbum);
-        alAlbums.clear();
-        curentUser = new User();
+
         setView();
         firebaseService = new FirebaseService();
+        firebaseService.RegisterCallback(this);
+
         firebaseService.getCurrentUser();
 
         alAlbums.add(localAlbum);
-        firebaseService.RegisterCallback(this);
     }
 
     public void setView() {

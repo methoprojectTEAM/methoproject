@@ -30,7 +30,7 @@ public class AlbumsAdapter extends RecyclerView.Adapter<AlbumsAdapter.MyViewHold
 
     private Context mContext;
     private List<Album> albumList;
-
+    private FirebaseService fbService = new FirebaseService();
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         public TextView title, description, date;
@@ -71,10 +71,10 @@ public class AlbumsAdapter extends RecyclerView.Adapter<AlbumsAdapter.MyViewHold
         holder.btOpen.setOnClickListener(new ButtonClickListener(position,albumList.get(position)));
         Image albumThumbnail = new Image();
             albumThumbnail=album.getThumbnail();
-        if (albumThumbnail.getImageURI() == null) {
-            Glide.with(mContext).load(albumThumbnail.getDownloadUrl()).into(holder.thumbnail);
+        if (albumThumbnail.getDownloadUrl() == null) {
+            Glide.with(mContext).load(albumThumbnail.getImageURI()).into(holder.thumbnail);
         } else {
-             Glide.with(mContext).load(albumThumbnail.getImageURI()).into(holder.thumbnail);
+             Glide.with(mContext).load(albumThumbnail.getDownloadUrl()).into(holder.thumbnail);
        }
 
         holder.overflow.setOnClickListener(new View.OnClickListener() {
@@ -114,8 +114,10 @@ public class AlbumsAdapter extends RecyclerView.Adapter<AlbumsAdapter.MyViewHold
                     Toast.makeText(mContext, "UploadAlbum", Toast.LENGTH_SHORT).show();
                     return true;
                 case R.id.deleteAlbum:
-                    FirebaseService.queryAlbumDelete(albumList.get(position).getName());
+                    fbService.queryAlbumDelete(albumList.get(position).getName());
                     Toast.makeText(mContext, "DeleteAlbum", Toast.LENGTH_SHORT).show();
+                    albumList.remove(position);
+                    notifyDataSetChanged(); //this is the only place that we need to run the notification
                     return true;
                 case R.id.mapAlbum:
                     Intent intent = new Intent(mContext,AlbumOnMapActivity.class);
@@ -124,6 +126,7 @@ public class AlbumsAdapter extends RecyclerView.Adapter<AlbumsAdapter.MyViewHold
                     return true;
                 default:
             }
+
             return false;
         }
     }
