@@ -12,6 +12,7 @@ import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.drew.lang.GeoLocation;
 import com.example.niephox.methophotos.Controllers.CustomMapRequestListener;
 import com.example.niephox.methophotos.Entities.Image;
 import com.example.niephox.methophotos.Entities.InfoWindowData;
@@ -59,6 +60,15 @@ public class AlbumOnMapActivity extends FragmentActivity implements OnMapReadyCa
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         for(int i = 0 ; i < imagesToShow.size(); i++){
+            //LOCATION FROM METADATA
+            if(imagesToShow.get(i).getInfoMap() != null){
+                if(imagesToShow.get(i).getInfoMap().get("Location") != null){
+                    GeoLocation imageLocation = (GeoLocation) imagesToShow.get(i).getInfoMap().get("Location");
+                    LatLng imageCoords = new LatLng(imageLocation.getLatitude(),imageLocation.getLongitude());
+                    addCustomMarker(AlbumOnMapActivity.this,imageCoords,urls.get(i));
+                }
+            }
+
             addCustomMarker(AlbumOnMapActivity.this,new LatLng(lat,lng),urls.get(i));
 //            lat += 0.5;
             lng += 0.2;

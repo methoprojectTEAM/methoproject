@@ -3,33 +3,38 @@ package com.example.niephox.methophotos.Entities;
 import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.util.Log;
 
-import com.drew.metadata.Metadata;
-
-import java.util.UUID;
 import java.util.ArrayList;
-
+import java.util.Map;
+import java.util.UUID;
 
 
 /**
  * Created by Niephox on 3/30/2018.
  */
 public class Image implements Parcelable {
+    public static final Parcelable.Creator<Image> CREATOR = new Parcelable.Creator<Image>() {
+        public Image createFromParcel(Parcel in) {
+            return new Image(in);
+        }
+
+        public Image[] newArray(int size) {
+            return new Image[size];
+        }
+    };
+    public Map<String, Object> infoMap;
     private String storageLocationURL;
     private String downloadUrl;
     private String imageURI;
     private String name;
     private Album album;
-    private ArrayList<String> metadata=new ArrayList<>();
+    private ArrayList<String> metadata = new ArrayList<>();
     private String description;
     private ArrayList<String> imagesPath;
+
+
     public Image() {
         setName();
-    }
-
-    public ArrayList<String> getImagesPath() {
-        return imagesPath;
     }
 
     public Image(String storageLocationURL, String downloadUrl, String name, Album album, ArrayList<String> metadata, String description) {
@@ -40,7 +45,8 @@ public class Image implements Parcelable {
         this.metadata = metadata;
         this.description = description;
     }
-    public Image(String imageURI){
+
+    public Image(String imageURI) {
         this.imageURI = imageURI;
         setName();
     }
@@ -51,7 +57,18 @@ public class Image implements Parcelable {
         this.description = description;
     }
 
-    public String  getImageURI() {
+    private Image(Parcel in) {
+        this.storageLocationURL = in.readString();
+        this.downloadUrl = in.readString();
+        this.description = in.readString();
+        this.imageURI = in.readString();
+    }
+
+    public ArrayList<String> getImagesPath() {
+        return imagesPath;
+    }
+
+    public String getImageURI() {
         return imageURI;
     }
 
@@ -72,6 +89,7 @@ public class Image implements Parcelable {
         setDownloadUrl(downloadString);
         setStorageLocationURL(storageLocationURL);
     }
+
     public String getStorageLocationURL() {
         return storageLocationURL;
     }
@@ -86,10 +104,18 @@ public class Image implements Parcelable {
 
     public void setName() {
         UUID uuid;
-        if(this.name == null) {
+        if (this.name == null) {
             uuid = UUID.randomUUID();
             this.name = uuid.toString();
         }
+    }
+
+    public Map<String, Object> getInfoMap() {
+        return infoMap;
+    }
+
+    public void setInfoMap(Map<String, Object> infoMap) {
+        this.infoMap = infoMap;
     }
 
     public Album getAlbum() {
@@ -104,8 +130,6 @@ public class Image implements Parcelable {
         return metadata;
     }
 
-
-
     public void setMetadata(ArrayList<String> metadata) {
         this.metadata.clear();
         this.metadata.addAll(metadata);
@@ -119,22 +143,6 @@ public class Image implements Parcelable {
         this.description = description;
     }
 
-
-    public static final Parcelable.Creator<Image> CREATOR = new Parcelable.Creator<Image>() {
-        public Image createFromParcel(Parcel in) {
-            return new Image(in);
-        }
-
-        public Image[] newArray(int size) {
-            return new Image[size];
-        }
-    };
-    private Image(Parcel in) {
-        this.storageLocationURL=in.readString();
-        this.downloadUrl=in.readString();
-        this.description=in.readString();
-        this.imageURI=in.readString();
-    }
     @Override
     public int describeContents() {
         return 0;

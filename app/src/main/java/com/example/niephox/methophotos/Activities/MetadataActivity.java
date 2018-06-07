@@ -150,8 +150,6 @@ public class MetadataActivity extends AppCompatActivity implements iAsyncCallbac
         toast.show();
     }
 
-
-
 }
 
 
