@@ -1,4 +1,4 @@
-package com.example.niephox.methophotos.Interfaces;
+package com.example.niephox.methophotos.Controllers;
 
 import android.content.Intent;
 import android.net.Uri;
@@ -9,6 +9,8 @@ import android.support.v7.app.AppCompatActivity;
 import com.example.niephox.methophotos.Entities.Album;
 import com.example.niephox.methophotos.Entities.Image;
 import com.example.niephox.methophotos.Entities.User;
+import com.example.niephox.methophotos.Interfaces.Observable;
+import com.example.niephox.methophotos.Interfaces.Observer;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -28,6 +30,7 @@ public class StorageService extends AppCompatActivity implements Observable {
 	private final StorageReference userStorageReference = FirebaseStorage.getInstance().getReference("/" + currentUser.getUserUID());
 	private int numCores;
 	private ThreadPoolExecutor executor;
+
 	public StorageService()  {
 		numCores = Runtime.getRuntime().availableProcessors();
 		executor = new ThreadPoolExecutor(numCores * 2, numCores *2,
@@ -41,7 +44,7 @@ public class StorageService extends AppCompatActivity implements Observable {
 		completeAlbum = albumDest;
 		for(final Image image:imagesToUpload) {
 			final Uri fileUri = Uri.fromFile(new File(image.getImageURI()));
-			final StorageReference dbRef = userStorageReference.child(image.getName()); //reference based on current user to uploadImages in the cloud
+			final StorageReference dbRef = userStorageReference.child(albumDest.getName()).child(image.getName()); //reference based on current user to uploadImages in the cloud
 			dbRef.putFile(fileUri).addOnSuccessListener(executor, new OnSuccessListener<UploadTask.TaskSnapshot>() {
 				@Override
 				public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
