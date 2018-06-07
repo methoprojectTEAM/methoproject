@@ -60,7 +60,7 @@ public class MetadataActivity extends AppCompatActivity implements iAsyncCallbac
 
         InitialiseViews();
         GetImage();
-        metadataController = new MetadataController(image);
+        metadataController = new MetadataController(this.image);
         metadataViewController = new MetadataViewController(metadataController);
         metadataController.RegisterCallback(this);
         SetViews();
@@ -87,7 +87,7 @@ public class MetadataActivity extends AppCompatActivity implements iAsyncCallbac
 
     private void SetViews() {
         ShowImage();
-        if (image.getName()!=null && image.getAlbum().getName() !=null)
+        if (this.image.getName()!=null && this.image.getAlbum().getName() !=null)
         {
         tvName.setText(image.getName());
         tvAlbumName.setText(image.getAlbum().getName());
@@ -126,14 +126,14 @@ public class MetadataActivity extends AppCompatActivity implements iAsyncCallbac
     }
 
     private void GetImage() {
-        image=getIntent().getParcelableExtra("image");
+        this.image=getIntent().getParcelableExtra("image");
     }
 
     @Override
     public void RefreshView(REQUEST_CODE rq) {
         if(rq == REQUEST_CODE.METADATA ){
         metadataList.clear();
-        metadataList.addAll(MetadataController.filteredList);
+        metadataList.addAll(metadataController.filteredList);
         toast(" " + metadataList.size());
         arrayAdapter.notifyDataSetChanged();}
     }
