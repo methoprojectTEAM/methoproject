@@ -32,7 +32,7 @@ public class Image implements Parcelable {
     private String name;
     private Album album;
     private ArrayList<String> metadata = new ArrayList<>();
-    private String description;
+    private String description="Your Comments";
     private ArrayList<String> imagesPath;
     private LatLng parcableLocation = null;
 

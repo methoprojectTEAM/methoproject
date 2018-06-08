@@ -211,23 +211,23 @@ public class AlbumsViewActivity extends AppCompatActivity implements iAsyncCallb
     @Override
     public void onClick(View view) {
         if (view.getId() == R.id.addAlbum) {
-            albumRepo = new AlbumRepository();
-           // diaBuilder.setView(viewHolder.createAlbumView);
+                albumRepo = new AlbumRepository();
+                // diaBuilder.setView(viewHolder.createAlbumView);
 //            dialog.hide();
-            viewHolder.albumName.getText().clear();
-            viewHolder.albumDescription.getText().clear();
-            dialog.show();
-            viewHolder.createAlbum.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if (!viewHolder.albumName.getText().toString().isEmpty() && !viewHolder.albumDescription.getText().toString().isEmpty()) {
-                        Album albumToCreate = new Album(viewHolder.albumName.getText().toString(), viewHolder.albumDescription.getText().toString());
-                        albumRepo.createAlbumFromSelection(albumToCreate, AlbumsViewActivity.this);
-                        dialog.dismiss();
+                viewHolder.albumName.getText().clear();
+                viewHolder.albumDescription.getText().clear();
+                dialog.show();
+                viewHolder.createAlbum.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if (!viewHolder.albumName.getText().toString().isEmpty() && !viewHolder.albumDescription.getText().toString().isEmpty()) {
+                            Album albumToCreate = new Album(viewHolder.albumName.getText().toString(), viewHolder.albumDescription.getText().toString());
+                            albumRepo.createAlbumFromSelection(albumToCreate, AlbumsViewActivity.this);
+                            dialog.dismiss();
+                        }
                     }
-                }
 
-            });
+                });
 
         }
 
