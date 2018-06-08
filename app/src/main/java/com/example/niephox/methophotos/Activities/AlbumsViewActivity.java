@@ -1,15 +1,19 @@
 package com.example.niephox.methophotos.Activities;
 
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.drew.metadata.exif.ExifReader;
+import com.drew.metadata.iptc.IptcReader;
 import com.example.niephox.methophotos.Controllers.AlbumsControllers.AlbumBuilder;
 import com.example.niephox.methophotos.Controllers.AlbumsControllers.AlbumRepository;
 import com.example.niephox.methophotos.Controllers.FirebaseControllers.FirebaseService;
@@ -24,6 +28,7 @@ import com.example.niephox.methophotos.Interfaces.iAsyncCallback;
 import com.example.niephox.methophotos.R;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 
@@ -120,12 +125,49 @@ public class AlbumsViewActivity extends AppCompatActivity implements iAsyncCallb
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                AsalbumBuilder = new AlbumBuilder(getWindow().getDecorView().findViewById(android.R.id.content), this, AlbumBuilder.AAG_BASE.LOCATION);
-                AsalbumBuilder.RegisterCallback(this);
-                AsalbumBuilder.execute(localAlbum.getImages());
+
+                String[] options = getResources().getStringArray(R.array.AAGoptions);
+                AlertDialog.Builder mBuilder = new AlertDialog.Builder(this);
+                mBuilder.setTitle("Select Option");
+                mBuilder.setSingleChoiceItems(options, -1, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        switch (which) {
+                            case 0:
+                                AAGinit("Location");
+                                break;
+                            case 1:
+                                AAGinit("Date");
+                                break;
+                            default:
+                                break;
+                        }
+
+                        dialog.dismiss();
+                    }
+                });
+                AlertDialog mDialog = mBuilder.create();
+                mDialog.show();
+
+
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+    private void AAGinit(String base){
+        switch (base){
+            case"Location":
+                AsalbumBuilder = new AlbumBuilder(getWindow().getDecorView().findViewById(android.R.id.content), this, AlbumBuilder.AAG_BASE.LOCATION);
+                AsalbumBuilder.RegisterCallback(this);
+                AsalbumBuilder.execute(localAlbum.getImages());
+                break;
+            case "Date":
+                AsalbumBuilder = new AlbumBuilder(getWindow().getDecorView().findViewById(android.R.id.content), this, AlbumBuilder.AAG_BASE.DATE);
+                AsalbumBuilder.RegisterCallback(this);
+                AsalbumBuilder.execute(localAlbum.getImages());
+                break;
+        }
+
     }
     @Override
     public void onClick(View view) {

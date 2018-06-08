@@ -42,5 +42,8 @@
 
     <string name="title_activity_album_on_map">Map</string>
 
-
+    <string-array name="AAGoptions">
+    <item>Location</item>
+    <item>Date</item>
+    </string-array>
 </resources>
