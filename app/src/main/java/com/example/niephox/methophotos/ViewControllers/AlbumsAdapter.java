@@ -2,6 +2,7 @@ package com.example.niephox.methophotos.ViewControllers;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -20,6 +21,7 @@ import com.example.niephox.methophotos.Activities.PhotosViewActivity;
 import com.example.niephox.methophotos.Controllers.FirebaseService;
 import com.example.niephox.methophotos.Entities.Album;
 import com.example.niephox.methophotos.Entities.Image;
+import com.example.niephox.methophotos.Interfaces.iAsyncCallback;
 import com.example.niephox.methophotos.R;
 
 import java.util.ArrayList;
@@ -30,7 +32,7 @@ public class AlbumsAdapter extends RecyclerView.Adapter<AlbumsAdapter.MyViewHold
 
     private Context mContext;
     private List<Album> albumList;
-
+    private FirebaseService fbService = new FirebaseService();
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         public TextView title, description, date;
@@ -71,10 +73,10 @@ public class AlbumsAdapter extends RecyclerView.Adapter<AlbumsAdapter.MyViewHold
         holder.btOpen.setOnClickListener(new ButtonClickListener(position,albumList.get(position)));
         Image albumThumbnail = new Image();
             albumThumbnail=album.getThumbnail();
-        if (albumThumbnail.getImageURI() == null) {
-            Glide.with(mContext).load(albumThumbnail.getDownloadUrl()).into(holder.thumbnail);
+        if (albumThumbnail.getDownloadUrl() == null) {
+            Glide.with(mContext).load(albumThumbnail.getImageURI()).into(holder.thumbnail);
         } else {
-             Glide.with(mContext).load(albumThumbnail.getImageURI()).into(holder.thumbnail);
+             Glide.with(mContext).load(albumThumbnail.getDownloadUrl()).into(holder.thumbnail);
        }
 
         holder.overflow.setOnClickListener(new View.OnClickListener() {
@@ -114,18 +116,23 @@ public class AlbumsAdapter extends RecyclerView.Adapter<AlbumsAdapter.MyViewHold
                     Toast.makeText(mContext, "UploadAlbum", Toast.LENGTH_SHORT).show();
                     return true;
                 case R.id.deleteAlbum:
-                    FirebaseService.queryAlbumDelete(albumList.get(position).getName());
+                    fbService.queryAlbumDelete(albumList.get(position).getName());
                     Toast.makeText(mContext, "DeleteAlbum", Toast.LENGTH_SHORT).show();
                     albumList.remove(position);
-                    notifyDataSetChanged();
+                    notifyDataSetChanged(); //this is the only place that we need to run the notification
                     return true;
                 case R.id.mapAlbum:
                     Intent intent = new Intent(mContext,AlbumOnMapActivity.class);
-                    intent.putExtra("alImages", albumList.get(position).getImages());
+                    Bundle bundle = new Bundle();
+                    bundle.putParcelableArrayList("alImages",albumList.get(position).getImages());
+                    intent.putExtras( bundle);
+                    //intent.putExtra("alImages", albumList.get(position).getImages());
+
                     mContext.startActivity(intent);
                     return true;
                 default:
             }
+
             return false;
         }
     }
@@ -135,11 +142,14 @@ public class AlbumsAdapter extends RecyclerView.Adapter<AlbumsAdapter.MyViewHold
         return albumList.size();
     }
 
-    class ButtonClickListener implements View.OnClickListener {
+    class ButtonClickListener implements View.OnClickListener , iAsyncCallback {
         private ArrayList<Image> alImages = new ArrayList<>();
         private int position;
         private Album album;
-
+        Intent intent;
+        ArrayList<String> albumsNew = new ArrayList<>();
+        String[] albumListNames;
+        FirebaseService firebaseService = new FirebaseService();
         ButtonClickListener(int position, Album album) {
             this.position = position;
             this.album = album;
@@ -149,12 +159,27 @@ public class AlbumsAdapter extends RecyclerView.Adapter<AlbumsAdapter.MyViewHold
         public void onClick(View view) {
             alImages.clear();
             alImages.addAll(album.getImages());
-            Intent intent = new Intent(mContext, PhotosViewActivity.class);
-
+            intent = new Intent(mContext, PhotosViewActivity.class);
             intent.putExtra("alImages", alImages);
             intent.putExtra("albumName", album.getName());
-            mContext.startActivity(intent);
+            firebaseService.RegisterCallback(this);
+            firebaseService.getAlbumsExceptLocalAndChosen(album.getName());
+        }
 
+
+        @Override
+        public void RefreshView(REQUEST_CODE rq) {
+
+        }
+
+        @Override
+        public void RetrieveData(REQUEST_CODE rq) {
+            albumsNew = firebaseService.getAlbumsExceptLocalAndChosen();
+            albumListNames = new String[albumsNew.size()];
+            for(int i=0; i<albumsNew.size(); i++)
+                albumListNames[i] = (albumsNew.get(i));
+            intent.putExtra("userAlbumsNames", albumListNames);
+            mContext.startActivity(intent);
         }
     }
 

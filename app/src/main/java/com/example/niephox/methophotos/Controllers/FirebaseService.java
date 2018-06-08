@@ -32,16 +32,18 @@ import java.util.Map;
 public class FirebaseService implements Observer{
 
 	private static User currentUser = new User();
+	private  ArrayList<Album> userAlbums = new ArrayList<>();
+	private static ArrayList<String> albumsExceptLocalAndChosen = new ArrayList<>();
+
 	//TODO: final FIREBASE STRUCTURAL REFERENCES
 	private static final DatabaseReference firebaseUserAlbumsRef = FirebaseDatabase.getInstance().getReference("/users/" + currentUser.getUserUID() + "/albums");
-	private static final DatabaseReference firebaseUserRef = FirebaseDatabase.getInstance().getReference("/users/");
-	private static final StorageReference userStorageReference = FirebaseStorage.getInstance().getReference("/" + currentUser.getUserUID());
+	private  final DatabaseReference firebaseUserRef = FirebaseDatabase.getInstance().getReference("/users/");
+	private  final StorageReference userStorageReference = FirebaseStorage.getInstance().getReference("/" + currentUser.getUserUID());
 
 
 	StorageService storageService = new StorageService();
-	private static ArrayList<Album> userAlbums = new ArrayList<>();
-	private static GenericTypeIndicator<Map<String, Album>> albumsGenericTypeIndicator = new GenericTypeIndicator<Map<String, Album>>() {};
- 	private static com.example.niephox.methophotos.Interfaces.iAsyncCallback iAsyncCallback;
+	private  GenericTypeIndicator<Map<String, Album>> albumsGenericTypeIndicator = new GenericTypeIndicator<Map<String, Album>>() {};
+ 	private  com.example.niephox.methophotos.Interfaces.iAsyncCallback iAsyncCallback;
 	private Context context;
 
 	//TODO: CHANGE THE WAY ANY CHANGES TO THE DATABASE ARE MADE, THERE IS NOT NEED TO DOWNLOAD ALL DATA WHEN SOMETHING SMALL LIKE AN EMAIL IS CHANGED
@@ -53,21 +55,22 @@ public class FirebaseService implements Observer{
 		this.context = context;
 	}
 
-
-	public static void createUser(User user) {
+	//TODO: AUTHENTICATION CONTROLLER IS CALLING THIS FUNCTION TO CREATE AN ENTRY?
+	//TODO: IS THIS USED FOR UPDATING THE USER DATA IN DATABASE
+	public void createUser(User user) {
 		firebaseUserRef.child(user.getUserUID()).setValue(user);
 	}
 
 
-	public static User getUser() {
+	public User getUser() {
 		return currentUser;
 	}
 
-	public static void getUserAlbums() {
-		userAlbums.clear();
-		firebaseUserAlbumsRef.addListenerForSingleValueEvent(new ValueEventListener() {
+	public void getUserAlbums() {
+		firebaseUserAlbumsRef.addValueEventListener(new ValueEventListener() {
 			@Override
 			public void onDataChange(DataSnapshot dataSnapshot) {
+				userAlbums.clear();
 				Map<String, Album> map = dataSnapshot.getValue(albumsGenericTypeIndicator);
 				if(map != null)
 					userAlbums.addAll(map.values());
@@ -79,35 +82,35 @@ public class FirebaseService implements Observer{
 			}
 		});
 	}
-
-	public static void getCurrentUser() {
-		userAlbums.clear();
+	//TODO: THIS IS CALLED ONCE WHEN THE USER FIRST LOGINS. ANY CHANGES TO THE USER SHOULD NOT BE LISTENED TO BECAUSE IT WILL GET UNESSECARY DATA LIKE ALBUMS
+	public  void getCurrentUser() {
 		firebaseUserRef.child(currentUser.getUserUID()).addListenerForSingleValueEvent(new ValueEventListener() {
 			@Override
 			public void onDataChange(DataSnapshot dataSnapshot) {
 				Map<String, Album> albumMap = dataSnapshot.child("albums").getValue(albumsGenericTypeIndicator);
+				currentUser.albumsClear();
 				if(albumMap != null)
 					userAlbums.addAll(albumMap.values());
-				currentUser.addAlbums(userAlbums);
+				currentUser.setAlbums(userAlbums);
 				currentUser.setUserUID(dataSnapshot.child("userUID").getValue(String.class));
 				currentUser.setUsername(dataSnapshot.child("username").getValue(String.class));
 				iAsyncCallback.RetrieveData(com.example.niephox.methophotos.Interfaces.iAsyncCallback.REQUEST_CODE.DATABASE);
 			}
 			@Override
 			public void onCancelled(DatabaseError databaseError) {
-
 			}
 		});
 
 
 	}
 
-
+	//TODO: OBSERVE tHE getCurrentUser METHOD AND THE SINGLEVALUEEVENT LISTENER WHEN THE EMAIL OF THE USER IS CHANGED. OBSERVER IF ITS RUNNING TWICE.
 	public void queryChangeUserEmail(String newEmail) {
 		firebaseUserRef.child("email").setValue(newEmail);
 		//TODO:: IMPLEMENT Call
 	}
-	//IF THESE DONT WORK CHECK THE firebaseUserRef final reference up above for possible corrections
+
+
 	public void queryDeleteUser() {
 		firebaseUserRef.child(currentUser.getUserUID()).getRef().removeValue();
 //		firebaseUserRef.removeValue(new DatabaseReference.CompletionListener() {
@@ -123,35 +126,85 @@ public class FirebaseService implements Observer{
 		this.iAsyncCallback = iAsyncCallback;
 	}
 
-	//Deletes album selected
-	public static void queryAlbumDelete(String albumToDelete) {
-		firebaseUserAlbumsRef.child(albumToDelete).getRef().removeValue();
-		iAsyncCallback.RefreshView(com.example.niephox.methophotos.Interfaces.iAsyncCallback.REQUEST_CODE.DATABASE);
+	//TODO: DELETION OF FOLDER IN STORAGE IS NOT YET SUPPORTED, LOOP THROUGH ALL THE ALBUM FOLDER IMAGES AND DELETE ONE BY ONE
+	public  void queryAlbumDelete(final String albumToDelete) {
+
+		firebaseUserAlbumsRef.child(albumToDelete).addListenerForSingleValueEvent(new ValueEventListener() {
+			@Override
+			public void onDataChange(DataSnapshot dataSnapshot) {
+				//TODO:USE STORAGE SERVICE TO DELETE ALL PHOTOS
+				String ref = FirebaseStorage.getInstance().getReference().toString();//TODO: THE STORAGELOCATIONURL IS GOING TO BE USED!!!!!!!!!!!!!! FOR DELETING THE IMAGES SO WE NEED TO GET AN ALBUM OBJECT
+				Log.w("REF", ref);
+				/*.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+					@Override
+					public void onSuccess(Void aVoid) {
+						Log.w("SUCCESS DELETING", "DELETED");
+					}
+				});*/
+				if(dataSnapshot!=null) {
+					dataSnapshot.getRef().removeValue();
+				}
+//				else
+					//TODO: HANDLE ALBUM DOESNT EXIST
+			}
+
+			@Override
+			public void onCancelled(DatabaseError databaseError) {
+
+			}
+		});
 	}
 
 	public Image setImage(Image imageToAddRefs, UploadTask.TaskSnapshot snap) {
 		return imageToAddRefs;
 	}
 
+	public void getAlbumsExceptLocalAndChosen(final String albumChosen) {
+		getAlbumsExceptLocalAndChosen().clear();
+		firebaseUserAlbumsRef.addListenerForSingleValueEvent(new ValueEventListener() {
+			@Override
+			public void onDataChange(DataSnapshot dataSnapshot) {
+				for(DataSnapshot snap:dataSnapshot.getChildren()) {
+					if(!snap.getKey().equals(albumChosen))
+						albumsExceptLocalAndChosen.add(snap.getKey());
 
+				}
+				iAsyncCallback.RetrieveData(com.example.niephox.methophotos.Interfaces.iAsyncCallback.REQUEST_CODE.DATABASE);
+			}
+
+			@Override
+			public void onCancelled(DatabaseError databaseError) {
+
+			}
+		});
+	}
+
+	public ArrayList<String> getAlbumsExceptLocalAndChosen() {
+		return albumsExceptLocalAndChosen;
+	}
 	//im uploading again in case the user is transfering from the local album
-	public static void addImageToAlbum(final Image imageToAdd, final String albumDest) {
+	public void addImageToAlbum(final Image imageToAdd, final String albumDest, final Context context) {
 
 		firebaseUserAlbumsRef.child(albumDest).addListenerForSingleValueEvent(new ValueEventListener() {
 			@Override
 			public void onDataChange(DataSnapshot dataSnapshot) {
 				final Album albumToAddImageTo = dataSnapshot.getValue(Album.class);
-				final StorageReference dbRef = userStorageReference.child(imageToAdd.getName()); //reference based on current user to uploadImages in the cloud
-				Uri fileUri = Uri.fromFile(new File(imageToAdd.getImageURI()));
-				dbRef.putFile(fileUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-					@Override
-					public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-						imageToAdd.setUrls(taskSnapshot.getDownloadUrl(), taskSnapshot.getStorage().toString());
-						albumToAddImageTo.addImage(imageToAdd);
-						firebaseUserAlbumsRef.child(albumDest).setValue(albumToAddImageTo); //Stores the album in database with the correct references
+				if (!dataSnapshot.exists()) {
+					Toast.makeText(context, "This album does not exist online", Toast.LENGTH_LONG).show();
+//					return;
+				} else {
+					final StorageReference dbRef = userStorageReference.child(imageToAdd.getName()); //reference based on current user to uploadImages in the cloud
+					Uri fileUri = Uri.fromFile(new File(imageToAdd.getImageURI()));
+					dbRef.putFile(fileUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+						@Override
+						public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+							imageToAdd.setUrls(taskSnapshot.getDownloadUrl(), taskSnapshot.getStorage().toString());
+							albumToAddImageTo.addImage(imageToAdd);
+							firebaseUserAlbumsRef.child(albumDest).setValue(albumToAddImageTo); //Stores the album in database with the correct references
 						}
 
-				});
+					});
+				}
 			}
 			@Override
 			public void onCancelled(DatabaseError databaseError) {
@@ -165,21 +218,20 @@ public class FirebaseService implements Observer{
 			@Override
 			public void onDataChange(DataSnapshot dataSnapshot) {
 				final Album albumToDeleteImage = dataSnapshot.getValue(Album.class);
-				if(albumToDeleteImage==null) {
-					Toast.makeText(context, "This image does not exist online", Toast.LENGTH_LONG).show();
-					return;
-				}
-				ArrayList<Image> tempImages = albumToDeleteImage.getImages();
-				for(int i = 0; i < tempImages.size(); i++) {
-					if (tempImages.get(i).getImageURI().equals(imageToDelete.getImageURI())) {
-						tempImages.remove(i);
+				if (!dataSnapshot.exists()) {
+					Toast.makeText(context, "This album does not exist online", Toast.LENGTH_LONG).show();
+				} else {
+					ArrayList<Image> tempImages = albumToDeleteImage.getImages();
+					for (int i = 0; i < tempImages.size(); i++) {
+						if (tempImages.get(i).getName().equals(imageToDelete.getName())) {
+							tempImages.remove(i);
+						}
 					}
+					albumToDeleteImage.setImages(tempImages);
+					firebaseUserAlbumsRef.child(albumToDeleteImage.getName()).setValue(albumToDeleteImage);
+					//iAsyncCallback.RetrieveData(com.example.niephox.methophotos.Interfaces.iAsyncCallback.REQUEST_CODE.DATABASE);
 				}
-				albumToDeleteImage.setImages(tempImages);
-				firebaseUserAlbumsRef.child(albumToDeleteImage.getName()).setValue(albumToDeleteImage);
-				iAsyncCallback.RetrieveData(com.example.niephox.methophotos.Interfaces.iAsyncCallback.REQUEST_CODE.DATABASE);
 			}
-
 			@Override
 			public void onCancelled(DatabaseError databaseError) {
 

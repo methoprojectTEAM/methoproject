@@ -45,42 +45,52 @@ import java.util.List;
 
 public class AlbumsViewActivity extends AppCompatActivity implements iAsyncCallback, View.OnClickListener {
     //ArrayLists:
-    public static  ArrayList<Album> alAlbums = new ArrayList<>();
+    public  ArrayList<Album> alAlbums;
     //Layout Items:
     private ViewHolder viewHolder ;
     //Controllers:
     FirebaseService firebaseService;
     private AlbumRepository albumRepo;
     private MetadataController mtcontrol;
-    private AlbumBuilder.AsyncBuild AsalbumBuilder;
+    private AlbumBuilder AsalbumBuilder;
     //Intents:
     private User curentUser;
     private Album localAlbum;
     private AlbumsAdapter albumsAdapter;
+    private AlertDialog.Builder diaBuilder;
+    private AlertDialog dialog;
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
 
+        alAlbums = new ArrayList<>();
+        curentUser = new User();
         setContentView(R.layout.activity_album);
+
         viewHolder = new ViewHolder();
-        albumRepo = new AlbumRepository();
-        localAlbum = albumRepo.generateLocalAlbum(this);
+
+        albumRepo = new AlbumRepository(); //TODO: we create a repo object to manage albums
+        localAlbum = albumRepo.generateLocalAlbum(this); //TODO: we generate a local album using the albumRepo
 
         //AUTOMATIC GENERATION
         mtcontrol = new MetadataController(localAlbum,this);
         mtcontrol.RegisterCallback(this);
         mtcontrol.execute(localAlbum);
-        alAlbums.clear();
-        curentUser = new User();
+
         setView();
+        diaBuilder = new AlertDialog.Builder(this);
+        diaBuilder.setView(viewHolder.createAlbumView);
+        dialog = diaBuilder.create();
+
         firebaseService = new FirebaseService();
+        firebaseService.RegisterCallback(this);
+
         firebaseService.getCurrentUser();
 
-
         alAlbums.add(localAlbum);
-        firebaseService.RegisterCallback(this);
     }
 
     public void setView() {
@@ -161,7 +171,7 @@ public class AlbumsViewActivity extends AppCompatActivity implements iAsyncCallb
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                AsalbumBuilder = new AlbumBuilder.AsyncBuild(getWindow().getDecorView().findViewById(android.R.id.content),this,localAlbum.getImages());
+                AsalbumBuilder = new AlbumBuilder(getWindow().getDecorView().findViewById(android.R.id.content),this);
                 AsalbumBuilder.RegisterCallback(this);
                 AsalbumBuilder.execute(localAlbum.getImages());
 
@@ -201,10 +211,11 @@ public class AlbumsViewActivity extends AppCompatActivity implements iAsyncCallb
     @Override
     public void onClick(View view) {
         if (view.getId() == R.id.addAlbum) {
-            final AlertDialog.Builder diaBuilder = new AlertDialog.Builder(AlbumsViewActivity.this);
             albumRepo = new AlbumRepository();
-            diaBuilder.setView(viewHolder.createAlbumView);
-            final AlertDialog dialog = diaBuilder.create();
+           // diaBuilder.setView(viewHolder.createAlbumView);
+//            dialog.hide();
+            viewHolder.albumName.getText().clear();
+            viewHolder.albumDescription.getText().clear();
             dialog.show();
             viewHolder.createAlbum.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -215,8 +226,11 @@ public class AlbumsViewActivity extends AppCompatActivity implements iAsyncCallb
                         dialog.dismiss();
                     }
                 }
+
             });
+
         }
+
     }
     private class ViewHolder {
         final DrawerLayout mdrawerLayout;
@@ -251,3 +265,4 @@ public class AlbumsViewActivity extends AppCompatActivity implements iAsyncCallb
         }
     }
 }
+//TODO: TESTING

@@ -22,12 +22,12 @@ public class CustomMapMarkerAdapter {
     private View marker;
     private LatLng coordinates;
 
-    public CustomMapMarkerAdapter(Context context, InfoWindowData imageData, GoogleMap mMap, View marker, LatLng coordinates) {
-        this.context = context;
-        this.imageData = imageData;
-        this.mMap = mMap;
-        this.marker = marker;
-        this.coordinates = coordinates;
+    private CustomMapMarkerAdapter(Builder builder){
+        this.context = builder.context;
+        this.imageData = builder.imageData;
+        this.mMap = builder.mMap;
+        this.marker = builder.marker;
+        this.coordinates = builder.coordinates;
     }
 
     public void setCustomInfoWindow(){
@@ -52,5 +52,43 @@ public class CustomMapMarkerAdapter {
         Bitmap viewBitmap = createBitmapFromView(context,marker);
         Marker m =mMap.addMarker(new MarkerOptions().position(coordinates).icon(BitmapDescriptorFactory.fromBitmap(viewBitmap)));
         m.setTag(imageData);
+    }
+    public static class Builder{
+        private Context context;
+        private InfoWindowData imageData = new InfoWindowData("https://firebasestorage.googleapis.com/v0/b/methopro.appspot.com/o/EiuCEHFOOdNbOjxtVF73RIn0lOM2%2F26d25334-898e-4a56-899c-a8797964250f?alt=media&token=32c7abe1-c6d3-4c65-9a50-d77d5305ee32","DreamCity","DreamCountry","21/8/1997");
+        private GoogleMap mMap;
+        private View marker;
+        private LatLng coordinates = new LatLng(41.093409,23.533739);
+        public Builder context(final Context context){
+            this.context=context;
+            return this;
+        }
+
+        public Builder imageData(final InfoWindowData imageData) {
+            this.imageData = imageData;
+            return this;
+        }
+
+        public Builder map(final GoogleMap mMap) {
+            this.mMap = mMap;
+            return this;
+        }
+
+        public Builder marker(final View marker) {
+            this.marker = marker;
+            return this;
+        }
+
+        public Builder coordinates(final LatLng coordinates) {
+            this.coordinates = coordinates;
+            return this;
+        }
+        public Builder coordinates(final double latittude,final double longitude) {
+            this.coordinates = new LatLng(latittude,longitude);
+            return this;
+        }
+        public CustomMapMarkerAdapter build(){
+            return new CustomMapMarkerAdapter(this);
+        }
     }
 }

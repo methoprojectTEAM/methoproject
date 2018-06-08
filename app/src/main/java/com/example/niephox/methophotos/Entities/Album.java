@@ -110,9 +110,15 @@ public class Album {
 		if(!images.isEmpty())
 			this.thumbnail = this.images.get(0);
 		else {
-			FirebaseService.queryAlbumDelete(name);
+			FirebaseService fbService = new FirebaseService();
+			fbService.queryAlbumDelete(name);
 
 		}
+	}
+
+	@Override
+	public String toString() {
+		return name;
 	}
 }
 

@@ -87,9 +87,10 @@ public class MetadataActivity extends AppCompatActivity implements iAsyncCallbac
 
     private void SetViews() {
         ShowImage();
+        tvName.setText(image.getName());
 //        if (image.getName()!=null && image.getAlbum().getName() !=null) {
 //            tvName.setText(image.getName());
-//            tvAlbumName.setText(image.getAlbum().getName());
+//            //tvAlbumName.setText(image.getAlbum().getName());
 //        }
     }
 
@@ -105,10 +106,10 @@ public class MetadataActivity extends AppCompatActivity implements iAsyncCallbac
     }
 
     private void ShowImage() {
-        if (image.getImageURI() == null) {
+        if (image.getDownloadUrl() == null) {
             Glide
                     .with(this)
-                    .load(image.getDownloadUrl())
+                    .load(image.getImageURI())
                     .thumbnail(0.1f)
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .skipMemoryCache(false)
@@ -116,7 +117,7 @@ public class MetadataActivity extends AppCompatActivity implements iAsyncCallbac
         } else {
             Glide
                     .with(this)
-                    .load(image.getImageURI())
+                    .load(image.getDownloadUrl())
                     .thumbnail(0.1f)
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .skipMemoryCache(false)
@@ -148,8 +149,6 @@ public class MetadataActivity extends AppCompatActivity implements iAsyncCallbac
         Toast toast = Toast.makeText(context, message, duration);
         toast.show();
     }
-
-
 
 }
 
