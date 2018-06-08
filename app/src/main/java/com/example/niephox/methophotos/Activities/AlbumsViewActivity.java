@@ -172,7 +172,7 @@ public class AlbumsViewActivity extends AppCompatActivity implements iAsyncCallb
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                AsalbumBuilder = new AlbumBuilder(getWindow().getDecorView().findViewById(android.R.id.content),this, AlbumBuilder.AAG_BASE.DATE);
+                AsalbumBuilder = new AlbumBuilder(getWindow().getDecorView().findViewById(android.R.id.content),this, AlbumBuilder.AAG_BASE.LOCATION);
                 AsalbumBuilder.RegisterCallback(this);
                 AsalbumBuilder.execute(localAlbum.getImages());
 
