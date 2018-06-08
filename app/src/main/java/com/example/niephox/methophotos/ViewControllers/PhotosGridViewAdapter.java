@@ -12,6 +12,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -37,15 +39,29 @@ public class PhotosGridViewAdapter extends ArrayAdapter<Image> {
     private ArrayList<Image> alImages = new ArrayList<>();
     private String[] userAlbumsNames;
     private String albumName;
+    private String comments;
+
+    private AlertDialog editCommentsDialog;
+    private EditText commentsEditText;
+    private View editCommentsView;
+    private Button saveCommentsButton;
 
     private FirebaseService service;
 
-    public PhotosGridViewAdapter(Context context, ArrayList<Image> alImages, String[] userAlbumsNames) {
+    public PhotosGridViewAdapter(Context context, ArrayList<Image> alImages, String[] userAlbumsNames,AlertDialog editCommentsDialog,EditText commentsEditText,View editCommentsView) {
         super(context, R.layout.gridview_relative_layout, alImages);
         this.alImages = alImages;
         this.context = context;
         this.userAlbumsNames = userAlbumsNames;
         service = new FirebaseService(context);
+        this.editCommentsDialog=editCommentsDialog;
+        this.commentsEditText=commentsEditText;
+        this.editCommentsView=editCommentsView;
+        saveCommentsButton = editCommentsView.findViewById(R.id.saveCommentsButton);
+
+
+
+
 
     }
     @Override
@@ -98,13 +114,29 @@ public class PhotosGridViewAdapter extends ArrayAdapter<Image> {
                     Toast.makeText(context, "UploadAlbum", Toast.LENGTH_SHORT).show();
                     break;
                 case R.id.MoveToAlbumItem:
-                    MoveDialogView dialog = new MoveDialogView(position, alImages.get(position), albumName, userAlbumsNames, context);
+                    final MoveDialogView dialog = new MoveDialogView(position, alImages.get(position), albumName, userAlbumsNames, context);
                     dialog.showDialogView();
                     break;
                 case R.id.DeleteItem:
                     service.deleteImageFromAlbum(alImages.get(position), albumName );
                     alImages.remove(position);
                     notifyDataSetChanged();
+                    break;
+                case R.id.EditComments:
+                    editCommentsDialog.show();
+
+                    saveCommentsButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            comments=commentsEditText.getText().toString();
+                            alImages.get(position).setDescription(comments);
+                            editCommentsDialog.hide();
+                            service.setImageComments(albumName,comments,position);
+                        }
+                    });
+
+                    //TODO:ADD FIREBASE SUPPORt
+
 
                     break;
                 default:

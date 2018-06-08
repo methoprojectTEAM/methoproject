@@ -158,6 +158,9 @@ public class FirebaseService implements Observer{
 	public Image setImage(Image imageToAddRefs, UploadTask.TaskSnapshot snap) {
 		return imageToAddRefs;
 	}
+	public void setImageComments(String currentAlbum,String comments,int position){
+		firebaseUserAlbumsRef.child(currentAlbum).child("images").child(position+"").child("description").setValue(comments);
+	}
 
 	public void getAlbumsExceptLocalAndChosen(final String albumChosen) {
 		getAlbumsExceptLocalAndChosen().clear();
@@ -229,7 +232,7 @@ public class FirebaseService implements Observer{
 					}
 					albumToDeleteImage.setImages(tempImages);
 					firebaseUserAlbumsRef.child(albumToDeleteImage.getName()).setValue(albumToDeleteImage);
-					//iAsyncCallback.RetrieveData(com.example.niephox.methophotos.Interfaces.iAsyncCallback.REQUEST_CODE.DATABASE);
+					iAsyncCallback.RetrieveData(com.example.niephox.methophotos.Interfaces.iAsyncCallback.REQUEST_CODE.DATABASE);
 				}
 			}
 			@Override
