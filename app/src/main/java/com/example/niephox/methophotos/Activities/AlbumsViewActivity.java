@@ -93,6 +93,7 @@ public class AlbumsViewActivity extends AppCompatActivity implements iAsyncCallb
         viewHolder.recyclerView.setAdapter(albumsAdapter);
         viewHolder.floatingActionButton.setOnClickListener(this);
         viewHolder.navigationView.setNavigationItemSelectedListener(new NavigationItemListener(viewHolder.mdrawerLayout));
+
     }
 
     @Override
@@ -107,7 +108,7 @@ public class AlbumsViewActivity extends AppCompatActivity implements iAsyncCallb
             case DATABASE:
                 break;
             case AUTOGENERATE:
-                alAlbums.clear();
+//                alAlbums.clear();
                 alAlbums.addAll(AsalbumBuilder.getAlbumscreated());
                 albumsAdapter.notifyDataSetChanged();
                 break;
@@ -161,7 +162,7 @@ public class AlbumsViewActivity extends AppCompatActivity implements iAsyncCallb
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                AsalbumBuilder = new AlbumBuilder(getWindow().getDecorView().findViewById(android.R.id.content),this);
+                AsalbumBuilder = new AlbumBuilder(getWindow().getDecorView().findViewById(android.R.id.content),this, AlbumBuilder.AAG_BASE.DATE);
                 AsalbumBuilder.RegisterCallback(this);
                 AsalbumBuilder.execute(localAlbum.getImages());
 
@@ -248,6 +249,7 @@ public class AlbumsViewActivity extends AppCompatActivity implements iAsyncCallb
             albumName = createAlbumView.findViewById(R.id.albumName);
             albumDescription = createAlbumView.findViewById(R.id.albumDescription);
             createAlbum = createAlbumView.findViewById(R.id.createAlbumButton);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
     }
 }
