@@ -20,6 +20,7 @@ import com.example.niephox.methophotos.Activities.PhotosViewActivity;
 import com.example.niephox.methophotos.Controllers.FirebaseService;
 import com.example.niephox.methophotos.Entities.Album;
 import com.example.niephox.methophotos.Entities.Image;
+import com.example.niephox.methophotos.Interfaces.iAsyncCallback;
 import com.example.niephox.methophotos.R;
 
 import java.util.ArrayList;
@@ -136,11 +137,14 @@ public class AlbumsAdapter extends RecyclerView.Adapter<AlbumsAdapter.MyViewHold
         return albumList.size();
     }
 
-    class ButtonClickListener implements View.OnClickListener {
+    class ButtonClickListener implements View.OnClickListener , iAsyncCallback {
         private ArrayList<Image> alImages = new ArrayList<>();
         private int position;
         private Album album;
-
+        Intent intent;
+        ArrayList<String> albumsNew = new ArrayList<>();
+        String[] albumListNames;
+        FirebaseService firebaseService = new FirebaseService();
         ButtonClickListener(int position, Album album) {
             this.position = position;
             this.album = album;
@@ -150,12 +154,27 @@ public class AlbumsAdapter extends RecyclerView.Adapter<AlbumsAdapter.MyViewHold
         public void onClick(View view) {
             alImages.clear();
             alImages.addAll(album.getImages());
-            Intent intent = new Intent(mContext, PhotosViewActivity.class);
-
+            intent = new Intent(mContext, PhotosViewActivity.class);
             intent.putExtra("alImages", alImages);
             intent.putExtra("albumName", album.getName());
-            mContext.startActivity(intent);
+            firebaseService.RegisterCallback(this);
+            firebaseService.getAlbumsExceptLocalAndChosen(album.getName());
+        }
 
+
+        @Override
+        public void RefreshView(REQUEST_CODE rq) {
+
+        }
+
+        @Override
+        public void RetrieveData(REQUEST_CODE rq) {
+            albumsNew = firebaseService.getAlbumsExceptLocalAndChosen();
+            albumListNames = new String[albumsNew.size()];
+            for(int i=0; i<albumsNew.size(); i++)
+                albumListNames[i] = (albumsNew.get(i));
+            intent.putExtra("userAlbumsNames", albumListNames);
+            mContext.startActivity(intent);
         }
     }
 

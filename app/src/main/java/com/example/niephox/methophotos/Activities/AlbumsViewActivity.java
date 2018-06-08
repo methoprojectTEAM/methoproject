@@ -57,15 +57,21 @@ public class AlbumsViewActivity extends AppCompatActivity implements iAsyncCallb
     private User curentUser;
     private Album localAlbum;
     private AlbumsAdapter albumsAdapter;
+    private AlertDialog.Builder diaBuilder;
+    private AlertDialog dialog;
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
+
         alAlbums = new ArrayList<>();
         curentUser = new User();
         setContentView(R.layout.activity_album);
+
         viewHolder = new ViewHolder();
+
         albumRepo = new AlbumRepository(); //TODO: we create a repo object to manage albums
         localAlbum = albumRepo.generateLocalAlbum(this); //TODO: we generate a local album using the albumRepo
 
@@ -75,6 +81,10 @@ public class AlbumsViewActivity extends AppCompatActivity implements iAsyncCallb
         mtcontrol.execute(localAlbum);
 
         setView();
+        diaBuilder = new AlertDialog.Builder(this);
+        diaBuilder.setView(viewHolder.createAlbumView);
+        dialog = diaBuilder.create();
+
         firebaseService = new FirebaseService();
         firebaseService.RegisterCallback(this);
 
@@ -201,10 +211,11 @@ public class AlbumsViewActivity extends AppCompatActivity implements iAsyncCallb
     @Override
     public void onClick(View view) {
         if (view.getId() == R.id.addAlbum) {
-            final AlertDialog.Builder diaBuilder = new AlertDialog.Builder(AlbumsViewActivity.this);
             albumRepo = new AlbumRepository();
-            diaBuilder.setView(viewHolder.createAlbumView);
-            final AlertDialog dialog = diaBuilder.create();
+           // diaBuilder.setView(viewHolder.createAlbumView);
+//            dialog.hide();
+            viewHolder.albumName.getText().clear();
+            viewHolder.albumDescription.getText().clear();
             dialog.show();
             viewHolder.createAlbum.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -215,8 +226,11 @@ public class AlbumsViewActivity extends AppCompatActivity implements iAsyncCallb
                         dialog.dismiss();
                     }
                 }
+
             });
+
         }
+
     }
     private class ViewHolder {
         final DrawerLayout mdrawerLayout;
