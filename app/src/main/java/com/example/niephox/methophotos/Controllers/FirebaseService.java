@@ -232,7 +232,7 @@ public class FirebaseService implements Observer{
 					}
 					albumToDeleteImage.setImages(tempImages);
 					firebaseUserAlbumsRef.child(albumToDeleteImage.getName()).setValue(albumToDeleteImage);
-					//iAsyncCallback.RetrieveData(com.example.niephox.methophotos.Interfaces.iAsyncCallback.REQUEST_CODE.DATABASE);
+					iAsyncCallback.RetrieveData(com.example.niephox.methophotos.Interfaces.iAsyncCallback.REQUEST_CODE.DATABASE);
 				}
 			}
 			@Override
