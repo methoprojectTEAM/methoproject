@@ -37,6 +37,7 @@ public class PhotosViewActivity extends AppCompatActivity {
 
     //Current album name
 	String albumName;
+	String[] userAlbumsNames;
 
 
     @Override
@@ -54,7 +55,8 @@ public class PhotosViewActivity extends AppCompatActivity {
 //        }
 		albumName = intent.getStringExtra("albumName");
         alImages=intent.getParcelableArrayListExtra("alImages");
-        albumsAdapter = new PhotosGridViewAdapter(this,alImages);
+        userAlbumsNames = intent.getStringArrayExtra("userAlbumsNames");
+        albumsAdapter = new PhotosGridViewAdapter(this, alImages, userAlbumsNames);
         gvImages.setAdapter(albumsAdapter);
 
         gvImages.setOnItemClickListener(new AdapterView.OnItemClickListener() {

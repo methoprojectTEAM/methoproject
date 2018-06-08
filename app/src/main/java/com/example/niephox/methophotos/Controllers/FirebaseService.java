@@ -21,7 +21,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.functions.FirebaseFunctions;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -32,11 +31,12 @@ import java.util.Map;
 
 public class FirebaseService implements Observer{
 
-	private  User currentUser = new User();
+	private static User currentUser = new User();
 	private  ArrayList<Album> userAlbums = new ArrayList<>();
+	private static ArrayList<String> albumsExceptLocalAndChosen = new ArrayList<>();
 
 	//TODO: final FIREBASE STRUCTURAL REFERENCES
-	private  final DatabaseReference firebaseUserAlbumsRef = FirebaseDatabase.getInstance().getReference("/users/" + currentUser.getUserUID() + "/albums");
+	private static final DatabaseReference firebaseUserAlbumsRef = FirebaseDatabase.getInstance().getReference("/users/" + currentUser.getUserUID() + "/albums");
 	private  final DatabaseReference firebaseUserRef = FirebaseDatabase.getInstance().getReference("/users/");
 	private  final StorageReference userStorageReference = FirebaseStorage.getInstance().getReference("/" + currentUser.getUserUID());
 
@@ -159,10 +159,31 @@ public class FirebaseService implements Observer{
 		return imageToAddRefs;
 	}
 
+	public void getAlbumsExceptLocalAndChosen(final String albumChosen) {
+		getAlbumsExceptLocalAndChosen().clear();
+		firebaseUserAlbumsRef.addListenerForSingleValueEvent(new ValueEventListener() {
+			@Override
+			public void onDataChange(DataSnapshot dataSnapshot) {
+				for(DataSnapshot snap:dataSnapshot.getChildren()) {
+					if(!snap.getKey().equals(albumChosen))
+						albumsExceptLocalAndChosen.add(snap.getKey());
 
+				}
+				iAsyncCallback.RetrieveData(com.example.niephox.methophotos.Interfaces.iAsyncCallback.REQUEST_CODE.DATABASE);
+			}
 
+			@Override
+			public void onCancelled(DatabaseError databaseError) {
+
+			}
+		});
+	}
+
+	public ArrayList<String> getAlbumsExceptLocalAndChosen() {
+		return albumsExceptLocalAndChosen;
+	}
 	//im uploading again in case the user is transfering from the local album
-	public void addImageToAlbum(final Image imageToAdd, final String albumDest) {
+	public void addImageToAlbum(final Image imageToAdd, final String albumDest, final Context context) {
 
 		firebaseUserAlbumsRef.child(albumDest).addListenerForSingleValueEvent(new ValueEventListener() {
 			@Override

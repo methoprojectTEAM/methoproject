@@ -18,8 +18,8 @@ import java.util.List;
 public class AlbumRepository {
 	private ArrayList<Image> selectedImages;
 	private Album album = new Album();
-	private Context context; //context is used for selectionImageGallery
-	private FirebaseService service = new FirebaseService(context);
+	private static  Context context; //context is used for selectionImageGallery
+	private static FirebaseService service = new FirebaseService(context);
 	private final static int REQUEST_PICTURES = 1;
 
 	public AlbumRepository() {
@@ -85,9 +85,9 @@ public class AlbumRepository {
 	}
 
 	//remove image with the help of firebase service and add image to the other album with firebase service too
-	public void transferImage(Image imgToTransfer, Album fromAlbum, Album toAlbum) {
-		service.deleteImageFromAlbum(imgToTransfer, fromAlbum.getName()); //delete from one album,
-		service.addImageToAlbum(imgToTransfer, toAlbum.getName()); //add to the other album
+	public static void transferImage(Image imgToTransfer, String fromAlbum, String toAlbum, Context context) {
+		service.deleteImageFromAlbum(imgToTransfer, fromAlbum); //delete from one album,
+		service.addImageToAlbum(imgToTransfer, toAlbum, context); //add to the other album
 	}
 
 	public void createAlbum(Album albumToCreate) {
