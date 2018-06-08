@@ -4,15 +4,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
-import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBar;
 import android.view.MenuItem;
 import android.view.View;
 
 import com.example.niephox.methophotos.Activities.AccountManageActivity;
-import com.example.niephox.methophotos.Controllers.AlbumBuilder;
 import com.example.niephox.methophotos.R;
+import com.google.firebase.auth.FirebaseAuth;
 
 public class NavigationItemListener implements NavigationView.OnNavigationItemSelectedListener {
     private DrawerLayout drawerLayout;
@@ -47,6 +45,10 @@ public class NavigationItemListener implements NavigationView.OnNavigationItemSe
                 return true;
             case R.id.userLogout:
                 item.setChecked(true);
+                FirebaseAuth auth = FirebaseAuth.getInstance();
+                //auth.addAuthStateListener(authListener);
+
+                auth.signOut();
                 drawerLayout.closeDrawers();
                 return true;
             case R.id.about:

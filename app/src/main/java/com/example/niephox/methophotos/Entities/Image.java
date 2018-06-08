@@ -66,6 +66,8 @@ public class Image implements Parcelable {
         this.downloadUrl = in.readString();
         this.description = in.readString();
         this.imageURI = in.readString();
+        this.name = in.readString();
+
         this.parcableLocation= in.readParcelable(LatLng.class.getClassLoader());
     }
 
@@ -163,6 +165,7 @@ public class Image implements Parcelable {
         dest.writeString(this.downloadUrl);
         dest.writeString(this.description);
         dest.writeString(this.imageURI);
+        dest.writeString(this.name);
         if(this.infoMap != null) {
             if (this.infoMap.get("Location") != null) {
                 GeoLocation location = (GeoLocation) this.infoMap.get("Location");

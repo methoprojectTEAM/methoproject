@@ -1,9 +1,11 @@
-package com.example.niephox.methophotos.Controllers;
+package com.example.niephox.methophotos.Controllers.AlbumsControllers;
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 
+import com.example.niephox.methophotos.Controllers.FirebaseControllers.FirebaseService;
+import com.example.niephox.methophotos.Controllers.StorageAdapters.StorageAdapter;
 import com.example.niephox.methophotos.Entities.Album;
 import com.example.niephox.methophotos.Entities.Image;
 

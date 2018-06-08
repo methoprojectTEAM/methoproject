@@ -1,4 +1,4 @@
-package com.example.niephox.methophotos.Controllers;
+package com.example.niephox.methophotos.Controllers.FirebaseControllers;
 
 import android.content.Intent;
 import android.net.Uri;
@@ -6,17 +6,21 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.JobIntentService;
 import android.support.v7.app.AppCompatActivity;
 
+import com.drew.imaging.jpeg.JpegSegmentMetadataReader;
 import com.example.niephox.methophotos.Entities.Album;
 import com.example.niephox.methophotos.Entities.Image;
 import com.example.niephox.methophotos.Entities.User;
 import com.example.niephox.methophotos.Interfaces.Observable;
 import com.example.niephox.methophotos.Interfaces.Observer;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -28,6 +32,9 @@ public class StorageService extends AppCompatActivity implements Observable {
 	private ArrayList<Image> uploadedImages = new ArrayList<>();
 	private ArrayList<Observer> observers = new ArrayList<>();
 	private final StorageReference userStorageReference = FirebaseStorage.getInstance().getReference("/" + currentUser.getUserUID());
+	private static FirebaseStorage storage = FirebaseStorage.getInstance();
+	private static File StorageFile;
+
 	private int numCores;
 	private ThreadPoolExecutor executor;
 
@@ -58,6 +65,37 @@ public class StorageService extends AppCompatActivity implements Observable {
 			});
 		}
 	}
+	//TODO: IMPLEMENT CALL THROUGH FIREBASE SERVICE, ADD OBSERVER UPDATE, WHEN UPDATED ON FIREBASE JUST CALLBACK
+	public void DownloadFile(String FileURL , final Iterable<JpegSegmentMetadataReader> readers) {
+		StorageReference FileReference = storage.getReferenceFromUrl(FileURL);
+
+		File tempFile = null;
+
+		try {
+			tempFile = File.createTempFile("images", "jpg");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		final File finalTempFile = tempFile;
+
+		FileReference.getFile(tempFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+			@Override
+			public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+				// MetadataController.ExtractMetadata(finalTempFile,readers);
+				StorageFile = finalTempFile;
+				//iAsyncCallback.RetrieveData( iAsyncCallback.REQUEST_CODE.STORAGE);
+				//TODO: IMPLEMENT OBSERBER THROUGH FIREBASE AND WHEN DOENSLOAD IS DONE UPDATE FIREBASE
+			}
+		}).addOnFailureListener(new OnFailureListener() {
+			@Override
+			public void onFailure(@NonNull Exception e) {
+
+			}
+		});
+
+	}
+
 	public ArrayList<Observer> getObservers() {
 		return observers;
 	}

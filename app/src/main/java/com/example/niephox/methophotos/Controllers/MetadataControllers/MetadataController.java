@@ -1,4 +1,4 @@
-package com.example.niephox.methophotos.Controllers;
+package com.example.niephox.methophotos.Controllers.MetadataControllers;
 
 import android.content.Context;
 import android.os.AsyncTask;
@@ -39,7 +39,6 @@ public class MetadataController extends AsyncTask<Album, Integer, String> implem
 
     private File File;
     Iterable<JpegSegmentMetadataReader> readers = null;
-    StorageController storageController = new StorageController();
     public static iAsyncCallback iAsyncCallback;
     public HashMap<String,Object>  imageInfoMap = new HashMap<String,Object>();
 
@@ -57,14 +56,14 @@ public class MetadataController extends AsyncTask<Album, Integer, String> implem
     public MetadataController(Image image) {
         this.image = image;
         readers = null;
-        storageController.registerCallback(this);
+       // storageController.registerCallback(this);
     }
 
     public MetadataController(Album album ,Context context) {
         this.album = album;
         this.context = context;
         readers = null;
-        storageController.registerCallback(this);
+        //storageController.registerCallback(this);
     }
 
     public MetadataController(){}
@@ -85,7 +84,7 @@ public class MetadataController extends AsyncTask<Album, Integer, String> implem
 
             if (image.getImageURI() == null) {
                 String DownloadURL = image.getDownloadUrl();
-                StorageController.DownloadFile(DownloadURL, readers);
+               // StorageController.DownloadFile(DownloadURL, readers);
             } else {
                 this.File = new File(image.getImageURI());
                 DataExtractionFromFile();
@@ -195,7 +194,7 @@ public class MetadataController extends AsyncTask<Album, Integer, String> implem
     public void RetrieveData(REQUEST_CODE rq) {
         switch (rq) {
             case STORAGE:
-                this.File = StorageController.StorageFile;
+                //this.File = StorageController.StorageFile;
                 DataExtractionFromFile();
                 DownloadedFileComplete();
                 break;

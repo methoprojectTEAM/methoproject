@@ -11,11 +11,11 @@ import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.example.niephox.methophotos.Controllers.CustomMapRequestListener;
+import com.example.niephox.methophotos.CustomListeners.CustomMapRequestListener;
 import com.example.niephox.methophotos.Entities.Image;
 import com.example.niephox.methophotos.Entities.InfoWindowData;
 import com.example.niephox.methophotos.R;
-import com.example.niephox.methophotos.ViewControllers.CustomMapMarkerAdapter;
+import com.example.niephox.methophotos.ViewControllers.MapAdapters.CustomMapMarkerAdapter;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;

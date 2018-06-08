@@ -1,8 +1,10 @@
 package com.example.niephox.methophotos.ViewControllers;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.PopupMenu;
 import android.util.Log;
@@ -19,9 +21,8 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.example.niephox.methophotos.Controllers.AlbumRepository;
-import com.example.niephox.methophotos.Controllers.FirebaseService;
-import com.example.niephox.methophotos.Entities.Album;
+import com.example.niephox.methophotos.Controllers.AlbumsControllers.AlbumRepository;
+import com.example.niephox.methophotos.Controllers.FirebaseControllers.FirebaseService;
 import com.example.niephox.methophotos.Entities.Image;
 import com.example.niephox.methophotos.R;
 
@@ -40,7 +41,7 @@ public class PhotosGridViewAdapter extends ArrayAdapter<Image> {
     private String[] userAlbumsNames;
     private String albumName;
     private String comments;
-
+    private Intent parentIntent;
     private AlertDialog editCommentsDialog;
     private EditText commentsEditText;
     private View editCommentsView;
@@ -48,15 +49,16 @@ public class PhotosGridViewAdapter extends ArrayAdapter<Image> {
 
     private FirebaseService service;
 
-    public PhotosGridViewAdapter(Context context, ArrayList<Image> alImages, String[] userAlbumsNames,AlertDialog editCommentsDialog,EditText commentsEditText,View editCommentsView) {
+    public PhotosGridViewAdapter(Context context, ArrayList<Image> alImages, String[] userAlbumsNames,AlertDialog editCommentsDialog,EditText commentsEditText,View editCommentsView, Intent parentIntent) {
         super(context, R.layout.gridview_relative_layout, alImages);
         this.alImages = alImages;
         this.context = context;
         this.userAlbumsNames = userAlbumsNames;
-        service = new FirebaseService(context);
+        this.service = new FirebaseService(context);
         this.editCommentsDialog=editCommentsDialog;
         this.commentsEditText=commentsEditText;
         this.editCommentsView=editCommentsView;
+        this.parentIntent = parentIntent;
         saveCommentsButton = editCommentsView.findViewById(R.id.saveCommentsButton);
 
 
@@ -115,12 +117,14 @@ public class PhotosGridViewAdapter extends ArrayAdapter<Image> {
                     break;
                 case R.id.MoveToAlbumItem:
                     final MoveDialogView dialog = new MoveDialogView(position, alImages.get(position), albumName, userAlbumsNames, context);
-                    dialog.showDialogView();
+                    if(userAlbumsNames.length!=0)
+                        dialog.showDialogView();
+                    else
+                        Toast.makeText(context, "There are no available albums to transfer to", Toast.LENGTH_LONG).show();
                     break;
                 case R.id.DeleteItem:
                     service.deleteImageFromAlbum(alImages.get(position), albumName );
-                    alImages.remove(position);
-                    notifyDataSetChanged();
+                    updateDataset(position);
                     break;
                 case R.id.EditComments:
                     editCommentsDialog.show();
@@ -135,7 +139,6 @@ public class PhotosGridViewAdapter extends ArrayAdapter<Image> {
                         }
                     });
 
-                    //TODO:ADD FIREBASE SUPPORt
 
 
                     break;
@@ -147,6 +150,16 @@ public class PhotosGridViewAdapter extends ArrayAdapter<Image> {
         }
     }
 
+    private void updateDataset(int position) {
+        alImages.remove(position);
+        exitIfEmpty();
+        notifyDataSetChanged();
+    }
+    private void exitIfEmpty() {
+        if(alImages.isEmpty())
+            ((Activity) context).finish();
+
+    }
 
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
@@ -201,7 +214,7 @@ public class PhotosGridViewAdapter extends ArrayAdapter<Image> {
         public void showDialogView() {
             selectionDialogBuilder = new AlertDialog.Builder(context);
             selectionDialogBuilder.setTitle("Albums");
-            selectionDialogBuilder.setSingleChoiceItems(userAlbums, -1, new DialogInterface.OnClickListener(){
+            selectionDialogBuilder.setSingleChoiceItems(userAlbums, 0, new DialogInterface.OnClickListener(){
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
                     position = i;
@@ -218,9 +231,8 @@ public class PhotosGridViewAdapter extends ArrayAdapter<Image> {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
                     AlbumRepository.transferImage(imageToTransfer, currentAlbum ,userAlbums[position]  , context);
-                    alImages.remove(currentImagePosition);
-                    notifyDataSetChanged();
                     selectAlbumDialog.dismiss();
+                    updateDataset(currentImagePosition);
                 }
             });
             selectAlbumDialog = selectionDialogBuilder.create();

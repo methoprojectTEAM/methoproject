@@ -16,9 +16,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.niephox.methophotos.Activities.AlbumOnMapActivity;
 import com.example.niephox.methophotos.Activities.PhotosViewActivity;
-import com.example.niephox.methophotos.Controllers.FirebaseService;
+import com.example.niephox.methophotos.Controllers.FirebaseControllers.FirebaseService;
 import com.example.niephox.methophotos.Entities.Album;
 import com.example.niephox.methophotos.Entities.Image;
 import com.example.niephox.methophotos.Interfaces.iAsyncCallback;
@@ -74,9 +75,21 @@ public class AlbumsAdapter extends RecyclerView.Adapter<AlbumsAdapter.MyViewHold
         Image albumThumbnail = new Image();
             albumThumbnail=album.getThumbnail();
         if (albumThumbnail.getDownloadUrl() == null) {
-            Glide.with(mContext).load(albumThumbnail.getImageURI()).into(holder.thumbnail);
+            Glide
+                    .with(mContext)
+                    .load(albumThumbnail.getImageURI())
+                    .thumbnail(0.3f)
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .skipMemoryCache(false)
+                    .into(holder.thumbnail);
         } else {
-             Glide.with(mContext).load(albumThumbnail.getDownloadUrl()).into(holder.thumbnail);
+             Glide
+                     .with(mContext)
+                     .load(albumThumbnail.getDownloadUrl())
+                     .thumbnail(0.3f)
+                     .diskCacheStrategy(DiskCacheStrategy.ALL)
+                     .skipMemoryCache(false)
+                     .into(holder.thumbnail);
        }
 
         holder.overflow.setOnClickListener(new View.OnClickListener() {
@@ -154,7 +167,6 @@ public class AlbumsAdapter extends RecyclerView.Adapter<AlbumsAdapter.MyViewHold
             this.position = position;
             this.album = album;
         }
-
         @Override
         public void onClick(View view) {
             alImages.clear();
@@ -165,13 +177,9 @@ public class AlbumsAdapter extends RecyclerView.Adapter<AlbumsAdapter.MyViewHold
             firebaseService.RegisterCallback(this);
             firebaseService.getAlbumsExceptLocalAndChosen(album.getName());
         }
-
-
         @Override
         public void RefreshView(REQUEST_CODE rq) {
-
         }
-
         @Override
         public void RetrieveData(REQUEST_CODE rq) {
             albumsNew = firebaseService.getAlbumsExceptLocalAndChosen();
@@ -182,5 +190,4 @@ public class AlbumsAdapter extends RecyclerView.Adapter<AlbumsAdapter.MyViewHold
             mContext.startActivity(intent);
         }
     }
-
 }

@@ -1,4 +1,4 @@
-package com.example.niephox.methophotos.Controllers;
+package com.example.niephox.methophotos.Controllers.FirebaseControllers;
 
 /*
  * Created by greycr0w on 5/1/2018.
@@ -36,8 +36,8 @@ public class FirebaseService implements Observer{
 	private static ArrayList<String> albumsExceptLocalAndChosen = new ArrayList<>();
 
 	//TODO: final FIREBASE STRUCTURAL REFERENCES
-	private static final DatabaseReference firebaseUserAlbumsRef = FirebaseDatabase.getInstance().getReference("/users/" + currentUser.getUserUID() + "/albums");
-	private  final DatabaseReference firebaseUserRef = FirebaseDatabase.getInstance().getReference("/users/");
+	private  final DatabaseReference firebaseUserAlbumsRef = FirebaseDatabase.getInstance().getReference("/users/" + currentUser.getUserUID() + "/albums");
+	private static  final DatabaseReference firebaseUserRef = FirebaseDatabase.getInstance().getReference("/users/");
 	private  final StorageReference userStorageReference = FirebaseStorage.getInstance().getReference("/" + currentUser.getUserUID());
 
 
@@ -82,6 +82,7 @@ public class FirebaseService implements Observer{
 			}
 		});
 	}
+
 	//TODO: THIS IS CALLED ONCE WHEN THE USER FIRST LOGINS. ANY CHANGES TO THE USER SHOULD NOT BE LISTENED TO BECAUSE IT WILL GET UNESSECARY DATA LIKE ALBUMS
 	public  void getCurrentUser() {
 		firebaseUserRef.child(currentUser.getUserUID()).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -105,19 +106,15 @@ public class FirebaseService implements Observer{
 	}
 
 	//TODO: OBSERVE tHE getCurrentUser METHOD AND THE SINGLEVALUEEVENT LISTENER WHEN THE EMAIL OF THE USER IS CHANGED. OBSERVER IF ITS RUNNING TWICE.
-	public void queryChangeUserEmail(String newEmail) {
-		firebaseUserRef.child("email").setValue(newEmail);
-		//TODO:: IMPLEMENT Call
+	public static void ChangeUserEmail(String newEmail) {
+		firebaseUserRef.child(currentUser.getUserUID()).child("username").setValue(newEmail);
+		//TODO:: IMPLEMENT Call to sidebar ui
 	}
 
 
 	public void queryDeleteUser() {
 		firebaseUserRef.child(currentUser.getUserUID()).getRef().removeValue();
-//		firebaseUserRef.removeValue(new DatabaseReference.CompletionListener() {
-//			@Override
-//			public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-//			}
-//		});
+
 //		//TODO:: IMPLEMENT Call
 	}
 //
@@ -126,7 +123,6 @@ public class FirebaseService implements Observer{
 		this.iAsyncCallback = iAsyncCallback;
 	}
 
-	//TODO: DELETION OF FOLDER IN STORAGE IS NOT YET SUPPORTED, LOOP THROUGH ALL THE ALBUM FOLDER IMAGES AND DELETE ONE BY ONE
 	public  void queryAlbumDelete(final String albumToDelete) {
 
 		firebaseUserAlbumsRef.child(albumToDelete).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -154,10 +150,10 @@ public class FirebaseService implements Observer{
 			}
 		});
 	}
-
-	public Image setImage(Image imageToAddRefs, UploadTask.TaskSnapshot snap) {
-		return imageToAddRefs;
-	}
+//
+//	public Image getRefImage(Image imageToAddRefs, UploadTask.TaskSnapshot snap) {
+//		return imageToAddRefs;
+//	}
 	public void setImageComments(String currentAlbum,String comments,int position){
 		firebaseUserAlbumsRef.child(currentAlbum).child("images").child(position+"").child("description").setValue(comments);
 	}
@@ -185,7 +181,8 @@ public class FirebaseService implements Observer{
 	public ArrayList<String> getAlbumsExceptLocalAndChosen() {
 		return albumsExceptLocalAndChosen;
 	}
-	//im uploading again in case the user is transfering from the local album
+
+
 	public void addImageToAlbum(final Image imageToAdd, final String albumDest, final Context context) {
 
 		firebaseUserAlbumsRef.child(albumDest).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -232,7 +229,7 @@ public class FirebaseService implements Observer{
 					}
 					albumToDeleteImage.setImages(tempImages);
 					firebaseUserAlbumsRef.child(albumToDeleteImage.getName()).setValue(albumToDeleteImage);
-					iAsyncCallback.RetrieveData(com.example.niephox.methophotos.Interfaces.iAsyncCallback.REQUEST_CODE.DATABASE);
+					//iAsyncCallback.RetrieveData(com.example.niephox.methophotos.Interfaces.iAsyncCallback.REQUEST_CODE.DATABASE);
 				}
 			}
 			@Override
@@ -258,15 +255,15 @@ public class FirebaseService implements Observer{
 
 		return false;
 	}
+
 	//what if i implement this observer here to have 2 different methods attached to it and then create another update that
 	//ti allo mporei na kanei observe o firebase service?
 	//TODO: AFOU DIMIOURGOUME DIAFORETIKA STORAGESERVICE OBJECTS GIA UPLOAD KAI DOWNLOAD TOTE TO ENA APO TA DUO GET THA EINAI NULL.
 	@Override
 	public void update(Object objectToCastTo) {
 		storageService = (StorageService) objectToCastTo;
-
-			Album albumToUpload = storageService.getCompleteAlbum();
-			firebaseUserAlbumsRef.child(albumToUpload.getName()).setValue(albumToUpload);
+		Album albumToUpload = storageService.getCompleteAlbum();
+		firebaseUserAlbumsRef.child(albumToUpload.getName()).setValue(albumToUpload);
 
 	}
 }

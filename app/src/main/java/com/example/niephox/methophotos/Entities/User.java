@@ -1,12 +1,6 @@
 package com.example.niephox.methophotos.Entities;
 
-import android.util.Log;
-
-import com.example.niephox.methophotos.Controllers.AuthenticationController;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
+import com.example.niephox.methophotos.Controllers.FirebaseControllers.AuthenticationController;
 
 import java.util.ArrayList;
 
