@@ -16,13 +16,16 @@ import com.example.niephox.methophotos.Interfaces.iAsyncCallback;
 import com.example.niephox.methophotos.R;
 import com.example.niephox.methophotos.ViewControllers.InfoBottomDialog;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
+
+import static android.icu.lang.UCharacter.GraphemeClusterBreak.T;
 
 /**
  * This class and functionality is still at its alpha version
@@ -30,19 +33,25 @@ import java.util.Date;
  * TODO: Addition of more sorting Bases. (Color, Location...)
  * TODO: Refactor to the point that the whole  AAG algorithm does not depend on a specific sort base
  * TODO: Polish and give  efficient UX
- *  */
+ */
 public class AlbumBuilder extends AsyncTask<ArrayList<Image>, Integer, String> {
     /**
-     *  Automatic Album Generation expects that the images imported for album calculation  already have their metadata set and stored in their object.
-     *  If an image doesn't have its metadata extracted then it will not be concluded in the AAG
-     *  @param Imagesfailed : integer variable counting the images that  didn't have the corresponding tag for the AAG
-     *  @param rootView : Activity view variable used for displaying UI for best UX according the background AAG progress
-     *  @param context : Same as the above
-     *  @param progressBar infoBottomDialog : both  elements serving the UX
-     *  @param metadataString : Array list  temporarily containing String  references of the current  image obj on calculation
-     *  @param albumsCreated : Array list containing  albums created by AAG
-     * */
+     * Automatic Album Generation expects that the images imported for album calculation  already have their metadata set and stored in their object.
+     * If an image doesn't have its metadata extracted then it will not be concluded in the AAG
+     *
+     * @param Imagesfailed : integer variable counting the images that  didn't have the corresponding tag for the AAG
+     * @param rootView : Activity view variable used for displaying UI for best UX according the background AAG progress
+     * @param context : Same as the above
+     * @param progressBar infoBottomDialog : both  elements serving the UX
+     * @param metadataString : Array list  temporarily containing String  references of the current  image obj on calculation
+     * @param albumsCreated : Array list containing  albums created by AAG
+     */
     public static iAsyncCallback iAsyncCallback;
+
+    public enum AAG_BASE {
+        DATE,
+        LOCATION
+    }
 
     private int Imagesfailed = 0;
     private View rootView;
@@ -52,10 +61,12 @@ public class AlbumBuilder extends AsyncTask<ArrayList<Image>, Integer, String> {
     private ArrayList<String> metadataString = new ArrayList<>();
     private ArrayList<Image> images = new ArrayList<>();
     private ArrayList<Album> albumscreated = new ArrayList<>();
+    private AAG_BASE base;
 
-    public AlbumBuilder(View rootView, Context context) {
+    public AlbumBuilder(View rootView, Context context, AAG_BASE base) {
         this.rootView = rootView;
         this.context = context;
+        this.base = base;
     }
 
     public ArrayList<Album> getAlbumscreated() {
@@ -96,8 +107,8 @@ public class AlbumBuilder extends AsyncTask<ArrayList<Image>, Integer, String> {
 
             }
         });
-// FragmentManager fragmentManager = ((FragmentActivity) context).getSupportFragmentManager();
-//infoBottomDialog = InfoBottomDialog.newInstance();
+        // FragmentManager fragmentManager = ((FragmentActivity) context).getSupportFragmentManager();
+        //infoBottomDialog = InfoBottomDialog.newInstance();
         //infoBottomDialog.show(fragmentManager, "add diallog");
         // Display Snackbar
     }
@@ -108,16 +119,22 @@ public class AlbumBuilder extends AsyncTask<ArrayList<Image>, Integer, String> {
         //Use input images as images.
         this.images = inputImages[0];
         int progress = 0;
+        initialiseAAG();
         while (this.images.size() != 0) {
             metadataString.clear();
-            if (this.images.get(0).getMetadata() != null) {
-                metadataString.addAll(this.images.get(0).getMetadata());
-                calculateAlbumBase(metadataString, "Date");
+            if (this.images.get(0).getInfoMap() != null) {
+//                metadataString.addAll(this.images.get(0).getMetadata());
+//                calculateAlbumBase(metadataString, "Date");
+                calculateAlbumBase();
+                this.images.remove(0);
+            }else{
+                Imagesfailed++;
                 this.images.remove(0);
             }
             progress++;
             publishProgress(progress);
         }
+        Finalise();
         return "Done . Images failed to process " + Imagesfailed;
     }
 
@@ -142,82 +159,135 @@ public class AlbumBuilder extends AsyncTask<ArrayList<Image>, Integer, String> {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    private void calculateAlbumBase(ArrayList<String> metadataString, String baseTag) {
-        switch (baseTag) {
-            case "Date":
-                calculateByDate(metadataString);
+    private void initialiseAAG() {
+        switch (this.base) {
+            case DATE:
+                basedOnDateInitialization();
+                break;
+        }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private void calculateAlbumBase() {
+        switch (this.base) {
+            case DATE:
+                calculateAlbum();
                 break;
             default:
                 break;
         }
     }
 
-    private Date parseDateTag(ArrayList<String> metadataString) {
-        String dateTag = "[Exif IFD0] Date/Time";
-        for (String tag : metadataString) {
-            if (tag.contains(dateTag)) {
-                String[] tagSplit = tag.split("- ", 2);
-                Date date = dateParser(tagSplit[1]);
-                return date;
+//    private Date parseDateTag(ArrayList<String> metadataString) {
+//        String dateTag = "[Exif IFD0] Date/Time";
+//        for (String tag : metadataString) {
+//            if (tag.contains(dateTag)) {
+//                String[] tagSplit = tag.split("- ", 2);
+//                Date date = dateParser(tagSplit[1]);
+//                return date;
+//            }
+//        }
+//        return null;
+//    }
+
+//    private Date dateParser(String input) {
+//        SimpleDateFormat parser = new SimpleDateFormat("yyyy:MM:dd HH:mm:ss");
+//        Date date = new Date();
+//        try {
+//            date = parser.parse(input);
+//        } catch (ParseException e) {
+//            e.printStackTrace();
+//        }
+//        return date;
+//    }
+
+
+    //Calculate albums by  image dates.
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private void calculateAlbum() {
+        boolean albumExists = false;
+        int albumIndex = 0;
+        for (int i = 0; i < albumscreated.size(); i++) {
+            albumExists = false;
+            albumIndex = 0;
+            if (calculateBaseResult(albumscreated.get(i))) {
+                albumExists = true;
+                albumIndex = i;
+                break;
             }
         }
-        return null;
-    }
-
-    private Date dateParser(String input) {
-        SimpleDateFormat parser = new SimpleDateFormat("yyyy:MM:dd HH:mm:ss");
-        Date date = new Date();
-        try {
-            date = parser.parse(input);
-        } catch (ParseException e) {
-            e.printStackTrace();
+        if (albumExists) {
+            albumscreated.get(albumIndex).addImage(this.images.get(0));
+        } else {
+            createAlbumOnBase();
         }
-        return date;
     }
 
-    private void newAlbumByDate(Date imageDate, Image image) {
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private void basedOnDateInitialization() {
+        newAlbumByDate(this.images.get(0));
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private void newAlbumByDate(Image image) {
         Album album = new Album();
         ArrayList<Image> images = new ArrayList<>();
         images.add(image);
+        Date imageDate = (Date) image.getInfoMap().get("Date");
+        String fromDate = imageDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")).toString();
+        String todate = imageDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate().plusDays(7).format(DateTimeFormatter.ofPattern("dd/MM/yyyy")).toString();
         album.setImages(images);
-        album.setName("a week starting from " + imageDate.toString());
+        album.setName("My photos between " + fromDate + " and " + todate +" ");
         album.setThumbnail(image);
-        album.setDescription("Automatically created based on date");
+        album.setDescription("Automatically generated based on date");
         album.setDate(imageDate);
         albumscreated.add(album);
     }
 
-    //Calculate albums by  image dates.
     @RequiresApi(api = Build.VERSION_CODES.O)
-    private void calculateByDate(ArrayList<String> metadataString) {
-        Date imageDate = parseDateTag(metadataString);
-        boolean albumExists = false;
-        int albumIndex = 0;
-        if (albumscreated.size() == 0) {
-            newAlbumByDate(imageDate, this.images.get(0));
+    private void createAlbumOnBase() {
+        switch (this.base) {
+            case DATE:
+                newAlbumByDate(this.images.get(0));
+                break;
         }
-        if (imageDate != null) {
-            for (int i = 0; i < albumscreated.size(); i++) {
-                albumExists = false;
-                albumIndex = 0;
-                LocalDate imageDateLocal = imageDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-                LocalDate albumdate = albumscreated.get(i).getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-                long timedif = ChronoUnit.DAYS.between(albumdate, imageDateLocal);
-                if (timedif <= 8 || timedif == 0) {
-                    albumExists = true;
-                    albumIndex = i;
-                    break;
-                }
-            }
-            if (albumExists) {
-                albumscreated.get(albumIndex).addImage(this.images.get(0));
-            } else {
-                newAlbumByDate(imageDate, this.images.get(0));
-            }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private boolean calculateBaseResult( Album album) {
+        boolean result = false;
+        switch (this.base) {
+            case DATE:
+                result = DateBase(this.images.get(0), album);
+                break;
+        }
+        return result;
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private boolean DateBase(Image image, Album album) {
+        boolean result;
+        Date imageDate = (Date) image.getInfoMap().get("Date");
+        LocalDate imageDateLocal = imageDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        LocalDate albumdate = album.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        long timediff = ChronoUnit.DAYS.between(albumdate, imageDateLocal);
+
+        if (timediff <= 8 || timediff == 0) {
+            result = true;
         } else {
-            // Images that didn't have the according Tag.
-            Imagesfailed++;
+            result = false;
         }
+        return result;
+    }
+    private void Finalise(){
+        switch (this.base){
+            case DATE:
+                dateFinalisation();
+                break;
+        }
+    }
+    private void dateFinalisation(){
+        Collections.sort(this.albumscreated);
     }
 }
 

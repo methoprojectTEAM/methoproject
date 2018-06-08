@@ -1,11 +1,16 @@
 package com.example.niephox.methophotos.Entities;
 
+import android.os.Build;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 
 import com.example.niephox.methophotos.Controllers.FirebaseService;
 import com.example.niephox.methophotos.Controllers.StorageController;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -14,7 +19,7 @@ import java.util.List;
  * Created by Niephox on 3/30/2018.
  */
 
-public class Album {
+public class Album implements Comparable {
 	private String name;
 	private Date date;
 	private String description;
@@ -116,9 +121,14 @@ public class Album {
 		}
 	}
 
+	@RequiresApi(api = Build.VERSION_CODES.O)
 	@Override
-	public String toString() {
-		return name;
+	public int compareTo(@NonNull Object o) {
+		Date albumDate = (Date) this.images.get(0).getInfoMap().get("Date");
+		LocalDate localAlbumDate = albumDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+		Date comperatorDate = (Date) ((Album)o).getImages().get(0).getInfoMap().get("Date");
+		LocalDate comparatorLocalDate = comperatorDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+		return comparatorLocalDate.compareTo(localAlbumDate);
 	}
 }
 
