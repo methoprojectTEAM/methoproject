@@ -7,6 +7,7 @@
     Allows Glide to monitor connectivity status and restart failed requests if users go from a
     a disconnected to a connected network state.
     -->
+
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -48,6 +49,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+
+
         <activity android:name=".Activities.AlbumsViewActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -55,6 +59,16 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+
+        <activity android:name=".Activities.AccountManageActivity">
+        <intent-filter>
+            <action android:name="android.intent.action.MAIN" />
+
+            <category android:name="android.intent.category.LAUNCHER" />
+        </intent-filter>
+        </activity>
+
         <activity android:name=".Activities.PhotosViewActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

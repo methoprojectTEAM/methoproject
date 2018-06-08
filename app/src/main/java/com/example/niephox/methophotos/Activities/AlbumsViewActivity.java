@@ -102,7 +102,7 @@ public class AlbumsViewActivity extends AppCompatActivity implements iAsyncCallb
         viewHolder.recyclerView.setItemAnimator(new DefaultItemAnimator());
         viewHolder.recyclerView.setAdapter(albumsAdapter);
         viewHolder.floatingActionButton.setOnClickListener(this);
-        viewHolder.navigationView.setNavigationItemSelectedListener(new NavigationItemListener(viewHolder.mdrawerLayout));
+        viewHolder.navigationView.setNavigationItemSelectedListener(new NavigationItemListener(viewHolder.mdrawerLayout,this));
     }
 
     @Override
