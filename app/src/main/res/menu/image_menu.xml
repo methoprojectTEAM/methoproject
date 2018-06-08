@@ -2,11 +2,14 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
+        android:id="@+id/MoveToAlbumItem"
+        android:title="Move to Album"></item>
+    <item
         android:id="@+id/ShowMDItem"
         android:title="Show Metadata"></item>
     <item
-        android:id="@+id/MoveToAlbumItem"
-        android:title="Move to Album"></item>
+        android:id="@+id/EditComments"
+        android:title="Edit Comments"></item>
     <item
         android:id="@+id/DeleteItem"
         android:title="Delete"></item>

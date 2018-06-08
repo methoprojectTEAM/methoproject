@@ -104,6 +104,10 @@ public class PhotosGridViewAdapter extends ArrayAdapter<Image> {
                 case R.id.DeleteItem:
                     service.deleteImageFromAlbum(alImages.get(position), albumName );
                     alImages.remove(position);
+
+                    break;
+                case R.id.EditComments:
+
                     break;
                 default:
 
