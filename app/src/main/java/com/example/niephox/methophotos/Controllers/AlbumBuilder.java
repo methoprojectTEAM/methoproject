@@ -11,6 +11,7 @@ import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.Snackbar;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.drew.lang.GeoLocation;
 import com.example.niephox.methophotos.Entities.Album;
@@ -34,9 +35,7 @@ import java.util.Locale;
 
 /**
  * This class and functionality is still at its alpha version
- * TODO: Implement correct call
- * TODO: Addition of more sorting Bases. (Color, Location...)
- * TODO: Refactor to the point that the whole  AAG algorithm does not depend on a specific sort base
+ *
  * TODO: Polish and give  efficient UX
  */
 public class AlbumBuilder extends AsyncTask<ArrayList<Image>, Integer, String> {
@@ -48,7 +47,7 @@ public class AlbumBuilder extends AsyncTask<ArrayList<Image>, Integer, String> {
      * @param rootView : Activity view variable used for displaying UI for best UX according the background AAG progress
      * @param context : Same as the above
      * @param progressBar infoBottomDialog : both  elements serving the UX
-     * @param metadataString : Array list  temporarily containing String  references of the current  image obj on calculation
+     *
      * @param albumsCreated : Array list containing  albums created by AAG
      */
     public static iAsyncCallback iAsyncCallback;
@@ -95,7 +94,11 @@ public class AlbumBuilder extends AsyncTask<ArrayList<Image>, Integer, String> {
         progressBar = rootView.findViewById(R.id.progressBar2);
         progressBar.setVisibility(View.VISIBLE);
         progressBar.setMax(images.size());
+        progressBar.setScaleY(2f);
+        TextView textView =  rootView.findViewById(R.id.infoTextView);
+        textView.setText("Calculating based on "+ base.toString());
         BottomSheetBehavior sheetBehavior = BottomSheetBehavior.from(rootView.findViewById(R.id.Sheet));
+        sheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
         sheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
             @Override
             public void onStateChanged(@NonNull View bottomSheet, int newState) {
@@ -118,6 +121,7 @@ public class AlbumBuilder extends AsyncTask<ArrayList<Image>, Integer, String> {
     protected String doInBackground(ArrayList<Image>... inputImages) {
         //Use input images as images.
         this.images = inputImages[0];
+        progressBar.setMax(images.size());
         int progress = 0;
         initialized = false;
         while (this.images.size() != 0) {

@@ -12,21 +12,24 @@
         android:layout_marginTop="@dimen/mtrl_card_spacing"
         app:cardElevation="5dp"
         app:strokeColor="@color/Base"
-        app:strokeWidth="0.2dp">
+        app:strokeWidth="0.2dp"
+        >
 
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            >
 
 
             <ImageView
                 android:id="@+id/thumbnail"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="250dp"
                 android:clickable="true"
-                android:scaleType="fitCenter" />
+                android:scaleType="fitXY"
+                 />
 
 
             <LinearLayout
@@ -50,7 +53,7 @@
                     android:paddingRight="@dimen/album_title_padding"
                     android:paddingTop="@dimen/album_title_padding"
                     android:text="Card Title"
-                    android:textSize="18sp" />
+                    android:textSize="22sp" />
 
                 <TextView
                     android:id="@+id/date"
@@ -61,7 +64,7 @@
                     android:paddingRight="@dimen/album_title_padding"
                     android:paddingTop="@dimen/album_title_padding"
                     android:text="Album Date DD/MM/YYYY"
-                    android:textSize="16sp" />
+                    android:textSize="14sp" />
 
                 <TextView
                     android:id="@+id/description"
@@ -73,7 +76,7 @@
                     android:paddingRight="@dimen/album_title_padding"
                     android:paddingTop="@dimen/album_title_padding"
                     android:text="Description of album LONG LINELONG LINELONG LINE"
-                    android:textSize="12sp" />
+                    android:textSize="14sp" />
 
 
             </LinearLayout>
@@ -102,6 +105,7 @@
                     android:layout_width="@dimen/ic_album_overflow_width"
                     android:layout_height="@dimen/ic_album_overflow_height"
                     android:layout_marginTop="@dimen/ic_album_overflow_margin_top"
+                    android:layout_marginRight="2dp"
                     android:scaleType="centerCrop"
                     android:src="@drawable/ic_dots" />
             </LinearLayout>

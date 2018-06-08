@@ -41,6 +41,10 @@
     <string name="Version">Version</string>
 
     <string name="title_activity_album_on_map">Map</string>
-
+    <!--Strings related to AAG -->
+    <string-array name="AAGoptions">
+        <item name ="Location">Location</item>
+        <item name="Date">Date</item>
+    </string-array>
 
 </resources>

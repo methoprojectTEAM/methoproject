@@ -13,7 +13,12 @@
         android:title="Delete" />
     <item
         android:id="@+id/mapAlbum"
-        android:orderInCategory="101"
+        android:orderInCategory="102"
         android:title="Show Album on Map" />
+    <item
+        android:id="@+id/AlbumAAG"
+        android:orderInCategory="103"
+        android:title="Generate albums" />
+
 
 </menu>
