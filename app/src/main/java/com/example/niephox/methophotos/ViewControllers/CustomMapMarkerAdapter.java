@@ -22,13 +22,6 @@ public class CustomMapMarkerAdapter {
     private View marker;
     private LatLng coordinates;
 
-    public CustomMapMarkerAdapter(Context context, InfoWindowData imageData, GoogleMap mMap, View marker, LatLng coordinates) {
-        this.context = context;
-        this.imageData = imageData;
-        this.mMap = mMap;
-        this.marker = marker;
-        this.coordinates = coordinates;
-    }
     private CustomMapMarkerAdapter(Builder builder){
         this.context = builder.context;
         this.imageData = builder.imageData;
