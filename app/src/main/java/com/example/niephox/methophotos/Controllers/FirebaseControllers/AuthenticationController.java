@@ -1,8 +1,9 @@
-package com.example.niephox.methophotos.Controllers;
+package com.example.niephox.methophotos.Controllers.FirebaseControllers;
 
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.example.niephox.methophotos.Controllers.FirebaseControllers.FirebaseService;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
@@ -32,7 +33,7 @@ public class AuthenticationController {
 
     public static void UpdateEmail(String newEmail) {
         currentUser.updateEmail(newEmail);
-        firebaseService.queryChangeUserEmail(newEmail);
+         FirebaseService.ChangeUserEmail(newEmail);
     }
 
     public static void UpdatePassword(String newPassword) {

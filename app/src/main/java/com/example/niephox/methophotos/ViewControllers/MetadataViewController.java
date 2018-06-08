@@ -6,14 +6,12 @@ import android.support.v7.app.AlertDialog;
 
 import com.drew.metadata.exif.ExifReader;
 import com.drew.metadata.iptc.IptcReader;
-import com.example.niephox.methophotos.Controllers.MetadataController;
+import com.example.niephox.methophotos.Controllers.MetadataControllers.MetadataController;
 import com.example.niephox.methophotos.Interfaces.iAsyncCallback;
 import com.example.niephox.methophotos.R;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-
-import static com.example.niephox.methophotos.Controllers.MetadataController.metadataList;
 
 public class MetadataViewController {
     private MetadataController metadataController;

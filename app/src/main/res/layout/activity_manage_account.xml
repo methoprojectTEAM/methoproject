@@ -83,7 +83,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:background="@color/colorPrimaryDark"
-            android:text="Chag"
+            android:text="CHANGE"
             android:textColor="@android:color/white"
             android:textStyle="bold" />
 
@@ -94,7 +94,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:background="@color/colorPrimaryDark"
-            android:text="btn_change"
+            android:text="CHANGE PASSWORD"
             android:textColor="@android:color/white"
             android:textStyle="bold" />
 
@@ -105,7 +105,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:background="@color/colorPrimaryDark"
-            android:text="btn_send"
+            android:text="SEND"
             android:textColor="@android:color/white"
             android:textStyle="bold" />
 
@@ -122,7 +122,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:background="@color/colorPrimaryDark"
-            android:text="btn_remove"
+            android:text="DELETE ACCOUNT"
             android:textColor="@android:color/white"
             android:textStyle="bold" />
 
@@ -132,7 +132,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="change_email"
+            android:text="CHANGE EMAIL"
             android:textStyle="bold" />
 
         <Button
@@ -141,7 +141,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="change_password"
+            android:text="CHANGE PASSWORD"
             android:textStyle="bold" />
 
         <Button
@@ -150,7 +150,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="send_password_reset_email"
+            android:text="RESET PASSWORD"
             android:textStyle="bold" />
 
         <Button
@@ -159,19 +159,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="remove_user"
+            android:text="DELETE ACCOUNT"
             android:textStyle="bold" />
 
-        <Button
-            android:id="@+id/sign_out"
-            style="?android:textAppearanceSmall"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:background="@color/colorPrimary"
-            android:text="btn_sign_out"
-            android:textColor="@android:color/white"
-            android:textStyle="bold" />
 
     </LinearLayout>
 

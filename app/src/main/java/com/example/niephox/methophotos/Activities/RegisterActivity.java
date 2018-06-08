@@ -16,7 +16,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.niephox.methophotos.Controllers.FirebaseService;
+import com.example.niephox.methophotos.Controllers.FirebaseControllers.FirebaseService;
 import com.example.niephox.methophotos.Entities.Album;
 import com.example.niephox.methophotos.Entities.Image;
 import com.example.niephox.methophotos.Entities.User;
@@ -26,8 +26,6 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -137,14 +135,10 @@ public class RegisterActivity extends AppCompatActivity {
         Image phimage = new Image("null","null","null");
         phUserImages.add(phimage);
         Date initDate = Calendar.getInstance().getTime();
-        //Album album = new Album("Null",initDate,"NullDescr",phUserImages);
-        //ArrayList<Album> userAlbums = new ArrayList<Album>();
-        //userAlbums.add(album);
-        //User DBuser = new User(user.getUid(),user.getEmail(),userAlbums);
-        //DatabaseReference mDB = FirebaseDatabase.getInstance().getReference();
-        //FirebaseService firebaseService = new FirebaseService();
-       // firebaseService.createUser(DBuser);
-        //DBuser.userCreationOnDB(mDB,DBuser);
+        ArrayList<Album> userAlbums = new ArrayList<Album>();
+        User DBuser = new User(user.getUid(),user.getEmail(),userAlbums);
+        FirebaseService firebaseService = new FirebaseService();
+        firebaseService.createUser(DBuser);
         Intent intent = new Intent(this, LoginActivity.class);
         startActivity(intent);
     }

@@ -2,18 +2,15 @@ package com.example.niephox.methophotos.Entities;
 
 import android.os.Build;
 import android.os.Parcel;
-import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 
-import com.example.niephox.methophotos.Controllers.FirebaseService;
-import com.example.niephox.methophotos.Controllers.StorageController;
+import com.example.niephox.methophotos.Controllers.FirebaseControllers.FirebaseService;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 /**
  * Created by Niephox on 3/30/2018.

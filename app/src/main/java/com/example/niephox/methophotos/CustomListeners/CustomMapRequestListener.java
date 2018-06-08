@@ -1,10 +1,10 @@
-package com.example.niephox.methophotos.Controllers;
+package com.example.niephox.methophotos.CustomListeners;
 
 import android.graphics.Bitmap;
 
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
-import com.example.niephox.methophotos.ViewControllers.CustomMapMarkerAdapter;
+import com.example.niephox.methophotos.ViewControllers.MapAdapters.CustomMapMarkerAdapter;
 
 
 public class CustomMapRequestListener implements RequestListener<String,Bitmap>{

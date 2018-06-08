@@ -1,4 +1,4 @@
-package com.example.niephox.methophotos.ViewControllers;
+package com.example.niephox.methophotos.ViewControllers.MapAdapters;
 
 import android.app.Activity;
 import android.content.Context;

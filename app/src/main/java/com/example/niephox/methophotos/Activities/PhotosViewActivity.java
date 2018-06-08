@@ -73,7 +73,7 @@ public class PhotosViewActivity extends AppCompatActivity {
         alImages=intent.getParcelableArrayListExtra("alImages");
         userAlbumsNames = intent.getStringArrayExtra("userAlbumsNames");
 
-        albumsAdapter = new PhotosGridViewAdapter(this, alImages, userAlbumsNames,dialog,commentsEditText,editCommentsView);
+        albumsAdapter = new PhotosGridViewAdapter(this, alImages, userAlbumsNames,dialog,commentsEditText,editCommentsView, intent);
         gvImages.setAdapter(albumsAdapter);
 
         gvImages.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -84,7 +84,6 @@ public class PhotosViewActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-
 
     	gvImages.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
 			@Override

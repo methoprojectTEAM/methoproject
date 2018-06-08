@@ -1,4 +1,4 @@
-package com.example.niephox.methophotos.Controllers;
+package com.example.niephox.methophotos.Controllers.StorageAdapters;
 /*
  * Created by greycr0w on 5/19/2018.
  */
