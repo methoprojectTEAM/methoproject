@@ -19,6 +19,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.niephox.methophotos.Activities.AlbumOnMapActivity;
+import com.example.niephox.methophotos.Activities.AlbumsViewActivity;
 import com.example.niephox.methophotos.Controllers.FirebaseService;
 import com.example.niephox.methophotos.Entities.Album;
 import com.example.niephox.methophotos.Entities.Image;
@@ -49,6 +50,7 @@ public class PhotosGridViewAdapter extends ArrayAdapter<Image> {
     public int getCount() {
         Log.e("NUMBER OF PHOTOS IS", alImages.size() + "");
         return alImages.size();
+
     }
     @Nullable
     @Override
@@ -98,6 +100,9 @@ public class PhotosGridViewAdapter extends ArrayAdapter<Image> {
                     service.deleteImageFromAlbum(alImages.get(position), albumName);
                     service.addImageToAlbum(alImages.get(position), "fromAlbum");
                     alImages.remove(position);
+                    AlbumsViewActivity.alAlbums.remove(1);
+
+
                     break;
                 case R.id.DeleteItem:
                     service.deleteImageFromAlbum(alImages.get(position), albumName );

@@ -116,6 +116,8 @@ public class AlbumsAdapter extends RecyclerView.Adapter<AlbumsAdapter.MyViewHold
                 case R.id.deleteAlbum:
                     FirebaseService.queryAlbumDelete(albumList.get(position).getName());
                     Toast.makeText(mContext, "DeleteAlbum", Toast.LENGTH_SHORT).show();
+                    albumList.remove(position);
+                    notifyDataSetChanged();
                     return true;
                 case R.id.mapAlbum:
                     Intent intent = new Intent(mContext,AlbumOnMapActivity.class);

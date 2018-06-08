@@ -35,6 +35,7 @@ public class AlbumOnMapActivity extends FragmentActivity implements OnMapReadyCa
     private Geocoder geocoder ;
     private double lat = 41.086602;
     private double lng = 23.5392998;
+    private String[] test = new String[2];
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +54,7 @@ public class AlbumOnMapActivity extends FragmentActivity implements OnMapReadyCa
             else
                 urls.add(imgToShow.getImageURI());
         }
+        imagesToShow.toArray(test);
     }
 
     @Override

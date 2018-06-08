@@ -45,7 +45,7 @@ import java.util.List;
 
 public class AlbumsViewActivity extends AppCompatActivity implements iAsyncCallback, View.OnClickListener {
     //ArrayLists:
-    public ArrayList<Album> alAlbums = new ArrayList<>();
+    public static  ArrayList<Album> alAlbums = new ArrayList<>();
     //Layout Items:
     private ViewHolder viewHolder ;
     //Controllers:
@@ -77,6 +77,7 @@ public class AlbumsViewActivity extends AppCompatActivity implements iAsyncCallb
         setView();
         firebaseService = new FirebaseService();
         firebaseService.getCurrentUser();
+
 
         alAlbums.add(localAlbum);
         firebaseService.RegisterCallback(this);
